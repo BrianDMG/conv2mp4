@@ -6,7 +6,7 @@ $num = $filelist | measure
 $filecount = $num.count
 $time = Get-Date -format "MM/dd/yy HH:mm:ss"
 Set-PSBreakpoint -Variable time -Mode Read -Action { $global:time = Get-Date -format "MM/dd/yy HH:mm:ss" }
-$log = "C:\Users\Arcade\Desktop\tomp4_out.txt"
+$log = "C:\log\path\conv2mp4_out.txt"
 
 # Begin search loop 
 $i = 0;
@@ -15,7 +15,7 @@ ForEach ($file in $filelist)
 			$i++;
 			$oldfile = $file.DirectoryName + "\" + $file.BaseName + $file.Extension;
 			$newfile = $file.DirectoryName + "\" + $file.BaseName + ".mp4";
-			$url = "http://200.20.2.222:32400/library/sections/all/refresh?X-Plex-Token=plextokenhere"
+			$url = "http://plexserverip:32400/library/sections/all/refresh?X-Plex-Token=plextokenhere"
 			$progress = ($i / $filecount) * 100
 			$progress = [Math]::Round($progress,2)
  
@@ -59,13 +59,13 @@ ForEach ($file in $filelist)
 				Remove-Item $oldfile -Force
 				Write-Output "$time New file is larger. $oldfile deleted." | Out-File $log -Append
 			}
-			# If new file is smaller than old file, log status and delete old file
+			# If new file is much smaller than old file (indicating a failed conversion), log status and delete new file
 			Elseif ($file2.length -lt ($file1.length * .85) )
 			{
 				Remove-Item $newfile -Force
 				Write-Output "$time EXCEPTION: New file is over 15% smaller. $newfile deleted." | Out-File $log -Append
 			}
-			# If new file is much smaller than old file (indicating a failed conversion), log status and delete new file
+			# If new file is smaller than old file, log status and delete old file
 			Elseif ($file2.length -lt $file1.length)
 			{
 				Remove-Item $oldfile -Force
