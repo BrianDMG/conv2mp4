@@ -4,11 +4,12 @@ Powershell script that recursively searches through a defined file path and conv
 This script requires ffmpeg and Handbrake to be installed on your computer. You can download them from here:<br>
 <a href="https://ffmpeg.org/download.html">ffmpeg</a>
 <a href="https://handbrake.fr/downloads.php">Handbrake</a><br><br>
+<b>Usage</b><br>
 To use this script on a Windows computer, simply right click the file and choose "Run with Powershell".<br><br>
 <b>User-defined variables</b><br>
 There are several user-defined variables you will need to edit using notepad or a program like <a href="https://notepad-plus-plus.org/download/v6.9.2.html">Notepad++</a>.<br><br>
 <b>$mediaPath</b> = the path to the media you want to convert. You can also use a UNC path here.<br>
-<br><i>NOTE: to use a mapped drive, you must run net use z: \\server\share /persistent:yes as the user you're going to run the script as (generally Administrator) prior to running the script.</i><br>
+<i>NOTE: to use a mapped drive, you must run net use z: \\server\share /persistent:yes as the user you're going to run the script as (generally Administrator) prior to running the script.</i><br>
 <b>$fileTypes</b> = the extensions of the files you want to convert in the format ".ex1", ".ex2".<br>
 <b>$log</b> = path and filename you want the log file to save to. Defaults to your desktop.<br>
 <b>$plexIP</b> = the IP address and port of your Plex server (for the purpose of refreshing its library)<br>
