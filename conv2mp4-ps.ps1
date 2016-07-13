@@ -1,5 +1,5 @@
 <#==================================================================================
-conv2mp4 - https://github.com/BrianDMG/conv2mp4-ps v1.2
+conv2mp4 - https://github.com/BrianDMG/conv2mp4-ps v1.3
 
 This Powershell script will recursively search through a defined file path and
 convert all MKV, AVI, FLV, and MPEG files to MP4 using ffmpeg + audio to AAC. If it
@@ -8,6 +8,7 @@ It then refreshes a Plex library, and upon conversion success deletes the source
 (original) file. The purpose of this script is to reduce transcodes from Plex.
 =====================================================================================
 
+This script requires ffmpeg and Handbrake. You can download them at the URLs below.
 ffmpeg : https://ffmpeg.org/download.html
 handbrakecli : https://handbrake.fr/downloads.php
 
@@ -27,7 +28,7 @@ $handbrake = path to HandBrakeCLI.exe #>
 $mediaPath = "Z:\media"
 $fileTypes = "*.mkv", "*.avi", "*.flv", "*.mpeg"
 $log = "C:\Users\$env:username\Desktop\conv2mp4-ps.log"
-$plexIP = 'plexserverip:32400'
+$plexIP = 'yourplexip:32400'
 $plexToken = 'yourplextoken'
 $ffmpeg = "C:\ffmpeg\bin\ffmpeg.exe"
 $handbrake = "C:\Program Files\HandBrake\HandBrakeCLI.exe"
@@ -87,12 +88,9 @@ ForEach ($file in $fileList)
 	<#----------------------------------------------------------------------------------
 	Refresh Plex libraries in Chrome
 	-----------------------------------------------------------------------------------#>
-	[System.Diagnostics.Process]::Start($plexURL)
-	(New-Object -Com Shell.Application).Open($plexURL)
-	Start-Sleep -s 10
-	Stop-Process -processname chrome
-	Write-Output "$($time.Invoke()) Plex library refreshed" | Out-File $log -Append
-
+	Invoke-WebRequest $plexURL 
+	Write-Output "$($time.Invoke()) Plex library refreshed" | Out-File $log -Append #>
+		
 	<#----------------------------------------------------------------------------------
 	Begin file comparison between old file and new file to determine conversion success
 	-----------------------------------------------------------------------------------#>
@@ -161,7 +159,7 @@ ForEach ($file in $fileList)
 				$hbarg31 = "--audio-fallback"
 				$hbarg32 = "ffac3"
 				$hbarg33 = "-x"
-				$hbarg34 = "ref=16:bframes=16:b-adapt=2:direct=auto:me=tesa:merange=24:subq=11:rc-lookahead=60:analyse=all:trellis=2:no-fast-pskip=1"
+				$hbarg34 = "level=4.0:ref=16:bframes=16:b-adapt=2:direct=auto:me=tesa:merange=24:subq=11:rc-lookahead=60:analyse=all:trellis=2:no-fast-pskip=1"
 				$hbarg35 = "--verbose=1"
 				$hbargs = @($hbarg1, $hbarg2, $hbarg3, $hbarg4, $hbarg5, $hbarg6, $hbarg7, $hbarg8, $hbarg9, $hbarg10, $hbarg11, $hbarg12, $hbarg13, $hbarg14, $hbarg15, $hbarg16, $hbarg17, $hbarg18, $hbarg19, $hbarg20, $hbarg21, $hbarg22, $hbarg23, $hbarg24, $hbarg25, $hbarg26, $hbarg27, $hbarg28, $hbarg29, $hbarg30, $hbarg31, $hbarg32, $hbarg33, $hbarg34, $hbarg35)
 				$hbcmd = &$handbrake $hbargs
