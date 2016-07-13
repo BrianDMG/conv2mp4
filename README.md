@@ -1,6 +1,6 @@
 # conv2mp4-ps
 Powershell script that recursively searches through a defined file path and converts MKV, AVI, FLV, and MPEG files to MP4 using ffmpeg (with AAC audio). It then refreshes a Plex library, and deletes the source file upon success. Fails over to Handbrake encode if conversion failure is detected. The purpose of this script is to reduce the number of transcodes performed by a Plex server.<br><br>
-<b>Dependencies</b><br>
+<b><u>Dependencies</u></b><br>
 This script requires ffmpeg and Handbrake to be installed on your computer. You can download them from here:<br>
 <a href="https://ffmpeg.org/download.html">ffmpeg</a>
 <a href="https://handbrake.fr/downloads.php">Handbrake</a><br><br>
