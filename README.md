@@ -9,7 +9,7 @@ To use this script on a Windows computer, simply right click the file and choose
 <b>User-defined variables</b><br>
 There are several user-defined variables you will need to edit using notepad or a program like <a href="https://notepad-plus-plus.org/download/v6.9.2.html">Notepad++</a>.<br><br>
 <b>$mediaPath</b> = the path to the media you want to convert. You can also use a UNC path here.<br>
-<i>NOTE: to use a mapped drive, you must run net use z: \\server\share /persistent:yes as the user you're going to run the script as (generally Administrator) prior to running the script.</i><br>
+<i>NOTE: to use a mapped drive, you must run <code>net use z: \\server\share /persistent:yes</code> as the user you're going to run the script as (generally Administrator) prior to running the script.</i><br>
 <b>$fileTypes</b> = the extensions of the files you want to convert in the format ".ex1", ".ex2".<br>
 <b>$log</b> = path and filename you want the log file to save to. Defaults to your desktop.<br>
 <b>$plexIP</b> = the IP address and port of your Plex server (for the purpose of refreshing its library)<br>
