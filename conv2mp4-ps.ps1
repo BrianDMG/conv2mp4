@@ -457,14 +457,23 @@ Begin search loop
 							$hbArg9 = "--subtitle"
 							$hbArg10 = "scan,1,2,3,4,5,6,7,8,9,10"
 							$hbArg11 = "--x264-profile"
-							$hbArg12 = "high"
+							$hbArg12 = '"High"'
 							$hbArg13 = "--verbose=1"
 							$hbArgs = @($hbArg1, $hbArg2, $hbArg3, $hbArg4, $hbArg5, $hbArg6, $hbArg7, $hbArg8, $hbArg9, $hbArg10, $hbArg11, $hbArg12, $hbArg13)
 							$hbCMD = &$handbrake $hbArgs
 						# Begin Handbrake operation
-							$hbCMD
-							Log "$($time.Invoke()) Handbrake finished."
-							
+							$errOccured = $False
+							try 
+							{
+								$hbCMD
+								Log "$($time.Invoke()) Handbrake finished."
+							}
+							catch
+							{
+								$errOccured = $True
+								Log "$($time.Invoke()) ERROR: Handbrake has encountered an error."
+								Log $_
+							}
 							# If new file is the same size as old file, log status and delete old file
 								If ($fileNew.length -eq $fileOld.length) 
 								{
