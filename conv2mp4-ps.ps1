@@ -244,7 +244,7 @@ Functions (do not change)
 			$ffCMD
 			Log "$($time.Invoke()) ffmpeg completed"
 	}
-# If a file video codec is already H264, but audio codec is not AAC, use these arguments
+# If a file video codec is not H264, and audio codec is already AAC, use these arguments
 	Function EncodeVideo
 	{
 		Log "$($time.Invoke()) Video: $($script:vCodecCMD.ToUpper()), Audio: $($script:aCodecCMD.ToUpper()). Encoding video to H264."
@@ -277,7 +277,7 @@ Functions (do not change)
 			$ffCMD
 			Log "$($time.Invoke()) ffmpeg completed"
 	}
-# If a file video codec is already H264, but audio codec is not AAC, use these arguments
+# If a file video codec is not H264, and audio codec is not AAC, use these arguments
 	Function EncodeBoth
 	{	
 		Log "$($time.Invoke()) Video: $($script:vCodecCMD.ToUpper()), Audio: $($script:aCodecCMD.ToUpper()). Encoding video to H264 and audio to AAC."
