@@ -15,7 +15,7 @@ $mediaPath = the path to the media you want to convert (no trailing "\")
 NOTE: For network shares, use UNC path if you plan on running this script as a scheduled task.
 ----- If running manually and using a mapped drive, you must run "net use z: \\server\share /persistent:yes" as the user y
 ----- you're going to run the script as (generally Administrator) prior to running the script.
-$fileTypes = the extensions of the files you want to convert in the format "*.ex1", "*.ex2" 
+$fileTypes = the extensions of the files you want to convert in the format "*.ex1", "*.ex2". Do NOT add .mp4!
 $logPath = path you want the log file to save to. defaults to your desktop. (no trailing "\")
 $logName = the filename of the log file
 $plexIP = the IP address and port of your Plex server (for the purpose of refreshing its libraries)
@@ -27,14 +27,14 @@ $handbrake = path to Handbrake directory (no trailing "\"). This is the director
 $script:garbage = the extensions of the files you want to delete in the format "*.ex1", "*.ex2"
 -----------------------------------------------------------------------------------------------------------------------#>
 $mediaPath = " "
-$fileTypes = "*.mkv", "*.avi", "*.flv", "*.mpeg", "*.ts"
+$fileTypes = "*.mkv", "*.avi", "*.flv", "*.mpeg", "*.ts" #Do NOT add .mp4!
 $logPath = "C:\Users\$env:username\Desktop"
 $logName= "conv2mp4-ps.log"
 $plexIP = 'plexip:32400'
 $plexToken = 'plextoken'
 $ffmpegBinDir = "C:\ffmpeg\bin"
 $handbrakeDir = "C:\Program Files\HandBrake"
-$script:garbage = "*.nfo", ".idx"
+$script:garbage = "*.nfo"
 
 <#----------------------------------------------------------------------------------
 Static variables (do not change)
@@ -337,6 +337,8 @@ Functions (do not change)
 <#----------------------------------------------------------------------------------
 Preperation 
 ----------------------------------------------------------------------------------#>
+	# Set z: shared drive
+		#net use z: \\192.168.82.82\nas /persistent:yes
 	# Clear log contents
 		Clear-Content $log
 	
@@ -429,13 +431,12 @@ Begin search loop
 					
 					try
 					{
-						Remove-Item $newFile -Force -ErrorAction Stop
-						Log "$($time.Invoke()) EXCEPTION: New file is over 25% smaller ($($diffErr)MB). $newFile deleted."
-						Log "$($time.Invoke()) FAILOVER: Re-encoding $oldFile with Handbrake."
+							Remove-Item $newFile -Force -ErrorAction Stop
+							Log "$($time.Invoke()) EXCEPTION: New file is over 25% smaller ($($diffErr)MB). $newFile deleted."
+							Log "$($time.Invoke()) FAILOVER: Re-encoding $oldFile with Handbrake."
 					}
 					catch
 					{
-						$errOccured = $True
 						$errOccured = $True
 						Log "$($time.Invoke()) ERROR: $newFile could not be deleted. Full error below."
 						Log $_
@@ -456,10 +457,26 @@ Begin search loop
 							$hbArg8 = "1,2,3,4,5,6,7,8,9,10"
 							$hbArg9 = "--subtitle"
 							$hbArg10 = "scan,1,2,3,4,5,6,7,8,9,10"
-							$hbArg11 = "--x264-profile"
-							$hbArg12 = '"High"'
-							$hbArg13 = "--verbose=1"
-							$hbArgs = @($hbArg1, $hbArg2, $hbArg3, $hbArg4, $hbArg5, $hbArg6, $hbArg7, $hbArg8, $hbArg9, $hbArg10, $hbArg11, $hbArg12, $hbArg13)
+							$hbArg11 = "-e"
+							$hbArg12 = "x264"
+							$hbArg13 = "--encoder-preset"
+							$hbArg14 = "slow"
+							$hbArg15 = "--encoder-profile"
+							$hbArg16 = "high"
+							$hbArg17 = "--encoder-level"
+							$hbArg18 = "4.1"
+							$hbArg19 = "-q"
+							$hbArg20 = "18"
+							$hbArg21 = "-E"
+							$hbArg22 = "aac"
+							$hbArg23 = "--audio-copy-mask"
+							$hbArg24 = "aac"
+							$hbArg25 = "--verbose=1"
+							$hbArg26 = "--decomb" 
+							$hbArg27 = "--loose-anamorphic"
+							$hbArg28 = "--modulus" 
+							$hbArg29 = "2"
+							$hbArgs = @($hbArg1, $hbArg2, $hbArg3, $hbArg4, $hbArg5, $hbArg6, $hbArg7, $hbArg8, $hbArg9, $hbArg10, $hbArg11, $hbArg12, $hbArg13, $hbArg14, $hbArg15, $hbArg16, $hbArg17, $hbArg18, $hbArg19, $hbArg20, $hbArg21, $hbArg22, $hbArg23, $hbArg24, $hbArg25, $hbArg26, $hbArg27. $hbArg28. $hbArg29)
 							$hbCMD = &$handbrake $hbArgs
 						# Begin Handbrake operation
 							$errOccured = $False
@@ -474,21 +491,27 @@ Begin search loop
 								Log "$($time.Invoke()) ERROR: Handbrake has encountered an error."
 								Log $_
 							}
-							# If new file is the same size as old file, log status and delete old file
-								If ($fileNew.length -eq $fileOld.length) 
-								{
-									IfSame
-								}		
-							# If new file is larger than old file, log status and delete old file
-								Elseif ($fileNew.length -gt $fileOld.length) 
-								{
-									IfLarger
-								}
-							# If new file is smaller than old file, log status and delete old file
-								Elseif ($fileNew.length -lt $fileOld.length)
-								{
-									IfSmaller
-								}	
+								# If new file is much smaller than old file (likely because the script was aborted re-encode), leave original file alone and print error
+									If ($fileNew.length -lt ($fileOld.length * .75))
+									{
+									Log "ERROR: New file was too small. Deleted $newFile and retained $oldFile."
+									}
+								# If new file is the same size as old file, log status and delete old file
+									Elseif ($fileNew.length -eq $fileOld.length) 
+									{
+										IfSame
+									}		
+								# If new file is larger than old file, log status and delete old file
+									Elseif ($fileNew.length -gt $fileOld.length) 
+									{
+										IfLarger
+									}
+								# If new file is smaller than old file, log status and delete old file
+									Elseif ($fileNew.length -lt $fileOld.length)
+									{
+										IfSmaller
+									}	
+							
 				}
 						
 		# If new file is smaller than old file, log status and delete old file
