@@ -494,7 +494,19 @@ Begin search loop
 								# If new file is much smaller than old file (likely because the script was aborted re-encode), leave original file alone and print error
 									If ($fileNew.length -lt ($fileOld.length * .75))
 									{
-									Log "ERROR: New file was too small. Deleted $newFile and retained $oldFile."
+										$errOccured = $False
+										try
+										{
+											Remove-Item $newFile -Force -ErrorAction Stop
+											Log "ERROR: New file was too small. Deleted newfile and retained $oldFile."
+										}
+										catch
+										{
+											$errOccured = $True
+											Log "$($time.Invoke()) ERROR: New file was too small. Retained $oldFile."
+											Log "$($time.Invoke()) ERROR: $newFile could not be deleted. Full error below."
+											Log $_
+										}								
 									}
 								# If new file is the same size as old file, log status and delete old file
 									Elseif ($fileNew.length -eq $fileOld.length) 
