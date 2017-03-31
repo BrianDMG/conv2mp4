@@ -1,13 +1,15 @@
 <#======================================================================================================================
-conv2mp4-ps - https://github.com/BrianDMG/conv2mp4-ps v1.9 BETA
+conv2mp4-ps - https://github.com/BrianDMG/conv2mp4-ps v2.0 RELEASE
 
 This Powershell script will recursively search through a user-defined file path and convert all videos of user-specified 
 filetypes to MP4 with H264 video and AAC audio using ffmpeg. If a conversion failure is detected, the script re-encodes
 the file with HandbrakeCLI. Upon successful encoding, Plex libraries are refreshed and source file is deleted. 
 The purpose of this script is to reduce the amount of transcoding CPU load on a Plex server.
 ========================================================================================================================
+
 ffmpeg : https://ffmpeg.org/download.html
 handbrakecli : https://handbrake.fr/downloads.php #>
+
 <#----------------------------------------------------------------------------------------------------------------------
 User-defined variables
 ------------------------------------------------------------------------------------------------------------------------
@@ -26,7 +28,7 @@ $ffmpegBinDir = path to ffmpeg bin folder (no trailing "\"). This is the directo
 $handbrake = path to Handbrake directory (no trailing "\"). This is the directory containing HandBrakeCLI.exe
 $script:garbage = the extensions of the files you want to delete in the format "*.ex1", "*.ex2"
 -----------------------------------------------------------------------------------------------------------------------#>
-$mediaPath = " "
+$mediaPath = "\\your\path\here"
 $fileTypes = "*.mkv", "*.avi", "*.flv", "*.mpeg", "*.ts" #Do NOT add .mp4!
 $logPath = "C:\Users\$env:username\Desktop"
 $logName= "conv2mp4-ps.log"
@@ -37,19 +39,69 @@ $handbrakeDir = "C:\Program Files\HandBrake"
 $script:garbage = "*.nfo"
 
 <#----------------------------------------------------------------------------------
-Static variables (do not change)
+Static variables 
 ----------------------------------------------------------------------------------#>
+#Join-Path for log file
+	$log = Join-Path "$logPath" "$logName"
+# Clear log contents
+	Clear-Content $log
+# Print version information to top of log
+	Write-Output "`nconv2mp4-ps v2.0 - https://github.com/BrianDMG/conv2mp4-ps v2.0 RELEASE" | Tee -filepath $log -append
+	Write-Output "------------------------------------------------------------------------------------" | Tee -filepath $log -append
 # Print initial wait notice to console
 	Write-Host "`nBuilding file list, please wait. This may take a while, especially for large libraries.`n"
 # Get current time to store as start time for script
 	$script:scriptDurStart = (Get-Date -format "HH:mm:ss")
-# Build file paths to executables and log
+# Build file paths to executables and log 
 	$ffmpeg = Join-Path "$ffmpegBinDir" "ffmpeg.exe"
+	$testFFMPath = Test-Path $ffmpeg
+		If ($testFFMPath -eq $False)
+		{
+			Write-Output "`nffmeg.exe could not be found at $($ffmpegBinDir)." | Tee -filepath $log -append
+			Write-Output "Ensure the path in `$ffmpegBinDir is correct." | Tee -filepath $log -append
+			Write-Output "Aborting script." | Tee -filepath $log -append
+			Exit
+		}
+		Else
+		{
+		}
 	$ffprobe = Join-Path "$ffmpegBinDir" "ffprobe.exe"
+	$testFFPPath = Test-Path $ffprobe
+		If ($testFFPPath -eq $False)
+		{
+			Write-Output "`nffprobe.exe could not be found at $($ffmpegBinDir)." | Tee -filepath $log -append
+			Write-Output "Ensure the path in `$ffmpegBinDir is correct." | Tee -filepath $log -append
+			Write-Output "Aborting script." | Tee -filepath $log -append
+			Exit
+		}
+		Else
+		{
+		}
 	$handbrake = Join-Path "$handbrakeDir" "HandBrakeCLI.exe"
-	$log = Join-Path "$logPath" "$logName"
+	$testHBPath = Test-Path $handbrake
+		If ($testHBPath -eq $False)
+		{
+			Write-Output "`nhandbrakecli.exe could not be found at $($handbrakeDir)." | Tee -filepath $log -append
+			Write-Output "Ensure the path in `$handbrakeDir is correct." | Tee -filepath $log -append
+			Write-Output "Aborting script." | Tee -filepath $log -append
+			Exit
+		}
+		Else
+		{
+		}
 # Setup for file list loop
-	$mPath = Get-Item -Path $mediaPath
+	$testMediaPath = Test-Path $mediaPath
+	If ($testMediaPath -eq $True)
+	{
+		$mPath = Get-Item -Path $mediaPath
+	}
+	Else
+	{
+		Write-Output "`nPath not found: $mediaPath" | Tee -filepath $log -append
+		Write-Output "Ensure the path in `$mediaPath exists and is accessible." | Tee -filepath $log -append
+		Write-Output "Aborting script." | Tee -filepath $log -append
+		Exit
+	}
 	$fileList = Get-ChildItem "$($mPath.FullName)\*" -i $fileTypes -recurse
 	$num = $fileList | measure
 	$fileCount = $num.count
@@ -61,7 +113,7 @@ Static variables (do not change)
 	$durTotal = [timespan]::fromseconds(0)
 
 <#----------------------------------------------------------------------------------
-Functions (do not change)
+Functions 
 ----------------------------------------------------------------------------------#>
 # Logging and console output
 	Function Log
@@ -72,78 +124,26 @@ Functions (do not change)
 # List files in the queue in the log
 	Function ListFiles
 	{			 
-		Log "There are $fileCount file(s) are in the queue:`n"
-		
-		$i = 0
-		$num = 0
-		ForEach ($file in $fileList)
+		If ($fileCount -eq 1)
 		{
-			$i++;
-			
-			$num = $num +1
-			Log "$($num). $file"
+			Log ("`nThere is $fileCount file in the queue:`n")
 		}
-		Log ""
-	}
-# If new and old files are the same size
-	Function IfSame
-	{
-		$errOccured = $False
-			
-			try
-			{
-				Remove-Item $oldFile -Force -ErrorAction Stop
-				Log "$($time.Invoke()) Same file size."
-				Log "$($time.Invoke()) $oldFile deleted."
-			}	
-			catch
-			{	
-				$errOccured = $True 
-				Log "$($time.Invoke()) ERROR: $oldFile could not be deleted. Full error below."
-				Log $_
-			}				
-	}
-# If new file is larger than old file
-	Function IfLarger
-       {
-           $errOccured = $False
-           $diffGT = [Math]::Round($fileNew.length-$fileOld.length)/1MB -as [int]
- 
-			try
-            {
-                Remove-Item $oldFile -Force -ErrorAction Stop
-                Log "$($time.Invoke()) New file is $($diffGT)MB larger."
-                Log "$($time.Invoke()) $oldFile deleted."
-				$script:diskUsage = $script:diskUsage + $diffGT
-                Log "$($time.Invoke()) Current cumulative storage difference: $script:diskUsage MB"
-            }           
-            catch
-            {
-                $errOccured = $True
-                Log "$($time.Invoke()) ERROR: $oldFile could not be deleted. Full error below."
-                Log $_
-            }
-       }
-# If new file is smaller than old file
-	Function IfSmaller
-	{
-		$errOccured = $False
-		$diffLT = [Math]::Round($fileOld.length-$fileNew.length)/1MB -as [int]
-			
-			try
-			{
-				Remove-Item $oldFile -Force -ErrorAction Stop
-				Log "$($time.Invoke()) New file is $($diffLT)MB smaller."
-				Log "$($time.Invoke()) $oldFile deleted."
-				$script:diskUsage = $script:diskUsage - $diffLT
-				Log "$($time.Invoke()) Current cumulative disk usage difference: $script:diskUsage MB"
-			}
-			catch
-			{
-				$errOccured = $True
-				Log "$($time.Invoke()) ERROR: $oldFile could not be deleted. Full error below."
-				Log $_
-			}
+		Elseif ($fileCount -gt 1)
+		{
+			Log ("`nThere are $fileCount files in the queue:`n")
+		}
+		Else
+		{
+			Log ("`nThere are no files to be converted in $mediaPath. Congrats!`n")
+		}
+		
+		$num = 0
+			ForEach ($file in $fileList)
+				{
+					$num++
+					Log "$($num). $file"
+				}
+				Log ""
 	}
 # Find out what video and audio codecs a file is using
 	Function CodecDiscovery
@@ -184,7 +184,151 @@ Functions (do not change)
 			$durCMD = &$ffprobe $durArgs
 			$durTemp = [timespan]::fromseconds($durCMD)
 			$script:durTicks = $durTemp.ticks
-			$script:duration = "$($durTemp.hours):$($durTemp.minutes):$($durTemp.seconds)"
+			If ($durTemp -eq 0 -OR $durTemp -eq "N/A")
+			{
+				$script:duration = "00:01:00"
+			}
+			Else
+			{
+				$script:duration = "$($durTemp.hours):$($durTemp.minutes):$($durTemp.seconds)"
+			}
+	}
+# If new and old files are the same size
+	Function IfSame
+	{
+		$errOccured = $False
+			
+			Try
+			{
+				Remove-Item $oldFile -Force -ErrorAction Stop
+				Log "$($time.Invoke()) Same file size."
+				Log "$($time.Invoke()) $oldFile deleted."
+			}	
+			Catch
+			{	
+				$errOccured = $True 
+				Log "$($time.Invoke()) ERROR: $oldFile could not be deleted. Full error below."
+				Log $_
+			}				
+	}
+# If new file is larger than old file
+	Function IfLarger
+       {
+           $errOccured = $False
+           $diffGT = [Math]::Round($fileNew.length-$fileOld.length)/1MB -as [int]
+ 
+			Try
+            {
+                Remove-Item $oldFile -Force -ErrorAction Stop
+                Log "$($time.Invoke()) $oldFile deleted."
+				
+				If ($diffGT -lt 1)
+				{
+					$diffGT_KB = ($diffGT * 1000)
+					Log "$($time.Invoke()) New file is $($diffGT_KB)KB larger."
+				}
+				Elseif ($diffGT -gt 1000)
+				{
+					$diffGT_GB = ($diffGT / 1000)
+					Log "$($time.Invoke()) New file is $($diffGT_GB)GB larger."
+				}
+				Else
+				{
+					Log "$($time.Invoke()) New file is $($diffGT)MB larger."
+				}
+				
+				$script:diskUsage = $script:diskUsage + $diffGT
+				
+					If ($script:diskUsage -gt -1 -AND $script:diskUsage -lt 1)
+					{
+						$diskUsage_KB = ($script:diskUsage * 1000)
+						Log "$($time.Invoke()) Current cumulative storage difference: $($diskUsage_KB)KB"
+					}
+					Elseif ($script:diskUsage -lt -1000 -OR $script:diskUsage -gt 1000)
+					{
+						$diskUsage_GB = ($script:diskUsage / 1000)
+						Log "$($time.Invoke()) Current cumulative storage difference: $($diskUsage_GB)GB"					
+					}
+					Else
+					{
+						Log "$($time.Invoke()) Current cumulative storage difference: $($script:diskUsage)MB"					
+					}
+			}           
+            Catch
+            {
+                $errOccured = $True
+                Log "$($time.Invoke()) ERROR: $oldFile could not be deleted. Full error below."
+                Log $_
+            }
+       }
+# If new file is smaller than old file
+	Function IfSmaller
+	{
+		$errOccured = $False
+		$diffLT = [Math]::Round($fileOld.length-$fileNew.length)/1MB -as [int]
+			
+			Try
+			{
+				Remove-Item $oldFile -Force -ErrorAction Stop
+				Log "$($time.Invoke()) $oldFile deleted."
+				
+				If ($diffLT -lt 1)
+				{
+					$diffLT_KB = ($diffLT * 1000)
+					Log "$($time.Invoke()) New file is $($diffLT_KB)KB smaller."
+				}
+				Elseif ($diffLT -lt -1000)
+				{
+					$diffLT_GB = ($diffLT / 1000)
+					Log "$($time.Invoke()) New file is $($diffLT_GB)GB smaller."
+				}
+				Else
+				{
+				Log "$($time.Invoke()) New file is $($diffLT)MB smaller."
+				}
+				
+				$script:diskUsage = $script:diskUsage - $diffLT
+				
+					If ($script:diskUsage -gt -1 -AND $script:diskUsage -lt 1)
+					{
+						$diskUsage_KB = ($script:diskUsage * 1000)
+						Log "$($time.Invoke()) Current cumulative storage difference: $($diskUsage_KB)KB"
+					}
+					Elseif ($script:diskUsage -lt -1000 -OR $script:diskUsage -gt 1000)
+					{
+						$diskUsage_GB = ($script:diskUsage / 1000)
+						Log "$($time.Invoke()) Current cumulative storage difference: $($diskUsage_GB)GB"					
+					}
+					Else
+					{
+						Log "$($time.Invoke()) Current cumulative storage difference: $($script:diskUsage)MB"					
+					}
+			}
+			Catch
+			{
+				$errOccured = $True
+				Log "$($time.Invoke()) ERROR: $oldFile could not be deleted. Full error below."
+				Log $_
+			}
+	}
+## If new file is over 25% smaller than the original file, trigger encoding failure
+	Function FailureDetected
+	{	
+		$errOccured = $False
+		$diffErr = [Math]::Round($fileNew.length-$fileOld.length)/1MB -as [int]
+						
+		Try
+		{
+			Remove-Item $newFile -Force -ErrorAction Stop
+			Log "$($time.Invoke()) EXCEPTION: New file is over 25% smaller ($($diffErr)MB). $newFile deleted."
+			Log "$($time.Invoke()) FAILOVER: Re-encoding $oldFile with Handbrake."
+		}
+		Catch
+		{
+			$errOccured = $True
+			Log "$($time.Invoke()) ERROR: $newFile could not be deleted. Full error below."
+			Log $_
+		}
 	}
 # If a file video codec is already H264 and audio codec is already AAC, use these arguments
 	Function SimpleConvert	
@@ -310,37 +454,136 @@ Functions (do not change)
 			$ffCMD
 			Log "$($time.Invoke()) ffmpeg completed"	
 	}	
+#If new file is much smaller than old file (indicating a failed conversion), log status, delete new file, and re-encode with HandbrakeCLI
+	Function EncodeHandbrake
+	{
+		# Handbrake CLI: https://trac.handbrake.fr/wiki/CLIGuide#presets 
+		# Handbrake arguments
+			$hbArg1 = "-i"
+			$hbArg2 = "$oldFile"
+			$hbArg3 = "-o"
+			$hbArg4 = "$newFile"
+			$hbArg5 = "-f"
+			$hbArg6 = "mp4"
+			$hbArg7 = "-a"
+			$hbArg8 = "1,2,3,4,5,6,7,8,9,10"
+			$hbArg9 = "--subtitle"
+			$hbArg10 = "scan,1,2,3,4,5,6,7,8,9,10"
+			$hbArg11 = "-e"
+			$hbArg12 = "x264"
+			$hbArg13 = "--encoder-preset"
+			$hbArg14 = "slow"
+			$hbArg15 = "--encoder-profile"
+			$hbArg16 = "high"
+			$hbArg17 = "--encoder-level"
+			$hbArg18 = "4.1"
+			$hbArg19 = "-q"
+			$hbArg20 = "18"
+			$hbArg21 = "-E"
+			$hbArg22 = "aac"
+			$hbArg23 = "--audio-copy-mask"
+			$hbArg24 = "aac"
+			$hbArg25 = "--verbose=1"
+			$hbArg26 = "--decomb" 
+			$hbArg27 = "--loose-anamorphic"
+			$hbArg28 = "--modulus" 
+			$hbArg29 = "2"
+			$hbArgs = @($hbArg1, $hbArg2, $hbArg3, $hbArg4, $hbArg5, $hbArg6, $hbArg7, $hbArg8, $hbArg9, $hbArg10, $hbArg11, $hbArg12, $hbArg13, $hbArg14, $hbArg15, $hbArg16, $hbArg17, $hbArg18, $hbArg19, $hbArg20, $hbArg21, $hbArg22, $hbArg23, $hbArg24, $hbArg25, $hbArg26, $hbArg27. $hbArg28. $hbArg29)
+			$hbCMD = &$handbrake $hbArgs
+		# Begin Handbrake operation
+			$errOccured = $False
+			Try 
+			{
+				$hbCMD
+				Log "$($time.Invoke()) Handbrake finished."
+			}
+			Catch
+			{
+				$errOccured = $True
+				Log "$($time.Invoke()) ERROR: Handbrake has encountered an error."
+				Log $_
+			}
+	}
 # Delete garbage files
 	Function GarbageCollection
 	{
-		Log "`nGarbage Collection: The following additional file(s) were deleted:"
-		Get-ChildItem "$($mPath.FullName)\*" -i $script:garbage -recurse | foreach ($_) {Log $_.fullname}
-		Get-ChildItem "$($mPath.FullName)\*" -i $script:garbage -recurse | foreach ($_) {Remove-Item $_.fullname -Force}
+		$garbageList = Get-ChildItem "$($mPath.FullName)\*" -i $script:garbage -recurse
+		$garbageNum = 0
+
+			ForEach ($turd in $garbageList)
+			{
+				$garbageNum++
+			}	
+		
+				If ($garbageNum -eq 1)
+				{
+					Log "`nGarbage Collection: The following file was deleted:"
+				}
+				Elseif ($garbageNum -gt 1)
+				{
+					Log "`nGarbage Collection: The following $garbageNum files were deleted:"
+				}
+				Else
+				{
+					Log ("`nGarbage Collection: No garbage found in $mediaPath. Congrats!")
+				}
+				Log ""
+			
+		$garbageNum = 0
+		
+			ForEach ($turd in $garbageList)
+			{
+				$garbageNum++
+				Log "$($garbageNum). $turd"
+					Try
+					{
+						Remove-Item $turd -Force -ErrorAction Stop
+					}
+					Catch
+					{
+						$errOccured = $True
+						Log "$($time.Invoke()) ERROR: $turd could not be deleted. Full error below."
+						Log $_
+					}
+			}	
 	}
 # Log various session statistics 
 	Function FinalStatistics
 	{
-		Log "`n===================================================================================="
+		Log "`n====================================================================================`n"
 		#Print total session disk usage changes
-			$diskUsageGB = ($script:diskUsage/1024)
-			Log "`nTotal session disk usage change: $($diskUsageGB)GB"
+			If ($script:diskUsage -gt -1 -AND $script:diskUsage -lt 1)
+			{
+				$diskUsage_KB = ($script:diskUsage * 1000)
+				Log "$($time.Invoke()) Total cumulative storage difference: $($diskUsage_KB)KB"
+			}
+			Elseif ($script:diskUsage -lt -1000 -OR $script:diskUsage -gt 1000)
+			{
+				$diskUsage_GB = ($script:diskUsage / 1000)
+				Log "$($time.Invoke()) Total cumulative storage difference: $($diskUsage_GB)GB"					
+			}
+			Else
+			{
+				Log "$($time.Invoke()) Total cumulative storage difference: $($script:diskUsage)MB"					
+			}
 		#Do some time math to get total script runtime
 			$script:scriptDurTemp = new-timespan $script:scriptDurStart $(get-date -format "HH:mm:ss")
 			$script:scriptDurTotal = "$($script:scriptDurTemp.hours):$($script:scriptDurTemp.minutes):$($script:scriptDurTemp.seconds)"
 			Log "`n$script:durTotal of video processed in $script:scriptDurTotal"
 		#Do some math/rounding to get session average conversion speed	
-			$script:avgConv = $script:durTicksTotal / $script:scriptDurTemp.Ticks
-			$script:avgConv = [math]::Round($script:avgConv,2)
-			Log "Average conversion speed of $($script:avgConv)x"
+			Try
+			{
+				$avgConv = $script:durTicksTotal / $script:scriptDurTemp.Ticks
+				$avgConv = [math]::Round($avgConv,2)
+				Log "Average conversion speed of $($avgConv)x"
+			}
+			Catch
+			{
+				Log "No time elapsed."
+			}
+			
 		Log "`n===================================================================================="
 	}
-<#----------------------------------------------------------------------------------
-Preperation 
-----------------------------------------------------------------------------------#>
-	# Set z: shared drive
-		#net use z: \\192.168.82.82\nas /persistent:yes
-	# Clear log contents
-		Clear-Content $log
 	
 <#----------------------------------------------------------------------------------
 Begin search loop 
@@ -350,6 +593,7 @@ Begin search loop
 
 # Begin performing operations of files
 	$i = 0
+
 	ForEach ($file in $fileList)
 	{
 		$i++;
@@ -358,7 +602,7 @@ Begin search loop
 		$plexURL = "http://$plexIP/library/sections/all/refresh?X-Plex-Token=$plexToken"
 		$progress = ($i / $fileCount) * 100
 		$progress = [Math]::Round($progress,2)
-		
+					
 		Log "------------------------------------------------------------------------------------"
 		Log "$($time.Invoke()) Processing - $oldFile"
 		Log "$($time.Invoke()) File $i of $fileCount - Total queue $progress%"
@@ -368,14 +612,14 @@ Begin search loop
 		----------------------------------------------------------------------------------#>
 		CodecDiscovery
 			
-			<#----------------------------------------------------------------------------------
-			Statistics-gathering derived from Codec Discovery 
-			----------------------------------------------------------------------------------#>
-			#Running tally of session container duration (cumulative length of video processed)
-				$script:durTotal = $script:durTotal + $script:duration
-			#Running tally of ticks (time expressed as an integer) for script runtime
-				$script:durTicksTotal = $script:durTicksTotal + $script:durTicks 
-				
+		<#----------------------------------------------------------------------------------
+		Statistics-gathering derived from Codec Discovery 
+		----------------------------------------------------------------------------------#>
+		#Running tally of session container duration (cumulative length of video processed)
+			$script:durTotal = $script:durTotal + $script:duration
+		#Running tally of ticks (time expressed as an integer) for script runtime
+			$script:durTicksTotal = $script:durTicksTotal + $script:durTicks 
+			
 		<#----------------------------------------------------------------------------------
 		Begin ffmpeg conversion based on codec discovery 
 		----------------------------------------------------------------------------------#>			
@@ -399,138 +643,76 @@ Begin search loop
 			{
 				EncodeBoth
 			}
-
-		# Refresh Plex libraries
-			Invoke-WebRequest $plexURL 
-			Log "$($time.Invoke()) Plex libraries refreshed"
-					
-		<#----------------------------------------------------------------------------------
-		Begin file comparison between old file and new file to determine conversion success
-		-----------------------------------------------------------------------------------#>
-		# Load files for comparison
-			$fileOld = Get-Item $oldFile
-			$fileNew = Get-Item $newFile
-			$confDelOld = Test-Path $oldFile		
-			$confDelNew = Test-Path $newFile
-				
-		# If new file is the same size as old file, log status and delete old file
-			If ($fileNew.length -eq $fileOld.length) 
-			{
-				IfSame
-			}						
-		# If new file is larger than old file, log status and delete old file
-			Elseif ($fileNew.length -gt $fileOld.length) 
-			{
-				IfLarger
-			}			
+			# Refresh Plex libraries
+				Invoke-WebRequest $plexURL 
+				Log "$($time.Invoke()) Plex libraries refreshed"
+								
+			<#----------------------------------------------------------------------------------
+			Begin file comparison between old file and new file to determine conversion success
+			-----------------------------------------------------------------------------------#>
+			# Load files for comparison
+				$fileOld = Get-Item $oldFile
+				$fileNew = Get-Item $newFile
+							
+			# If new file is the same size as old file, log status and delete old file
+				If ($fileNew.length -eq $fileOld.length) 
+				{
+					IfSame
+				}						
+			# If new file is larger than old file, log status and delete old file
+				Elseif ($fileNew.length -gt $fileOld.length) 
+				{
+					IfLarger
+				}			
 			# If new file is much smaller than old file (indicating a failed conversion), log status, delete new file, and re-encode with HandbrakeCLI
 				Elseif ($fileNew.length -lt ($fileOld.length * .75))
 				{
-					$errOccured = $False
-					$diffErr = [Math]::Round($fileNew.length-$fileOld.length)/1MB -as [int]
-					
-					try
-					{
-							Remove-Item $newFile -Force -ErrorAction Stop
-							Log "$($time.Invoke()) EXCEPTION: New file is over 25% smaller ($($diffErr)MB). $newFile deleted."
-							Log "$($time.Invoke()) FAILOVER: Re-encoding $oldFile with Handbrake."
-					}
-					catch
-					{
-						$errOccured = $True
-						Log "$($time.Invoke()) ERROR: $newFile could not be deleted. Full error below."
-						Log $_
-					}
-					
+					FailureDetected
+						
 						<#----------------------------------------------------------------------------------
 						Begin Handbrake encode (lossy)
 						----------------------------------------------------------------------------------#>
-						# Handbrake CLI: https://trac.handbrake.fr/wiki/CLIGuide#presets 
-						# Handbrake arguments
-							$hbArg1 = "-i"
-							$hbArg2 = "$oldFile"
-							$hbArg3 = "-o"
-							$hbArg4 = "$newFile"
-							$hbArg5 = "-f"
-							$hbArg6 = "mp4"
-							$hbArg7 = "-a"
-							$hbArg8 = "1,2,3,4,5,6,7,8,9,10"
-							$hbArg9 = "--subtitle"
-							$hbArg10 = "scan,1,2,3,4,5,6,7,8,9,10"
-							$hbArg11 = "-e"
-							$hbArg12 = "x264"
-							$hbArg13 = "--encoder-preset"
-							$hbArg14 = "slow"
-							$hbArg15 = "--encoder-profile"
-							$hbArg16 = "high"
-							$hbArg17 = "--encoder-level"
-							$hbArg18 = "4.1"
-							$hbArg19 = "-q"
-							$hbArg20 = "18"
-							$hbArg21 = "-E"
-							$hbArg22 = "aac"
-							$hbArg23 = "--audio-copy-mask"
-							$hbArg24 = "aac"
-							$hbArg25 = "--verbose=1"
-							$hbArg26 = "--decomb" 
-							$hbArg27 = "--loose-anamorphic"
-							$hbArg28 = "--modulus" 
-							$hbArg29 = "2"
-							$hbArgs = @($hbArg1, $hbArg2, $hbArg3, $hbArg4, $hbArg5, $hbArg6, $hbArg7, $hbArg8, $hbArg9, $hbArg10, $hbArg11, $hbArg12, $hbArg13, $hbArg14, $hbArg15, $hbArg16, $hbArg17, $hbArg18, $hbArg19, $hbArg20, $hbArg21, $hbArg22, $hbArg23, $hbArg24, $hbArg25, $hbArg26, $hbArg27. $hbArg28. $hbArg29)
-							$hbCMD = &$handbrake $hbArgs
-						# Begin Handbrake operation
-							$errOccured = $False
-							try 
-							{
-								$hbCMD
-								Log "$($time.Invoke()) Handbrake finished."
-							}
-							catch
-							{
-								$errOccured = $True
-								Log "$($time.Invoke()) ERROR: Handbrake has encountered an error."
-								Log $_
-							}
-								# If new file is much smaller than old file (likely because the script was aborted re-encode), leave original file alone and print error
-									If ($fileNew.length -lt ($fileOld.length * .75))
+						EncodeHandbrake
+								
+							# If new file is much smaller than old file (likely because the script was aborted re-encode), leave original file alone and print error
+								If ($fileNew.length -lt ($fileOld.length * .75))
+								{
+									$errOccured = $False
+									Try
 									{
-										$errOccured = $False
-										try
-										{
-											Remove-Item $newFile -Force -ErrorAction Stop
-											Log "ERROR: New file was too small. Deleted newfile and retained $oldFile."
-										}
-										catch
-										{
-											$errOccured = $True
-											Log "$($time.Invoke()) ERROR: New file was too small. Retained $oldFile."
-											Log "$($time.Invoke()) ERROR: $newFile could not be deleted. Full error below."
-											Log $_
-										}								
+										Remove-Item $newFile -Force -ErrorAction Stop
+										Log "ERROR: New file was too small. Deleted newfile and retained $oldFile."
 									}
-								# If new file is the same size as old file, log status and delete old file
-									Elseif ($fileNew.length -eq $fileOld.length) 
+									Catch
 									{
-										IfSame
-									}		
-								# If new file is larger than old file, log status and delete old file
-									Elseif ($fileNew.length -gt $fileOld.length) 
-									{
-										IfLarger
-									}
-								# If new file is smaller than old file, log status and delete old file
-									Elseif ($fileNew.length -lt $fileOld.length)
-									{
-										IfSmaller
-									}	
-							
-				}
-						
-		# If new file is smaller than old file, log status and delete old file
-			Elseif ($fileNew.length -lt $fileOld.length)
-			{
-				IfSmaller
-			}
+										$errOccured = $True
+										Log "$($time.Invoke()) ERROR: New file was too small. Retained $oldFile."
+										Log "$($time.Invoke()) ERROR: $newFile could not be deleted. Full error below."
+										Log $_
+									}								
+								}
+							# If new file is the same size as old file, log status and delete old file
+								Elseif ($fileNew.length -eq $fileOld.length) 
+								{
+									IfSame
+								}		
+							# If new file is larger than old file, log status and delete old file
+								Elseif ($fileNew.length -gt $fileOld.length) 
+								{
+									IfLarger
+								}
+							# If new file is smaller than old file, log status and delete old file
+								Elseif ($fileNew.length -lt $fileOld.length)
+								{
+									IfSmaller
+								}					
+					}
+									
+				# If new file is smaller than old file, log status and delete old file
+					Elseif ($fileNew.length -lt $fileOld.length)
+					{
+						IfSmaller
+					}
 	} # End foreach loop
 	
 <#----------------------------------------------------------------------------------
