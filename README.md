@@ -1,5 +1,6 @@
 # conv2mp4-ps
 Powershell script that recursively searches through a user-defined file path and convert all videos of user-specified  file types to MP4 with H264 video and AAC audio as needed using ffmpeg. If a conversion failure is detected, the script re-encodes the file with HandbrakeCLI. Upon successful encoding, Plex libraries are refreshed and source file is deleted.  The purpose of this script is to reduce the amount of transcoding CPU load on a Plex server and increase video compatibility across platforms.<br><br>
+Python version can be found here: <a href="https://github.com/BrianDMG/conv2mp4-py">conv2mp4-py</a><br><br>
 <b><u>Dependencies</u></b><br>
 This script requires ffmpeg (ffmpeg.exe, ffprobe.exe) and Handbrake (HandbrakeCLI.exe) to be installed. You can download them from here:<br>
 <a href="https://ffmpeg.org/download.html">ffmpeg</a><br>
