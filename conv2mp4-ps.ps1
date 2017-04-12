@@ -1,5 +1,5 @@
 <#======================================================================================================================
-conv2mp4-ps - https://github.com/BrianDMG/conv2mp4-ps v2.0 RELEASE
+conv2mp4-ps - https://github.com/BrianDMG/conv2mp4-ps v2.1 RELEASE
 
 This Powershell script will recursively search through a user-defined file path and convert all videos of user-specified 
 filetypes to MP4 with H264 video and AAC audio using ffmpeg. If a conversion failure is detected, the script re-encodes
@@ -15,7 +15,7 @@ User-defined variables
 ------------------------------------------------------------------------------------------------------------------------
 $mediaPath = the path to the media you want to convert (no trailing "\")
 NOTE: For network shares, use UNC path if you plan on running this script as a scheduled task.
------ If running manually and using a mapped drive, you must run "net use z: \\server\share /persistent:yes" as the user y
+----- If running manually and using a mapped drive, you must run "net use z: \\server\share /persistent:yes" as the user
 ----- you're going to run the script as (generally Administrator) prior to running the script.
 $fileTypes = the extensions of the files you want to convert in the format "*.ex1", "*.ex2". Do NOT add .mp4!
 $logPath = path you want the log file to save to. defaults to your desktop. (no trailing "\")
@@ -25,8 +25,9 @@ $plexToken = your Plex server's token (for the purpose of refreshing its librari
 NOTE: Plex server token - See https://support.plex.tv/hc/en-us/articles/204059436-Finding-your-account-token-X-Plex-Token
 ----- Plex server token is also easy to retrieve with PlexPy, Ombi, Couchpotato, or SickRage 
 $ffmpegBinDir = path to ffmpeg bin folder (no trailing "\"). This is the directory containing ffmpeg.exe and ffprobe.exe 
-$handbrake = path to Handbrake directory (no trailing "\"). This is the directory containing HandBrakeCLI.exe
+$handbrakeDir = path to Handbrake directory (no trailing "\"). This is the directory containing HandBrakeCLI.exe
 $script:garbage = the extensions of the files you want to delete in the format "*.ex1", "*.ex2"
+$appendLog = $False will clear log at the beginning of every session, $True will append new session log to old session log 
 -----------------------------------------------------------------------------------------------------------------------#>
 $mediaPath = "\\your\path\here"
 $fileTypes = "*.mkv", "*.avi", "*.flv", "*.mpeg", "*.ts" #Do NOT add .mp4!
@@ -37,14 +38,26 @@ $plexToken = 'plextoken'
 $ffmpegBinDir = "C:\ffmpeg\bin"
 $handbrakeDir = "C:\Program Files\HandBrake"
 $script:garbage = "*.nfo"
+$appendLog = $False
 
 <#----------------------------------------------------------------------------------
 Static variables 
 ----------------------------------------------------------------------------------#>
+# Time and format used for timestamps in the log
+	$time = {Get-Date -format "MM/dd/yy HH:mm:ss"}
 #Join-Path for log file
 	$log = Join-Path "$logPath" "$logName"
-# Clear log contents
-	Clear-Content $log
+#Should the log append or clear
+	If ($appendLog -eq $False)
+	{
+		# Clear log contents
+			Clear-Content $log
+	}
+	Else
+	{
+		Write-Output "`n`n------------------------------------------------------------------------------------" | Tee -filepath $log -append
+		Write-Output ">>>>> NEW SESSION (started $($time.Invoke()))" | Tee -filepath $log -append
+	}
 # Print version information to top of log
 	Write-Output "`nconv2mp4-ps v2.0 - https://github.com/BrianDMG/conv2mp4-ps v2.0 RELEASE" | Tee -filepath $log -append
 	Write-Output "------------------------------------------------------------------------------------" | Tee -filepath $log -append
@@ -105,8 +118,6 @@ Static variables
 	$fileList = Get-ChildItem "$($mPath.FullName)\*" -i $fileTypes -recurse
 	$num = $fileList | measure
 	$fileCount = $num.count
-# Time and format used for timestamps in the log
-	$time = {Get-Date -format "MM/dd/yy HH:mm:ss"}
 # Initialize disk usage change to 0
 	$diskUsage = 0
 # Initialize 'video length converted' to 0
@@ -195,9 +206,7 @@ Functions
 	}
 # If new and old files are the same size
 	Function IfSame
-	{
-		$errOccured = $False
-			
+	{		
 			Try
 			{
 				Remove-Item $oldFile -Force -ErrorAction Stop
@@ -206,7 +215,6 @@ Functions
 			}	
 			Catch
 			{	
-				$errOccured = $True 
 				Log "$($time.Invoke()) ERROR: $oldFile could not be deleted. Full error below."
 				Log $_
 			}				
@@ -214,7 +222,6 @@ Functions
 # If new file is larger than old file
 	Function IfLarger
        {
-           $errOccured = $False
            $diffGT = [Math]::Round($fileNew.length-$fileOld.length)/1MB -as [int]
  
 			Try
@@ -256,7 +263,6 @@ Functions
 			}           
             Catch
             {
-                $errOccured = $True
                 Log "$($time.Invoke()) ERROR: $oldFile could not be deleted. Full error below."
                 Log $_
             }
@@ -264,7 +270,6 @@ Functions
 # If new file is smaller than old file
 	Function IfSmaller
 	{
-		$errOccured = $False
 		$diffLT = [Math]::Round($fileOld.length-$fileNew.length)/1MB -as [int]
 			
 			Try
@@ -306,15 +311,13 @@ Functions
 			}
 			Catch
 			{
-				$errOccured = $True
 				Log "$($time.Invoke()) ERROR: $oldFile could not be deleted. Full error below."
 				Log $_
 			}
 	}
 ## If new file is over 25% smaller than the original file, trigger encoding failure
 	Function FailureDetected
-	{	
-		$errOccured = $False
+	{
 		$diffErr = [Math]::Round($fileNew.length-$fileOld.length)/1MB -as [int]
 						
 		Try
@@ -325,7 +328,6 @@ Functions
 		}
 		Catch
 		{
-			$errOccured = $True
 			Log "$($time.Invoke()) ERROR: $newFile could not be deleted. Full error below."
 			Log $_
 		}
@@ -491,7 +493,6 @@ Functions
 			$hbArgs = @($hbArg1, $hbArg2, $hbArg3, $hbArg4, $hbArg5, $hbArg6, $hbArg7, $hbArg8, $hbArg9, $hbArg10, $hbArg11, $hbArg12, $hbArg13, $hbArg14, $hbArg15, $hbArg16, $hbArg17, $hbArg18, $hbArg19, $hbArg20, $hbArg21, $hbArg22, $hbArg23, $hbArg24, $hbArg25, $hbArg26, $hbArg27. $hbArg28. $hbArg29)
 			$hbCMD = &$handbrake $hbArgs
 		# Begin Handbrake operation
-			$errOccured = $False
 			Try 
 			{
 				$hbCMD
@@ -499,7 +500,6 @@ Functions
 			}
 			Catch
 			{
-				$errOccured = $True
 				Log "$($time.Invoke()) ERROR: Handbrake has encountered an error."
 				Log $_
 			}
@@ -541,7 +541,6 @@ Functions
 					}
 					Catch
 					{
-						$errOccured = $True
 						Log "$($time.Invoke()) ERROR: $turd could not be deleted. Full error below."
 						Log $_
 					}
@@ -674,19 +673,23 @@ Begin search loop
 						----------------------------------------------------------------------------------#>
 						EncodeHandbrake
 								
+							# Load files for comparison
+								$fileOld = Get-Item $oldFile
+								$fileNew = Get-Item $newFile
+								
 							# If new file is much smaller than old file (likely because the script was aborted re-encode), leave original file alone and print error
 								If ($fileNew.length -lt ($fileOld.length * .75))
 								{
-									$errOccured = $False
+									$diffErr = [Math]::Round($fileNew.length-$fileOld.length)/1MB -as [int]
 									Try
 									{
 										Remove-Item $newFile -Force -ErrorAction Stop
-										Log "ERROR: New file was too small. Deleted newfile and retained $oldFile."
+										Log "$($time.Invoke()) ERROR: New file was too small ($($diffErr)MB)."
+										Log "$($time.Invoke()) Deleted new file and retained $oldFile."						
 									}
 									Catch
 									{
-										$errOccured = $True
-										Log "$($time.Invoke()) ERROR: New file was too small. Retained $oldFile."
+										Log "$($time.Invoke()) ERROR: New file was too small ($($diffErr)MB). Retained $oldFile."
 										Log "$($time.Invoke()) ERROR: $newFile could not be deleted. Full error below."
 										Log $_
 									}								
