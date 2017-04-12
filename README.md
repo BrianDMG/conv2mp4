@@ -18,5 +18,6 @@ There are several user-defined variables you will need to edit using notepad or 
 <b>$plexToken</b> = your Plex server's token (for the purpose of refreshing its libraries).<br>
 <u>NOTE:</u> <i>Plex server token - See https://support.plex.tv/hc/en-us/articles/204059436-Finding-your-account-token-X-Plex-Token. Plex server token is also easy to retrieve with PlexPy, Ombi, Couchpotato, or SickRage.</i><br>
 <b>$ffmpegBinDir</b> = path to ffmpeg bin folder <i>(no trailing "\")</i>. This is the directory containing ffmpeg.exe and ffprobe.exe<br> 
-<b>$handbrake</b> = path to Handbrake directory <i>(no trailing "\")</i>. This is the directory containing HandBrakeCLI.exe<br>
-<b>$script:garbage</b> = the extensions of the files you want to delete in the format "*.ex1", "*.ex2"
+<b>$handbrakeDir</b> = path to Handbrake directory <i>(no trailing "\")</i>. This is the directory containing HandBrakeCLI.exe<br>
+<b>$script:garbage</b> = the extensions of the files you want to delete in the format "*.ex1", "*.ex2"<br>
+<b>$appendLog</b> = $False will clear log at the beginning of every session, $True will append new session log to old session log
