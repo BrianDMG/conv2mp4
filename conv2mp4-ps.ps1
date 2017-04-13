@@ -1,5 +1,5 @@
 <#======================================================================================================================
-conv2mp4-ps - https://github.com/BrianDMG/conv2mp4-ps v2.1 RELEASE
+conv2mp4-ps - https://github.com/BrianDMG/conv2mp4-ps v2.1.1 RELEASE
 
 This Powershell script will recursively search through a user-defined file path and convert all videos of user-specified 
 filetypes to MP4 with H264 video and AAC audio using ffmpeg. If a conversion failure is detected, the script re-encodes
@@ -43,6 +43,8 @@ $appendLog = $False
 <#----------------------------------------------------------------------------------
 Static variables 
 ----------------------------------------------------------------------------------#>
+#Script version information
+	$version = "v2.1.1 RELEASE"
 # Time and format used for timestamps in the log
 	$time = {Get-Date -format "MM/dd/yy HH:mm:ss"}
 #Join-Path for log file
@@ -59,7 +61,7 @@ Static variables
 		Write-Output ">>>>> NEW SESSION (started $($time.Invoke()))" | Tee -filepath $log -append
 	}
 # Print version information to top of log
-	Write-Output "`nconv2mp4-ps v2.0 - https://github.com/BrianDMG/conv2mp4-ps v2.0 RELEASE" | Tee -filepath $log -append
+	Write-Output "`nconv2mp4-ps $version - https://github.com/BrianDMG/conv2mp4-ps" | Tee -filepath $log -append
 	Write-Output "------------------------------------------------------------------------------------" | Tee -filepath $log -append
 # Print initial wait notice to console
 	Write-Host "`nBuilding file list, please wait. This may take a while, especially for large libraries.`n"
@@ -643,7 +645,7 @@ Begin search loop
 				EncodeBoth
 			}
 			# Refresh Plex libraries
-				Invoke-WebRequest $plexURL 
+				Invoke-WebRequest $plexURL -UseBasicParsing
 				Log "$($time.Invoke()) Plex libraries refreshed"
 								
 			<#----------------------------------------------------------------------------------
