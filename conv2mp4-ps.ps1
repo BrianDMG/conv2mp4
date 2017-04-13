@@ -1,5 +1,7 @@
 <#======================================================================================================================
-conv2mp4-ps - https://github.com/BrianDMG/conv2mp4-ps v2.1 RELEASE
+conv2mp4-ps - https://github.com/BrianDMG/conv2mp4-ps v3.0-SNAPSHOT04122017
+
+THIS IS A BETA - DO NOT USE IN PRODUCTION
 
 This Powershell script will recursively search through a user-defined file path and convert all videos of user-specified 
 filetypes to MP4 with H264 video and AAC audio using ffmpeg. If a conversion failure is detected, the script re-encodes
@@ -7,42 +9,24 @@ the file with HandbrakeCLI. Upon successful encoding, Plex libraries are refresh
 The purpose of this script is to reduce the amount of transcoding CPU load on a Plex server.
 ========================================================================================================================
 
+Dependencies:
+
+PowerShell 3.0+
 ffmpeg : https://ffmpeg.org/download.html
-handbrakecli : https://handbrake.fr/downloads.php #>
+handbrakecli : https://handbrake.fr/downloads.php
+------------------------------------------------------------------------------------------------------------------------#>
 
 <#----------------------------------------------------------------------------------------------------------------------
 User-defined variables
-------------------------------------------------------------------------------------------------------------------------
-$mediaPath = the path to the media you want to convert (no trailing "\")
-NOTE: For network shares, use UNC path if you plan on running this script as a scheduled task.
------ If running manually and using a mapped drive, you must run "net use z: \\server\share /persistent:yes" as the user
------ you're going to run the script as (generally Administrator) prior to running the script.
-$fileTypes = the extensions of the files you want to convert in the format "*.ex1", "*.ex2". Do NOT add .mp4!
-$logPath = path you want the log file to save to. defaults to your desktop. (no trailing "\")
-$logName = the filename of the log file
-$plexIP = the IP address and port of your Plex server (for the purpose of refreshing its libraries)
-$plexToken = your Plex server's token (for the purpose of refreshing its libraries).
-NOTE: Plex server token - See https://support.plex.tv/hc/en-us/articles/204059436-Finding-your-account-token-X-Plex-Token
------ Plex server token is also easy to retrieve with PlexPy, Ombi, Couchpotato, or SickRage 
-$ffmpegBinDir = path to ffmpeg bin folder (no trailing "\"). This is the directory containing ffmpeg.exe and ffprobe.exe 
-$handbrakeDir = path to Handbrake directory (no trailing "\"). This is the directory containing HandBrakeCLI.exe
-$script:garbage = the extensions of the files you want to delete in the format "*.ex1", "*.ex2"
-$appendLog = $False will clear log at the beginning of every session, $True will append new session log to old session log 
------------------------------------------------------------------------------------------------------------------------#>
-$mediaPath = "\\your\path\here"
-$fileTypes = "*.mkv", "*.avi", "*.flv", "*.mpeg", "*.ts" #Do NOT add .mp4!
-$logPath = "C:\Users\$env:username\Desktop"
-$logName= "conv2mp4-ps.log"
-$plexIP = 'plexip:32400'
-$plexToken = 'plextoken'
-$ffmpegBinDir = "C:\ffmpeg\bin"
-$handbrakeDir = "C:\Program Files\HandBrake"
-$script:garbage = "*.nfo"
-$appendLog = $False
+------------------------------------------------------------------------------------------------------------------------#>
+#Load variables from cfg_conv2mp4-ps.ps1
+. $PSScriptRoot\cfg_conv2mp4-ps.ps1
 
 <#----------------------------------------------------------------------------------
 Static variables 
 ----------------------------------------------------------------------------------#>
+#Script version information
+	$version = "v3.0-SNAPSHOT04122017"
 # Time and format used for timestamps in the log
 	$time = {Get-Date -format "MM/dd/yy HH:mm:ss"}
 #Join-Path for log file
@@ -59,7 +43,7 @@ Static variables
 		Write-Output ">>>>> NEW SESSION (started $($time.Invoke()))" | Tee -filepath $log -append
 	}
 # Print version information to top of log
-	Write-Output "`nconv2mp4-ps v2.0 - https://github.com/BrianDMG/conv2mp4-ps v2.0 RELEASE" | Tee -filepath $log -append
+	Write-Output "`nconv2mp4-ps $version - https://github.com/BrianDMG/conv2mp4-ps" | Tee -filepath $log -append
 	Write-Output "------------------------------------------------------------------------------------" | Tee -filepath $log -append
 # Print initial wait notice to console
 	Write-Host "`nBuilding file list, please wait. This may take a while, especially for large libraries.`n"
@@ -722,6 +706,12 @@ Begin search loop
 Wrap-up
 -----------------------------------------------------------------------------------#>
 FinalStatistics
-GarbageCollection
+If ($script:garbage -ne "*.garbagecollectiondsiabled")
+{
+	GarbageCollection
+}
+Else
+{
+}
 Log "`nFinished"
 Exit
