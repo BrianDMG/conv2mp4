@@ -1,5 +1,5 @@
 <#======================================================================================================================
-conv2mp4-ps - https://github.com/BrianDMG/conv2mp4-ps v2.1.1 RELEASE
+conv2mp4-ps v2.1.2 RELEASE - https://github.com/BrianDMG/conv2mp4-ps
 
 This Powershell script will recursively search through a user-defined file path and convert all videos of user-specified 
 filetypes to MP4 with H264 video and AAC audio using ffmpeg. If a conversion failure is detected, the script re-encodes
@@ -44,25 +44,11 @@ $appendLog = $False
 Static variables 
 ----------------------------------------------------------------------------------#>
 #Script version information
-	$version = "v2.1.1 RELEASE"
+	$version = "v2.1.2 RELEASE"
 # Time and format used for timestamps in the log
 	$time = {Get-Date -format "MM/dd/yy HH:mm:ss"}
 #Join-Path for log file
 	$log = Join-Path "$logPath" "$logName"
-#Should the log append or clear
-	If ($appendLog -eq $False)
-	{
-		# Clear log contents
-			Clear-Content $log
-	}
-	Else
-	{
-		Write-Output "`n`n------------------------------------------------------------------------------------" | Tee -filepath $log -append
-		Write-Output ">>>>> NEW SESSION (started $($time.Invoke()))" | Tee -filepath $log -append
-	}
-# Print version information to top of log
-	Write-Output "`nconv2mp4-ps $version - https://github.com/BrianDMG/conv2mp4-ps" | Tee -filepath $log -append
-	Write-Output "------------------------------------------------------------------------------------" | Tee -filepath $log -append
 # Print initial wait notice to console
 	Write-Host "`nBuilding file list, please wait. This may take a while, especially for large libraries.`n"
 # Get current time to store as start time for script
@@ -134,20 +120,50 @@ Functions
 	   Param ([string]$logString)
 	   Write-Output $logString | Tee -filepath $log -append
 	}
+# Prints the current script version header	
+	Function PrintVersion
+	{
+		Log "conv2mp4-ps $version - https://github.com/BrianDMG/conv2mp4-ps"
+		Log "------------------------------------------------------------------------------------"
+	}
+# Append log conditions
+	Function AppendLog
+	{
+		#Check whether log file is empty
+			$logEmpty = Get-Content $log
+		#Should the log append or clear
+			If ($appendLog -eq $False)
+			{
+				Clear-Content $log
+				PrintVersion
+			}
+			Elseif ($appendLog -eq $True -AND $logEmpty -eq $Null)
+			{
+				PrintVersion
+			}
+			Else
+			{
+				Log "`n------------------------------------------------------------------------------------"
+				Log ">>>>> New Session (started $($time.Invoke()))"
+			}
+	}
 # List files in the queue in the log
 	Function ListFiles
 	{			 
 		If ($fileCount -eq 1)
 		{
+			AppendLog
 			Log ("`nThere is $fileCount file in the queue:`n")
 		}
 		Elseif ($fileCount -gt 1)
 		{
+			AppendLog
 			Log ("`nThere are $fileCount files in the queue:`n")
 		}
 		Else
 		{
-			Log ("`nThere are no files to be converted in $mediaPath. Congrats!`n")
+			Write-Host ("`nThere are no files to be converted in $mediaPath. Congrats!`n")
+			Exit
 		}
 		
 		$num = 0
