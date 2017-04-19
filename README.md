@@ -21,3 +21,27 @@ There are several user-defined variables you will need to edit using notepad or 
 <b>$handbrakeDir</b> = path to Handbrake directory <i>(no trailing "\")</i>. This is the directory containing HandBrakeCLI.exe<br>
 <b>$script:garbage</b> = the extensions of the files you want to delete in the format "*.ex1", "*.ex2"<br>
 <b>$appendLog</b> = $False will clear log at the beginning of every session, $True will append new session log to old session log
+
+<b>Scheduled task example</b><br>
+To fully automate this script on a Windows system, you will need to set it as a scheduled task. The following is a brief example of how to do that.
+<ol><li>Open task scheduler and choose <b>"Create task"</b></li>
+<li>On the <b>General</b> tab:
+<ul><li>Give the task a name. This can be whatever you like, but should be something descriptive.</li>
+<li>(<i>Optional</i>) Write a short description of the task.</li>
+<li>Click the <b>Change User or group</b> button, and ensure that both the computer name and user name show up in the format of "Computer\User".</li>
+<li>Click the <b>Run whether user is logged in or not</b> radio button</li>
+<li>Check the <b>Run with highest privileges</b> button</li></ul>
+<img src="http://teague.io/wp-content/uploads/2017/04/1.png"><br></li>
+<li>Under the <b>Triggers</b> tab:
+<ul><li>Change "Begin the task" dropdown to <b>On a schedule</b></li>
+<li>Change the scheduling settings to your liking. Choose a time when your server's usage is typically minimal, and allows time for the script to run and complete before usage picks back up.</li>
+<li>Ensure the <b>Enabled</b> checkbox is selected</li></ul>
+<img src="http://teague.io/wp-content/uploads/2017/04/2.png"></li>
+<li>On the <b>Actions</b> tab:
+<ul><li>Click the <b>New action</b> button.</li>
+<li>Change the <b>Action</b> dropdown to <b>Start a program</b>.</li>
+<li>Under <b>Program/script</b>, type <b>Powershell.exe</b></li>
+<li>In the <b>Add arguments</b> field, enter <b>-ExecutionPolicy Bypass -File c:\path\to\script\conv2mp4-ps.ps1</b></li></ul>
+<img src="http://teague.io/wp-content/uploads/2017/04/3.png"></li>
+<li>(<i>Optional</i>) Tailor settings under the <b>Conditions</b> and <b>Settings</b> tabs to your liking</li></ol>
+The script will now run automatically to your specifications.
