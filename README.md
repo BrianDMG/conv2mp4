@@ -44,4 +44,4 @@ To fully automate this script on a Windows system, you will need to set it as a 
 <li>In the <b>Add arguments</b> field, enter <b>-ExecutionPolicy Bypass -File c:\path\to\script\conv2mp4-ps.ps1</b></li></ul>
 <img src="http://teague.io/wp-content/uploads/2017/04/3.png"></li>
 <li>(<i>Optional</i>) Tailor settings under the <b>Conditions</b> and <b>Settings</b> tabs to your liking</li></ol>
-The script will now run automatically to your specifications.
+<br>The script will now run automatically to your specifications.
