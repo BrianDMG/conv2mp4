@@ -1,5 +1,5 @@
 <#======================================================================================================================
-conv2mp4-ps v2.1.2 RELEASE - https://github.com/BrianDMG/conv2mp4-ps
+conv2mp4-ps v2.2 RELEASE - https://github.com/BrianDMG/conv2mp4-ps
 
 This Powershell script will recursively search through a user-defined file path and convert all videos of user-specified 
 filetypes to MP4 with H264 video and AAC audio using ffmpeg. If a conversion failure is detected, the script re-encodes
@@ -44,7 +44,26 @@ $appendLog = $False
 Static variables 
 ----------------------------------------------------------------------------------#>
 #Script version information
-	$version = "v2.1.2 RELEASE"
+	$version = "v2.2 RELEASE"
+#Create lock file (for the purpose of ensuring only one instance of this script is running)
+	$lockPath = "$PSScriptRoot"
+	$lockFile = "conv2mp4-ps.lock"	
+	$lock = Join-Path "$lockPath" "$lockFile"
+	$testLock = test-path -LiteralPath $lock
+	If ($testLock -eq $True)
+	{
+		Write-Host "Script is already running in another instance. Waiting..." -ForegroundColor Red
+		Do
+		{
+			$testLock = test-path $lock
+			$testLock > $null
+			sleep 10
+		}
+		Until ($testLock -eq $False)
+		Write-Host "Other instance ended. We are cleared for takeoff." -ForegroundColor Green
+	}
+	new-item $lock
+	clear
 # Time and format used for timestamps in the log
 	$time = {Get-Date -format "MM/dd/yy HH:mm:ss"}
 #Join-Path for log file
@@ -61,6 +80,14 @@ Static variables
 			Write-Output "`nffmeg.exe could not be found at $($ffmpegBinDir)." | Tee -filepath $log -append
 			Write-Output "Ensure the path in `$ffmpegBinDir is correct." | Tee -filepath $log -append
 			Write-Output "Aborting script." | Tee -filepath $log -append
+			Try
+			{
+				Remove-Item $lock -Force -ErrorAction Stop
+			}	
+			Catch
+			{	
+				Log "$($time.Invoke()) ERROR: $lockFile could not be deleted. Please delete manually. "
+			}
 			Exit
 		}
 		Else
@@ -73,6 +100,14 @@ Static variables
 			Write-Output "`nffprobe.exe could not be found at $($ffmpegBinDir)." | Tee -filepath $log -append
 			Write-Output "Ensure the path in `$ffmpegBinDir is correct." | Tee -filepath $log -append
 			Write-Output "Aborting script." | Tee -filepath $log -append
+			Try
+			{
+				Remove-Item $lock -Force -ErrorAction Stop
+			}	
+			Catch
+			{	
+				Log "$($time.Invoke()) ERROR: $lockFile could not be deleted. Please delete manually. "
+			}
 			Exit
 		}
 		Else
@@ -101,6 +136,14 @@ Static variables
 		Write-Output "`nPath not found: $mediaPath" | Tee -filepath $log -append
 		Write-Output "Ensure the path in `$mediaPath exists and is accessible." | Tee -filepath $log -append
 		Write-Output "Aborting script." | Tee -filepath $log -append
+		Try
+		{
+			Remove-Item $lock -Force -ErrorAction Stop
+		}	
+		Catch
+		{	
+			Log "$($time.Invoke()) ERROR: $lockFile could not be deleted. Please delete manually. "
+		}
 		Exit
 	}
 	$fileList = Get-ChildItem "$($mPath.FullName)\*" -i $fileTypes -recurse
@@ -163,6 +206,14 @@ Functions
 		Else
 		{
 			Write-Host ("`nThere are no files to be converted in $mediaPath. Congrats!`n")
+			Try
+			{
+				Remove-Item $lock -Force -ErrorAction Stop
+			}	
+			Catch
+			{	
+				Log "$($time.Invoke()) ERROR: $lockFile could not be deleted. Please delete manually. "
+			}	
 			Exit
 		}
 		
@@ -741,5 +792,15 @@ Wrap-up
 -----------------------------------------------------------------------------------#>
 FinalStatistics
 GarbageCollection
+#Delete lock file
+Try
+	{
+		Remove-Item $lockFile -Force -ErrorAction Stop
+	}	
+Catch
+	{	
+		Log "$($time.Invoke()) ERROR: $lockFile could not be deleted. Full error below."
+		Log $_
+	}	
 Log "`nFinished"
 Exit
