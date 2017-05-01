@@ -1,5 +1,5 @@
 <#======================================================================================================================
-conv2mp4-ps v2.2 RELEASE - https://github.com/BrianDMG/conv2mp4-ps
+conv2mp4-ps v2.2.1 RELEASE - https://github.com/BrianDMG/conv2mp4-ps
 
 This Powershell script will recursively search through a user-defined file path and convert all videos of user-specified 
 filetypes to MP4 with H264 video and AAC audio using ffmpeg. If a conversion failure is detected, the script re-encodes
@@ -44,7 +44,7 @@ $appendLog = $False
 Static variables 
 ----------------------------------------------------------------------------------#>
 #Script version information
-	$version = "v2.2 RELEASE"
+	$version = "v2.2.1 RELEASE"
 #Create lock file (for the purpose of ensuring only one instance of this script is running)
 	$lockPath = "$PSScriptRoot"
 	$lockFile = "conv2mp4-ps.lock"	
@@ -86,7 +86,7 @@ Static variables
 			}	
 			Catch
 			{	
-				Log "$($time.Invoke()) ERROR: $lockFile could not be deleted. Please delete manually. "
+				Log "$($time.Invoke()) ERROR: $lock could not be deleted. Please delete manually. "
 			}
 			Exit
 		}
@@ -106,7 +106,7 @@ Static variables
 			}	
 			Catch
 			{	
-				Log "$($time.Invoke()) ERROR: $lockFile could not be deleted. Please delete manually. "
+				Log "$($time.Invoke()) ERROR: $lock could not be deleted. Please delete manually. "
 			}
 			Exit
 		}
@@ -142,7 +142,7 @@ Static variables
 		}	
 		Catch
 		{	
-			Log "$($time.Invoke()) ERROR: $lockFile could not be deleted. Please delete manually. "
+			Log "$($time.Invoke()) ERROR: $lock could not be deleted. Please delete manually. "
 		}
 		Exit
 	}
@@ -212,7 +212,7 @@ Functions
 			}	
 			Catch
 			{	
-				Log "$($time.Invoke()) ERROR: $lockFile could not be deleted. Please delete manually. "
+				Log "$($time.Invoke()) ERROR: $lock could not be deleted. Please delete manually. "
 			}	
 			Exit
 		}
@@ -795,11 +795,11 @@ GarbageCollection
 #Delete lock file
 Try
 	{
-		Remove-Item $lockFile -Force -ErrorAction Stop
+		Remove-Item $lock -Force -ErrorAction Stop
 	}	
 Catch
 	{	
-		Log "$($time.Invoke()) ERROR: $lockFile could not be deleted. Full error below."
+		Log "$($time.Invoke()) ERROR: $lock could not be deleted. Full error below."
 		Log $_
 	}	
 Log "`nFinished"
