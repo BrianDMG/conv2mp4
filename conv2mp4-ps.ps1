@@ -1,5 +1,5 @@
 <#======================================================================================================================
-conv2mp4-ps v2.2.1 RELEASE - https://github.com/BrianDMG/conv2mp4-ps
+conv2mp4-ps v3.0 RELEASE - https://github.com/BrianDMG/conv2mp4-ps
 
 This Powershell script will recursively search through a user-defined file path and convert all videos of user-specified 
 filetypes to MP4 with H264 video and AAC audio using ffmpeg. If a conversion failure is detected, the script re-encodes
@@ -12,39 +12,28 @@ handbrakecli : https://handbrake.fr/downloads.php #>
 
 <#----------------------------------------------------------------------------------------------------------------------
 User-defined variables
-------------------------------------------------------------------------------------------------------------------------
-$mediaPath = the path to the media you want to convert (no trailing "\")
-NOTE: For network shares, use UNC path if you plan on running this script as a scheduled task.
------ If running manually and using a mapped drive, you must run "net use z: \\server\share /persistent:yes" as the user
------ you're going to run the script as (generally Administrator) prior to running the script.
-$fileTypes = the extensions of the files you want to convert in the format "*.ex1", "*.ex2". Do NOT add .mp4!
-$logPath = path you want the log file to save to. defaults to your desktop. (no trailing "\")
-$logName = the filename of the log file
-$plexIP = the IP address and port of your Plex server (for the purpose of refreshing its libraries)
-$plexToken = your Plex server's token (for the purpose of refreshing its libraries).
-NOTE: Plex server token - See https://support.plex.tv/hc/en-us/articles/204059436-Finding-your-account-token-X-Plex-Token
------ Plex server token is also easy to retrieve with PlexPy, Ombi, Couchpotato, or SickRage 
-$ffmpegBinDir = path to ffmpeg bin folder (no trailing "\"). This is the directory containing ffmpeg.exe and ffprobe.exe 
-$handbrakeDir = path to Handbrake directory (no trailing "\"). This is the directory containing HandBrakeCLI.exe
-$script:garbage = the extensions of the files you want to delete in the format "*.ex1", "*.ex2"
-$appendLog = $False will clear log at the beginning of every session, $True will append new session log to old session log 
------------------------------------------------------------------------------------------------------------------------#>
-$mediaPath = "\\your\path\here"
-$fileTypes = "*.mkv", "*.avi", "*.flv", "*.mpeg", "*.ts" #Do NOT add .mp4!
-$logPath = "C:\Users\$env:username\Desktop"
-$logName= "conv2mp4-ps.log"
-$plexIP = 'plexip:32400'
-$plexToken = 'plextoken'
-$ffmpegBinDir = "C:\ffmpeg\bin"
-$handbrakeDir = "C:\Program Files\HandBrake"
-$script:garbage = "*.nfo"
-$appendLog = $False
-
+------------------------------------------------------------------------------------------------------------------------#>
+#Create a backup of the cfg file
+	$cfgFile = Join-Path "$PSScriptRoot" "cfg_conv2mp4-ps.ps1"	
+	Copy-Item $cfgFile "$cfgFile.bk"
+	Write-Host "`nCreated a backup of $cfgFile" -Foregroundcolor Green
+#Load variables from cfg_conv2mp4-ps.ps1
+	$testCfg = Test-Path $cfgFile
+	If ($testCfg -eq $True)
+	{
+		. $cfgFile
+	}
+	else 
+	{
+		Write-Output "Cannot find $cfgFile. Make sure it's in the same directory as the script."
+		Start-Sleep 10
+		Exit	
+	}
 <#----------------------------------------------------------------------------------
 Static variables 
 ----------------------------------------------------------------------------------#>
 #Script version information
-	$version = "v2.2.1 RELEASE"
+	$version = "v3.0 RELEASE"
 #Create lock file (for the purpose of ensuring only one instance of this script is running)
 	$lockPath = "$PSScriptRoot"
 	$lockFile = "conv2mp4-ps.lock"	
@@ -57,13 +46,13 @@ Static variables
 		{
 			$testLock = test-path $lock
 			$testLock > $null
-			sleep 10
+			Start-Sleep 10
 		}
 		Until ($testLock -eq $False)
 		Write-Host "Other instance ended. We are cleared for takeoff." -ForegroundColor Green
 	}
 	new-item $lock
-	clear
+	Clear-Host
 # Time and format used for timestamps in the log
 	$time = {Get-Date -format "MM/dd/yy HH:mm:ss"}
 #Join-Path for log file
@@ -72,14 +61,14 @@ Static variables
 	Write-Host "`nBuilding file list, please wait. This may take a while, especially for large libraries.`n"
 # Get current time to store as start time for script
 	$script:scriptDurStart = (Get-Date -format "HH:mm:ss")
-# Build file paths to executables and log 
+# Build and test file paths to executables and log 
 	$ffmpeg = Join-Path "$ffmpegBinDir" "ffmpeg.exe"
 	$testFFMPath = Test-Path $ffmpeg
 		If ($testFFMPath -eq $False)
 		{
-			Write-Output "`nffmeg.exe could not be found at $($ffmpegBinDir)." | Tee -filepath $log -append
-			Write-Output "Ensure the path in `$ffmpegBinDir is correct." | Tee -filepath $log -append
-			Write-Output "Aborting script." | Tee -filepath $log -append
+			Write-Output "`nffmeg.exe could not be found at $($ffmpegBinDir)." | Tee-Object -filepath $log -append
+			Write-Output "Ensure the path in `$ffmpegBinDir is correct." | Tee-Object -filepath $log -append
+			Write-Output "Aborting script." | Tee-Object -filepath $log -append
 			Try
 			{
 				Remove-Item $lock -Force -ErrorAction Stop
@@ -97,9 +86,9 @@ Static variables
 	$testFFPPath = Test-Path $ffprobe
 		If ($testFFPPath -eq $False)
 		{
-			Write-Output "`nffprobe.exe could not be found at $($ffmpegBinDir)." | Tee -filepath $log -append
-			Write-Output "Ensure the path in `$ffmpegBinDir is correct." | Tee -filepath $log -append
-			Write-Output "Aborting script." | Tee -filepath $log -append
+			Write-Output "`nffprobe.exe could not be found at $($ffmpegBinDir)." | Tee-Object -filepath $log -append
+			Write-Output "Ensure the path in `$ffmpegBinDir is correct." | Tee-Object -filepath $log -append
+			Write-Output "Aborting script." | Tee-Object -filepath $log -append
 			Try
 			{
 				Remove-Item $lock -Force -ErrorAction Stop
@@ -117,9 +106,9 @@ Static variables
 	$testHBPath = Test-Path $handbrake
 		If ($testHBPath -eq $False)
 		{
-			Write-Output "`nhandbrakecli.exe could not be found at $($handbrakeDir)." | Tee -filepath $log -append
-			Write-Output "Ensure the path in `$handbrakeDir is correct." | Tee -filepath $log -append
-			Write-Output "Aborting script." | Tee -filepath $log -append
+			Write-Output "`nhandbrakecli.exe could not be found at $($handbrakeDir)." | Tee-Object -filepath $log -append
+			Write-Output "Ensure the path in `$handbrakeDir is correct." | Tee-Object -filepath $log -append
+			Write-Output "Aborting script." | Tee-Object -filepath $log -append
 			Exit
 		}
 		Else
@@ -133,9 +122,9 @@ Static variables
 	}
 	Else
 	{
-		Write-Output "`nPath not found: $mediaPath" | Tee -filepath $log -append
-		Write-Output "Ensure the path in `$mediaPath exists and is accessible." | Tee -filepath $log -append
-		Write-Output "Aborting script." | Tee -filepath $log -append
+		Write-Output "`nPath not found: $mediaPath" | Tee-Object -filepath $log -append
+		Write-Output "Ensure the path in `$mediaPath exists and is accessible." | Tee-Object -filepath $log -append
+		Write-Output "Aborting script." | Tee-Object -filepath $log -append
 		Try
 		{
 			Remove-Item $lock -Force -ErrorAction Stop
@@ -146,7 +135,8 @@ Static variables
 		}
 		Exit
 	}
-	$fileList = Get-ChildItem "$($mPath.FullName)\*" -i $fileTypes -recurse
+	$b=0
+	$fileList = Get-ChildItem "$($mPath.FullName)\*" -i $fileTypes -recurse | ForEach-Object {$b++; If ($b -eq 1){Write-Host -NoNewLine "`rFound $b file so far..."} Else{Write-Host -NoNewLine "`rFound $b files so far..." -foregroundcolor green};$_}
 	$num = $fileList | measure
 	$fileCount = $num.count
 # Initialize disk usage change to 0
@@ -161,7 +151,7 @@ Functions
 	Function Log
 	{
 	   Param ([string]$logString)
-	   Write-Output $logString | Tee -filepath $log -append
+	   Write-Output $logString | Tee-Object -filepath $log -append
 	}
 # Prints the current script version header	
 	Function PrintVersion
@@ -406,172 +396,340 @@ Functions
 	{	
 		Log "$($time.Invoke()) Video: $($script:vCodecCMD.ToUpper()), Audio: $($script:aCodecCMD.ToUpper()). Performing simple container conversion to MP4."
 		
-		# ffmpeg arguments
-			$ffArg1 = "-n"
-			$ffArg2 = "-fflags"
-			$ffArg3 = "+genpts"
-			$ffArg4 = "-i"
-			$ffArg5 = "$oldFile"
-			$ffArg6 = "-threads"
-			$ffArg7 = "6"
-			$ffArg8 = "-map"
-			$ffArg9 = "0"
-			$ffArg10 = "-c:v"
-			$ffArg11 = "copy"
-			$ffArg12 = "-c:a"
-			$ffArg13 = "copy"
-			$ffArg14 = "-c:s"
-			$ffArg15 = "mov_text"
-			$ffArg16 = "$newFile"
-			$ffArgs = @($ffArg1, $ffArg2, $ffArg3, $ffArg4, $ffArg5, $ffArg6, $ffArg7, $ffArg8, $ffArg9, $ffArg10, $ffArg11, $ffArg12, $ffArg13, $ffArg14, $ffArg15, $ffArg16)
-			$ffCMD = &$ffmpeg $ffArgs
+		If ($keepSubs -eq $True)
+		{
+			# ffmpeg arguments
+				$ffArg1 = "-n"
+				$ffArg2 = "-fflags"
+				$ffArg3 = "+genpts"
+				$ffArg4 = "-i"
+				$ffArg5 = "$oldFile"
+				$ffArg6 = "-threads"
+				$ffArg7 = "6"
+				$ffArg8 = "-map"
+				$ffArg9 = "0"
+				$ffArg10 = "-c:v"
+				$ffArg11 = "copy"
+				$ffArg12 = "-c:a"
+				$ffArg13 = "copy"
+				$ffArg14 = "-c:s"
+				$ffArg15 = "mov_text"
+				$ffArg16 = "$newFile"
+				$ffArgs = @($ffArg1, $ffArg2, $ffArg3, $ffArg4, $ffArg5, $ffArg6, $ffArg7, $ffArg8, $ffArg9, $ffArg10, $ffArg11, $ffArg12, $ffArg13, $ffArg14, $ffArg15, $ffArg16)
+				$ffCMD = &$ffmpeg $ffArgs
 		
-		# Begin ffmpeg operation
-			$ffCMD
-			Log "$($time.Invoke()) ffmpeg completed"
+			# Begin ffmpeg operation
+				$ffCMD
+				Log "$($time.Invoke()) ffmpeg completed"
+		}
+		Else
+		{
+			# ffmpeg arguments
+				$ffArg1 = "-n"
+				$ffArg2 = "-fflags"
+				$ffArg3 = "+genpts"
+				$ffArg4 = "-i"
+				$ffArg5 = "$oldFile"
+				$ffArg6 = "-threads"
+				$ffArg7 = "6"
+				$ffArg8 = "-map"
+				$ffArg9 = "0"
+				$ffArg10 = "-c:v"
+				$ffArg11 = "copy"
+				$ffArg12 = "-c:a"
+				$ffArg13 = "copy"
+				$ffArg14 = "-sn"
+				$ffArg15 = "$newFile"
+				$ffArgs = @($ffArg1, $ffArg2, $ffArg3, $ffArg4, $ffArg5, $ffArg6, $ffArg7, $ffArg8, $ffArg9, $ffArg10, $ffArg11, $ffArg12, $ffArg13, $ffArg14, $ffArg15)
+				$ffCMD = &$ffmpeg $ffArgs
+		
+			# Begin ffmpeg operation
+				$ffCMD
+				Log "$($time.Invoke()) ffmpeg completed"
+		}
 	}
 # If a file video codec is already H264, but audio codec is not AAC, use these arguments
 	Function EncodeAudio
 	{
 		Log "$($time.Invoke()) Video: $($script:vCodecCMD.ToUpper()), Audio: $($script:aCodecCMD.ToUpper()). Encoding audio to AAC"
 			
-		# ffmpeg arguments
-			$ffArg1 = "-n"
-			$ffArg2 = "-fflags"
-			$ffArg3 = "+genpts"
-			$ffArg4 = "-i"
-			$ffArg5 = "$oldFile"
-			$ffArg6 = "-threads"
-			$ffArg7 = "6"
-			$ffArg8 = "-map"
-			$ffArg9 = "0"
-			$ffArg10 = "-c:v"
-			$ffArg11 = "copy"
-			$ffArg12 = "-c:a"
-			$ffArg13 = "aac"
-			$ffArg14 = "-c:s"
-			$ffArg15 = "mov_text"
-			$ffArg16 = "$newFile"
-			$ffArgs = @($ffArg1, $ffArg2, $ffArg3, $ffArg4, $ffArg5, $ffArg6, $ffArg7, $ffArg8, $ffArg9, $ffArg10, $ffArg11, $ffArg12, $ffArg13, $ffArg14, $ffArg15, $ffArg16)
-			$ffCMD = &$ffmpeg $ffArgs
+		If ($keepSubs -eq $True)
+		{
+			# ffmpeg arguments
+				$ffArg1 = "-n"
+				$ffArg2 = "-fflags"
+				$ffArg3 = "+genpts"
+				$ffArg4 = "-i"
+				$ffArg5 = "$oldFile"
+				$ffArg6 = "-threads"
+				$ffArg7 = "6"
+				$ffArg8 = "-map"
+				$ffArg9 = "0"
+				$ffArg10 = "-c:v"
+				$ffArg11 = "copy"
+				$ffArg12 = "-c:a"
+				$ffArg13 = "aac"
+				$ffArg14 = "-c:s"
+				$ffArg15 = "mov_text"
+				$ffArg16 = "$newFile"
+				$ffArgs = @($ffArg1, $ffArg2, $ffArg3, $ffArg4, $ffArg5, $ffArg6, $ffArg7, $ffArg8, $ffArg9, $ffArg10, $ffArg11, $ffArg12, $ffArg13, $ffArg14, $ffArg15, $ffArg16)
+				$ffCMD = &$ffmpeg $ffArgs
 		
-		# Begin ffmpeg operation
-			$ffCMD
-			Log "$($time.Invoke()) ffmpeg completed"
+			# Begin ffmpeg operation
+				$ffCMD
+				Log "$($time.Invoke()) ffmpeg completed"
+		}
+		Else
+		{
+			# ffmpeg arguments
+				$ffArg1 = "-n"
+				$ffArg2 = "-fflags"
+				$ffArg3 = "+genpts"
+				$ffArg4 = "-i"
+				$ffArg5 = "$oldFile"
+				$ffArg6 = "-threads"
+				$ffArg7 = "6"
+				$ffArg8 = "-map"
+				$ffArg9 = "0"
+				$ffArg10 = "-c:v"
+				$ffArg11 = "copy"
+				$ffArg12 = "-c:a"
+				$ffArg13 = "aac"
+				$ffArg14 = "-sn"
+				$ffArg15 = "$newFile"
+				$ffArgs = @($ffArg1, $ffArg2, $ffArg3, $ffArg4, $ffArg5, $ffArg6, $ffArg7, $ffArg8, $ffArg9, $ffArg10, $ffArg11, $ffArg12, $ffArg13, $ffArg14, $ffArg15)
+				$ffCMD = &$ffmpeg $ffArgs
+		
+			# Begin ffmpeg operation
+				$ffCMD
+				Log "$($time.Invoke()) ffmpeg completed"
+		}
 	}
 # If a file video codec is not H264, and audio codec is already AAC, use these arguments
 	Function EncodeVideo
 	{
 		Log "$($time.Invoke()) Video: $($script:vCodecCMD.ToUpper()), Audio: $($script:aCodecCMD.ToUpper()). Encoding video to H264."
 	
-		# ffmpeg arguments
-			$ffArg1 = "-n"
-			$ffArg2 = "-fflags"
-			$ffArg3 = "+genpts"
-			$ffArg4 = "-i"
-			$ffArg5 = "$oldFile"
-			$ffArg6 = "-threads"
-			$ffArg7 = "6"
-			$ffArg8 = "-map"
-			$ffArg9 = "0"
-			$ffArg10 = "-c:v"
-			$ffArg11 = "libx264"
-			$ffArg12 = "-preset"
-			$ffArg13 = "medium"
-			$ffArg14 = "-crf"
-			$ffArg15 = "18"
-			$ffArg16 = "-c:a"
-			$ffArg17 = "copy"
-			$ffArg18 = "-c:s"
-			$ffArg19 = "mov_text"
-			$ffArg20 = "$newFile"
-			$ffArgs = @($ffArg1, $ffArg2, $ffArg3, $ffArg4, $ffArg5, $ffArg6, $ffArg7, $ffArg8, $ffArg9, $ffArg10, $ffArg11, $ffArg12, $ffArg13, $ffArg14, $ffArg15, $ffArg16, $ffArg17, $ffArg18, $ffArg19, $ffArg20)
-			$ffCMD = &$ffmpeg $ffArgs
+		If ($keepSubs -eq $True)
+		{
+			# ffmpeg arguments
+				$ffArg1 = "-n"
+				$ffArg2 = "-fflags"
+				$ffArg3 = "+genpts"
+				$ffArg4 = "-i"
+				$ffArg5 = "$oldFile"
+				$ffArg6 = "-threads"
+				$ffArg7 = "6"
+				$ffArg8 = "-map"
+				$ffArg9 = "0"
+				$ffArg10 = "-c:v"
+				$ffArg11 = "libx264"
+				$ffArg12 = "-preset"
+				$ffArg13 = "medium"
+				$ffArg14 = "-crf"
+				$ffArg15 = "18"
+				$ffArg16 = "-c:a"
+				$ffArg17 = "copy"
+				$ffArg18 = "-c:s"
+				$ffArg19 = "mov_text"
+				$ffArg20 = "$newFile"
+				$ffArgs = @($ffArg1, $ffArg2, $ffArg3, $ffArg4, $ffArg5, $ffArg6, $ffArg7, $ffArg8, $ffArg9, $ffArg10, $ffArg11, $ffArg12, $ffArg13, $ffArg14, $ffArg15, $ffArg16, $ffArg17, $ffArg18, $ffArg19, $ffArg20)
+				$ffCMD = &$ffmpeg $ffArgs
 		
-		# Begin ffmpeg operation
-			$ffCMD
-			Log "$($time.Invoke()) ffmpeg completed"
+			# Begin ffmpeg operation
+				$ffCMD
+				Log "$($time.Invoke()) ffmpeg completed"
+		}
+		Else
+		{
+			# ffmpeg arguments
+				$ffArg1 = "-n"
+				$ffArg2 = "-fflags"
+				$ffArg3 = "+genpts"
+				$ffArg4 = "-i"
+				$ffArg5 = "$oldFile"
+				$ffArg6 = "-threads"
+				$ffArg7 = "6"
+				$ffArg8 = "-map"
+				$ffArg9 = "0"
+				$ffArg10 = "-c:v"
+				$ffArg11 = "libx264"
+				$ffArg12 = "-preset"
+				$ffArg13 = "medium"
+				$ffArg14 = "-crf"
+				$ffArg15 = "18"
+				$ffArg16 = "-c:a"
+				$ffArg17 = "copy"
+				$ffArg18 = "-sn"
+				$ffArg19 = "$newFile"
+				$ffArgs = @($ffArg1, $ffArg2, $ffArg3, $ffArg4, $ffArg5, $ffArg6, $ffArg7, $ffArg8, $ffArg9, $ffArg10, $ffArg11, $ffArg12, $ffArg13, $ffArg14, $ffArg15, $ffArg16, $ffArg17, $ffArg18, $ffArg19)
+				$ffCMD = &$ffmpeg $ffArgs
+
+			# Begin ffmpeg operation
+				$ffCMD
+				Log "$($time.Invoke()) ffmpeg completed"
+		}
 	}
 # If a file video codec is not H264, and audio codec is not AAC, use these arguments
 	Function EncodeBoth
 	{	
 		Log "$($time.Invoke()) Video: $($script:vCodecCMD.ToUpper()), Audio: $($script:aCodecCMD.ToUpper()). Encoding video to H264 and audio to AAC."
 	
-		# ffmpeg arguments
-			$ffArg1 = "-n"
-			$ffArg2 = "-fflags"
-			$ffArg3 = "+genpts"
-			$ffArg4 = "-i"
-			$ffArg5 = "$oldFile"
-			$ffArg6 = "-threads"
-			$ffArg7 = "6"
-			$ffArg8 = "-map"
-			$ffArg9 = "0"
-			$ffArg10 = "-c:v"
-			$ffArg11 = "libx264"
-			$ffArg12 = "-preset"
-			$ffArg13 = "fast"
-			$ffArg14 = "-crf"
-			$ffArg15 = "18"
-			$ffArg16 = "-c:a"
-			$ffArg17 = "aac"
-			$ffArg18 = "-c:s"
-			$ffArg19 = "mov_text"
-			$ffArg20 = "$newFile"
-			$ffArgs = @($ffArg1, $ffArg2, $ffArg3, $ffArg4, $ffArg5, $ffArg6, $ffArg7, $ffArg8, $ffArg9, $ffArg10, $ffArg11, $ffArg12, $ffArg13, $ffArg14, $ffArg15, $ffArg16, $ffArg17, $ffArg18, $ffArg19, $ffArg20)
-			$ffCMD = &$ffmpeg $ffArgs
-			
-		# Begin ffmpeg operations
-			$ffCMD
-			Log "$($time.Invoke()) ffmpeg completed"	
+		If ($keepSubs -eq $True)
+		{
+			# ffmpeg arguments
+				$ffArg1 = "-n"
+				$ffArg2 = "-fflags"
+				$ffArg3 = "+genpts"
+				$ffArg4 = "-i"
+				$ffArg5 = "$oldFile"
+				$ffArg6 = "-threads"
+				$ffArg7 = "6"
+				$ffArg8 = "-map"
+				$ffArg9 = "0"
+				$ffArg10 = "-c:v"
+				$ffArg11 = "libx264"
+				$ffArg12 = "-preset"
+				$ffArg13 = "fast"
+				$ffArg14 = "-crf"
+				$ffArg15 = "18"
+				$ffArg16 = "-c:a"
+				$ffArg17 = "aac"
+				$ffArg18 = "-c:s"
+				$ffArg19 = "mov_text"
+				$ffArg20 = "$newFile"
+				$ffArgs = @($ffArg1, $ffArg2, $ffArg3, $ffArg4, $ffArg5, $ffArg6, $ffArg7, $ffArg8, $ffArg9, $ffArg10, $ffArg11, $ffArg12, $ffArg13, $ffArg14, $ffArg15, $ffArg16, $ffArg17, $ffArg18, $ffArg19, $ffArg20)
+				$ffCMD = &$ffmpeg $ffArgs
+				
+			# Begin ffmpeg operations
+				$ffCMD
+				Log "$($time.Invoke()) ffmpeg completed"	
+		}
+		Else
+		{
+			# ffmpeg arguments
+				$ffArg1 = "-n"
+				$ffArg2 = "-fflags"
+				$ffArg3 = "+genpts"
+				$ffArg4 = "-i"
+				$ffArg5 = "$oldFile"
+				$ffArg6 = "-threads"
+				$ffArg7 = "6"
+				$ffArg8 = "-map"
+				$ffArg9 = "0"
+				$ffArg10 = "-c:v"
+				$ffArg11 = "libx264"
+				$ffArg12 = "-preset"
+				$ffArg13 = "fast"
+				$ffArg14 = "-crf"
+				$ffArg15 = "18"
+				$ffArg16 = "-c:a"
+				$ffArg17 = "aac"
+				$ffArg18 = "-sn"
+				$ffArg19 = "$newFile"
+				$ffArgs = @($ffArg1, $ffArg2, $ffArg3, $ffArg4, $ffArg5, $ffArg6, $ffArg7, $ffArg8, $ffArg9, $ffArg10, $ffArg11, $ffArg12, $ffArg13, $ffArg14, $ffArg15, $ffArg16, $ffArg17, $ffArg18, $ffArg19)
+				$ffCMD = &$ffmpeg $ffArgs
+				
+			# Begin ffmpeg operations
+				$ffCMD
+				Log "$($time.Invoke()) ffmpeg completed"
+		}
 	}	
 #If new file is much smaller than old file (indicating a failed conversion), log status, delete new file, and re-encode with HandbrakeCLI
 	Function EncodeHandbrake
 	{
-		# Handbrake CLI: https://trac.handbrake.fr/wiki/CLIGuide#presets 
-		# Handbrake arguments
-			$hbArg1 = "-i"
-			$hbArg2 = "$oldFile"
-			$hbArg3 = "-o"
-			$hbArg4 = "$newFile"
-			$hbArg5 = "-f"
-			$hbArg6 = "mp4"
-			$hbArg7 = "-a"
-			$hbArg8 = "1,2,3,4,5,6,7,8,9,10"
-			$hbArg9 = "--subtitle"
-			$hbArg10 = "scan,1,2,3,4,5,6,7,8,9,10"
-			$hbArg11 = "-e"
-			$hbArg12 = "x264"
-			$hbArg13 = "--encoder-preset"
-			$hbArg14 = "slow"
-			$hbArg15 = "--encoder-profile"
-			$hbArg16 = "high"
-			$hbArg17 = "--encoder-level"
-			$hbArg18 = "4.1"
-			$hbArg19 = "-q"
-			$hbArg20 = "18"
-			$hbArg21 = "-E"
-			$hbArg22 = "aac"
-			$hbArg23 = "--audio-copy-mask"
-			$hbArg24 = "aac"
-			$hbArg25 = "--verbose=1"
-			$hbArg26 = "--decomb" 
-			$hbArg27 = "--loose-anamorphic"
-			$hbArg28 = "--modulus" 
-			$hbArg29 = "2"
-			$hbArgs = @($hbArg1, $hbArg2, $hbArg3, $hbArg4, $hbArg5, $hbArg6, $hbArg7, $hbArg8, $hbArg9, $hbArg10, $hbArg11, $hbArg12, $hbArg13, $hbArg14, $hbArg15, $hbArg16, $hbArg17, $hbArg18, $hbArg19, $hbArg20, $hbArg21, $hbArg22, $hbArg23, $hbArg24, $hbArg25, $hbArg26, $hbArg27. $hbArg28. $hbArg29)
-			$hbCMD = &$handbrake $hbArgs
-		# Begin Handbrake operation
-			Try 
-			{
-				$hbCMD
-				Log "$($time.Invoke()) Handbrake finished."
-			}
-			Catch
-			{
-				Log "$($time.Invoke()) ERROR: Handbrake has encountered an error."
-				Log $_
-			}
+		If ($keepSubs -eq $True)
+		{
+			# Handbrake CLI: https://trac.handbrake.fr/wiki/CLIGuide#presets 
+			# Handbrake arguments
+				$hbArg1 = "-i"
+				$hbArg2 = "$oldFile"
+				$hbArg3 = "-o"
+				$hbArg4 = "$newFile"
+				$hbArg5 = "-f"
+				$hbArg6 = "mp4"
+				$hbArg7 = "-a"
+				$hbArg8 = "1,2,3,4,5,6,7,8,9,10"
+				$hbArg9 = "--subtitle"
+				$hbArg10 = "scan,1,2,3,4,5,6,7,8,9,10"
+				$hbArg11 = "-e"
+				$hbArg12 = "x264"
+				$hbArg13 = "--encoder-preset"
+				$hbArg14 = "slow"
+				$hbArg15 = "--encoder-profile"
+				$hbArg16 = "high"
+				$hbArg17 = "--encoder-level"
+				$hbArg18 = "4.1"
+				$hbArg19 = "-q"
+				$hbArg20 = "18"
+				$hbArg21 = "-E"
+				$hbArg22 = "aac"
+				$hbArg23 = "--audio-copy-mask"
+				$hbArg24 = "aac"
+				$hbArg25 = "--verbose=1"
+				$hbArg26 = "--decomb" 
+				$hbArg27 = "--loose-anamorphic"
+				$hbArg28 = "--modulus" 
+				$hbArg29 = "2"
+				$hbArgs = @($hbArg1, $hbArg2, $hbArg3, $hbArg4, $hbArg5, $hbArg6, $hbArg7, $hbArg8, $hbArg9, $hbArg10, $hbArg11, $hbArg12, $hbArg13, $hbArg14, $hbArg15, $hbArg16, $hbArg17, $hbArg18, $hbArg19, $hbArg20, $hbArg21, $hbArg22, $hbArg23, $hbArg24, $hbArg25, $hbArg26, $hbArg27. $hbArg28. $hbArg29)
+				$hbCMD = &$handbrake $hbArgs
+			# Begin Handbrake operation
+				Try 
+				{
+					$hbCMD
+					Log "$($time.Invoke()) Handbrake finished."
+				}
+				Catch
+				{
+					Log "$($time.Invoke()) ERROR: Handbrake has encountered an error."
+					Log $_
+				}
+		}
+		Else
+		{
+			# Handbrake CLI: https://trac.handbrake.fr/wiki/CLIGuide#presets 
+			# Handbrake arguments
+				$hbArg1 = "-i"
+				$hbArg2 = "$oldFile"
+				$hbArg3 = "-o"
+				$hbArg4 = "$newFile"
+				$hbArg5 = "-f"
+				$hbArg6 = "mp4"
+				$hbArg7 = "-a"
+				$hbArg8 = "1,2,3,4,5,6,7,8,9,10"
+				$hbArg9 = "-e"
+				$hbArg10 = "x264"
+				$hbArg11 = "--encoder-preset"
+				$hbArg12 = "slow"
+				$hbArg13 = "--encoder-profile"
+				$hbArg14 = "high"
+				$hbArg15 = "--encoder-level"
+				$hbArg16 = "4.1"
+				$hbArg17 = "-q"
+				$hbArg18 = "18"
+				$hbArg19 = "-E"
+				$hbArg20 = "aac"
+				$hbArg21 = "--audio-copy-mask"
+				$hbArg22 = "aac"
+				$hbArg23 = "--verbose=1"
+				$hbArg24 = "--decomb" 
+				$hbArg25 = "--loose-anamorphic"
+				$hbArg26 = "--modulus" 
+				$hbArg27 = "2"
+				$hbArgs = @($hbArg1, $hbArg2, $hbArg3, $hbArg4, $hbArg5, $hbArg6, $hbArg7, $hbArg8, $hbArg9, $hbArg10, $hbArg11, $hbArg12, $hbArg13, $hbArg14, $hbArg15, $hbArg16, $hbArg17, $hbArg18, $hbArg19, $hbArg20, $hbArg21, $hbArg22, $hbArg23, $hbArg24, $hbArg25, $hbArg26, $hbArg27)
+				$hbCMD = &$handbrake $hbArgs
+			# Begin Handbrake operation
+				Try 
+				{
+					$hbCMD
+					Log "$($time.Invoke()) Handbrake finished."
+				}
+				Catch
+				{
+					Log "$($time.Invoke()) ERROR: Handbrake has encountered an error."
+					Log $_
+				}
+		}
 	}
 # Delete garbage files
 	Function GarbageCollection
@@ -666,7 +824,15 @@ Begin search loop
 	{
 		$i++;
 		$oldFile = $file.DirectoryName + "\" + $file.BaseName + $file.Extension;
-		$newFile = $file.DirectoryName + "\" + $file.BaseName + ".mp4";
+		If ($useOutPath -eq $True)
+		{
+			$newFile = $outPath + "\" + $file.BaseName + ".mp4";
+			Log "outPath = $outPath"
+		}
+		Else
+		{
+			$newFile = $file.DirectoryName + "\" + $file.BaseName + ".mp4";
+		}
 		$plexURL = "http://$plexIP/library/sections/all/refresh?X-Plex-Token=$plexToken"
 		$progress = ($i / $fileCount) * 100
 		$progress = [Math]::Round($progress,2)
@@ -675,6 +841,19 @@ Begin search loop
 		Log "$($time.Invoke()) Processing - $oldFile"
 		Log "$($time.Invoke()) File $i of $fileCount - Total queue $progress%"
 
+		<#----------------------------------------------------------------------------------
+		Test if $newFile (.mp4) already exists, if yes then delete $oldFile (.mkv)
+		This outputs a more specific log message acknowleding the file already existed.
+		----------------------------------------------------------------------------------#>
+		$testNewExist = Test-Path $newFile
+		If ($testNewExist -eq $True)
+		{
+			Remove-Item $oldFile -Force
+			Log "$($time.Invoke()) $newFile already exists."
+			Log "$($time.Invoke()) Deleting $oldFile."
+		}
+		Else
+		{
 		<#----------------------------------------------------------------------------------
 		Codec discovery to determine whether video, audio, or both needs to be encoded
 		----------------------------------------------------------------------------------#>
@@ -785,13 +964,19 @@ Begin search loop
 					{
 						IfSmaller
 					}
+		}
 	} # End foreach loop
 	
 <#----------------------------------------------------------------------------------
 Wrap-up
 -----------------------------------------------------------------------------------#>
 FinalStatistics
-GarbageCollection
+If ($collectGarbage -eq $True)
+{
+	GarbageCollection
+}
+Else
+{}
 #Delete lock file
 Try
 	{

@@ -1,13 +1,16 @@
 # conv2mp4-ps
-Powershell script that recursively searches through a user-defined file path and convert all videos of user-specified  file types to MP4 with H264 video and AAC audio as needed using ffmpeg. If a conversion failure is detected, the script re-encodes the file with HandbrakeCLI. Upon successful encoding, Plex libraries are refreshed and source file is deleted.  The purpose of this script is to reduce the amount of transcoding CPU load on a Plex server and increase video compatibility across platforms.<br><br>
+Powershell script that recursively searches through a user-defined file path (<i>or paths</i>) and convert all videos of user-specified file types to <b>MP4</b> with <b>H264</b> video and <b>AAC</b> audio as needed using ffmpeg. If a conversion failure is detected, the script re-encodes the file with HandbrakeCLI. Upon successful encoding, Plex libraries are refreshed and source file is deleted. The purpose of this script is to reduce the amount of transcoding CPU load on a Plex server and increase video compatibility across platforms.<br><br>
 Python version can be found here: <a href="https://github.com/BrianDMG/conv2mp4-py">conv2mp4-py</a><br><br>
 <b><u>Dependencies</u></b><br>
-This script requires ffmpeg (ffmpeg.exe, ffprobe.exe) and Handbrake (HandbrakeCLI.exe) to be installed. You can download them from here:<br>
+This script requires ffmpeg (<i>ffmpeg.exe, ffprobe.exe</i>) and Handbrake (<i>HandbrakeCLI.exe</i>) to be installed. You can download them from here:<br>
 <a href="https://ffmpeg.org/download.html">ffmpeg</a><br>
 <a href="https://handbrake.fr/downloads.php">Handbrake</a><br><br>
 <b>Usage</b><br>
-To use this script on a Windows computer, simply right click the file and choose "Run with Powershell". Additionally, you can run the script as a scheduled task for full automation.<br><br>
-<b>User-defined variables</b><br>
+<ul><li><b>conv2mp4-ps.ps1</b>: the executable script.<br>
+To use this script on a Windows computer, simply right click the file (<b>conv2mp4-ps.ps1</b>) and choose "<i>Run with Powershell</i>". Additionally, you can run the script as a scheduled task for full automation.</li>
+<li><b>cfg_conv2mp4-ps.ps1</b>: configuration file, contains user-defined variables.<br>
+<b>User-defined variables (<i>cfg_conv2mp4.ps1</i>)</b><br>
+<i>NOTE: If you're upgrading from v2.2 or lower, you may copy your old settings over, but take care not to delete the variables that have been added since the last update.</i><br><br>
 There are several user-defined variables you will need to edit using notepad or a program like <a href="https://notepad-plus-plus.org/download/v6.9.2.html">Notepad++</a>.<br><br>
 <b>$mediaPath</b> = the path to the media you want to convert <i>(no trailing "\")</i><br>
 <u>NOTE:</u> <i>For network shares, use UNC path if you plan on running this script as a scheduled task. If running manually and using a mapped drive, you must run "net use z: \\server\share /persistent:yes" as the user you're going to run the script as (generally Administrator) prior to running the script.</i><br>
@@ -19,8 +22,12 @@ There are several user-defined variables you will need to edit using notepad or 
 <u>NOTE:</u> <i>Plex server token - See https://support.plex.tv/hc/en-us/articles/204059436-Finding-your-account-token-X-Plex-Token. Plex server token is also easy to retrieve with PlexPy, Ombi, Couchpotato, or SickRage.</i><br>
 <b>$ffmpegBinDir</b> = path to ffmpeg bin folder <i>(no trailing "\")</i>. This is the directory containing ffmpeg.exe and ffprobe.exe<br> 
 <b>$handbrakeDir</b> = path to Handbrake directory <i>(no trailing "\")</i>. This is the directory containing HandBrakeCLI.exe<br>
+<b>collectGarbage</b> = $True enables garbage collection. $False disables garbage collection.<br>
 <b>$script:garbage</b> = the extensions of the files you want to delete in the format "*.ex1", "*.ex2"<br>
-<b>$appendLog</b> = $False will clear log at the beginning of every session, $True will append new session log to old session log
+<b>$appendLog</b> = $False will clear log at the beginning of every session, $True will append new session log to old session log.<br>
+<b>$keepSubs</b> = $False will remove subtitles from converted files. $True will keep subtitles.<br>
+<b>$useOutPath</b> = $False will use #mediaPath as the output folder. $True will output converted files to $outPath<br>
+<b>$outPath</b> = If $useOutPath = $True, converted files will be written to this directory (no trailing "\")<br></li></ul>
 
 <b>Scheduled task example</b><br>
 To fully automate this script on a Windows system, you will need to set it as a scheduled task. The following is a brief example of how to do that.
