@@ -9,8 +9,8 @@ This script requires ffmpeg (<i>ffmpeg.exe, ffprobe.exe</i>) and Handbrake (<i>H
 <ul><li><b>conv2mp4-ps.ps1</b>: the executable script.<br>
 To use this script on a Windows computer, simply right click the file (<b>conv2mp4-ps.ps1</b>) and choose "<i>Run with Powershell</i>". Additionally, you can run the script as a scheduled task for full automation.</li>
 <li><b>cfg_conv2mp4-ps.ps1</b>: configuration file, contains user-defined variables.<br>
-<b>User-defined variables (<i>cfg_conv2mp4.ps1</i>)</b><br>
 <i>NOTE: If you're upgrading from v2.2 or lower, you may copy your old settings over, but take care not to delete the variables that have been added since the last update.</i><br><br>
+<b>User-defined variables (<i>cfg_conv2mp4.ps1</i>)</b><br>
 There are several user-defined variables you will need to edit using notepad or a program like <a href="https://notepad-plus-plus.org/download/v6.9.2.html">Notepad++</a>.<br><br>
 <b>$mediaPath</b> = the path to the media you want to convert <i>(no trailing "\")</i><br>
 <u>NOTE:</u> <i>For network shares, use UNC path if you plan on running this script as a scheduled task. If running manually and using a mapped drive, you must run "net use z: \\server\share /persistent:yes" as the user you're going to run the script as (generally Administrator) prior to running the script.</i><br>
