@@ -1,5 +1,5 @@
 # conv2mp4-ps
-Powershell script that recursively searches through a user-defined file path (<i>or paths</i>) and convert all videos of user-specified file types to <b>MP4</b> with <b>H264</b> video and <b>AAC</b> audio as needed using ffmpeg. If a conversion failure is detected, the script re-encodes the file with HandbrakeCLI. Upon successful encoding, Plex libraries are refreshed and source file is deleted. The purpose of this script is to reduce the amount of transcoding CPU load on a Plex server and increase video compatibility across platforms.<br><br>
+Powershell script that recursively searches through a user-defined file path (<i>or paths</i>) and convert all videos of user-specified file types to <b>MP4</b> with <b>H264</b> video and <b>AAC</b> audio as needed using ffmpeg. If a conversion failure is detected, the script re-encodes the file with HandbrakeCLI. Upon successful encoding, Plex libraries are (optionally) refreshed and source file is deleted. The purpose of this script is to reduce the amount of transcoding CPU load on a Plex, Emby, or Kodi server and increase video compatibility across platforms.<br><br>
 Python version can be found here: <a href="https://github.com/BrianDMG/conv2mp4-py">conv2mp4-py</a><br><br>
 <b><u>Dependencies</u></b><br>
 This script requires ffmpeg (<i>ffmpeg.exe, ffprobe.exe</i>) and Handbrake (<i>HandbrakeCLI.exe</i>) to be installed. You can download them from here:<br>
@@ -17,6 +17,7 @@ There are several user-defined variables you will need to edit using notepad or 
 <b>$fileTypes</b> = the extensions of the files you want to convert in the format "*.ex1", "*.ex2"<br> 
 <b>$logPath</b> = path you want the log file to save to. defaults to your desktop. <i>(no trailing "\")</i><br>
 <b>$logName</b> = the filename of the log file<br>
+<b>$usePlex</b> = If set to $True, Plex settings will be used. Set to $False if Plex feature is not needed<br>
 <b>$plexIP</b> = the IP address and port of your Plex server (for the purpose of refreshing its libraries)<br>
 <b>$plexToken</b> = your Plex server's token (for the purpose of refreshing its libraries).<br>
 <u>NOTE:</u> <i>Plex server token - See https://support.plex.tv/hc/en-us/articles/204059436-Finding-your-account-token-X-Plex-Token. Plex server token is also easy to retrieve with PlexPy, Ombi, Couchpotato, or SickRage.</i><br>

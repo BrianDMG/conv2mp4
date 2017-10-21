@@ -1,5 +1,5 @@
 <#======================================================================================================================
-cfg_conv2mp4-ps v2.9 RELEASE - https://github.com/BrianDMG/conv2mp4-ps
+cfg_conv2mp4-ps v3.1 RELEASE - https://github.com/BrianDMG/conv2mp4-ps
 This script stores user-defined variables for use by conv2mp4-ps.ps1. 
 ========================================================================================================================
 Dependencies:
@@ -17,6 +17,7 @@ NOTE: For network shares, use UNC path if you plan on running this script as a s
 $fileTypes = the extensions of the files you want to convert in the format "*.ex1", "*.ex2". Do NOT add .mp4!
 $logPath = path you want the log file to save to. defaults to your desktop. (no trailing "\")
 $logName = the filename of the log file
+$usePlex = If set to $True, Plex settings will be used. Set to $False if Plex feature is not needed
 $plexIP = the IP address and port of your Plex server (for the purpose of refreshing its libraries)
 $plexToken = your Plex server's token (for the purpose of refreshing its libraries).
 NOTE: Plex server token - See https://support.plex.tv/hc/en-us/articles/204059436-Finding-your-account-token-X-Plex-Token
@@ -34,6 +35,7 @@ $mediaPath = "\\your\path\here"
 $fileTypes = "*.mkv", "*.avi", "*.flv", "*.mpeg", "*.ts" #Do NOT add .mp4!
 $logPath = "$PSScriptRoot"
 $logName= "conv2mp4-ps.log"
+$usePlex = $True
 $plexIP = 'plexip:32400'
 $plexToken = 'plextoken'
 $ffmpegBinDir = "C:\ffmpeg\bin"
