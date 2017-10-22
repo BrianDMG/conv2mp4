@@ -9,13 +9,13 @@ This script requires ffmpeg (<i>ffmpeg.exe, ffprobe.exe</i>) and Handbrake (<i>H
 <ul><li><b>conv2mp4-ps.ps1</b>: the executable script.<br>
 To use this script on a Windows computer, simply right click the file (<b>conv2mp4-ps.ps1</b>) and choose "<i>Run with Powershell</i>". Additionally, you can run the script as a scheduled task for full automation.</li>
 <li><b>cfg_conv2mp4-ps.ps1</b>: configuration file, contains user-defined variables.<br>
-<i>NOTE: If you're upgrading from v2.2 or lower, you may copy your old settings over, but take care not to delete the variables that have been added since the last update.</i><br><br>
+<i>NOTE: If you're upgrading from v2.2 or lower, you may copy your old settings over, but take care not to delete the variables that have been added since the last update. Using a diff/merge tool like <a href="http://winmerge.org/downloads/">WinMerge</a> is recommended</i><br><br>
 <b>User-defined variables (<i>cfg_conv2mp4.ps1</i>)</b><br>
-There are several user-defined variables you will need to edit using notepad or a program like <a href="https://notepad-plus-plus.org/download/v6.9.2.html">Notepad++</a>.<br><br>
+There are several user-defined variables you will need to edit using a text editor like <a href="https://notepad-plus-plus.org/download/v6.9.2.html">Notepad++</a>.<br><br>
 <b>$mediaPath</b> = the path to the media you want to convert <i>(no trailing "\")</i><br>
 <u>NOTE:</u> <i>For network shares, use UNC path if you plan on running this script as a scheduled task. If running manually and using a mapped drive, you must run "net use z: \\server\share /persistent:yes" as the user you're going to run the script as (generally Administrator) prior to running the script.</i><br>
 <b>$fileTypes</b> = the extensions of the files you want to convert in the format "*.ex1", "*.ex2"<br> 
-<b>$logPath</b> = path you want the log file to save to. defaults to your desktop. <i>(no trailing "\")</i><br>
+<b>$logPath</b> = the path you want the log file to save to. Defaults to your desktop. <i>(no trailing "\")</i><br>
 <b>$logName</b> = the filename of the log file<br>
 <b>$usePlex</b> = If set to $True, Plex settings will be used. Set to $False if Plex feature is not needed<br>
 <b>$plexIP</b> = the IP address and port of your Plex server (for the purpose of refreshing its libraries)<br>
@@ -24,10 +24,10 @@ There are several user-defined variables you will need to edit using notepad or 
 <b>$ffmpegBinDir</b> = path to ffmpeg bin folder <i>(no trailing "\")</i>. This is the directory containing ffmpeg.exe and ffprobe.exe<br> 
 <b>$handbrakeDir</b> = path to Handbrake directory <i>(no trailing "\")</i>. This is the directory containing HandBrakeCLI.exe<br>
 <b>collectGarbage</b> = $True enables garbage collection. $False disables garbage collection.<br>
-<b>$script:garbage</b> = the extensions of the files you want to delete in the format "*.ex1", "*.ex2"<br>
-<b>$appendLog</b> = $False will clear log at the beginning of every session, $True will append new session log to old session log.<br>
-<b>$keepSubs</b> = $False will remove subtitles from converted files. $True will keep subtitles.<br>
-<b>$useOutPath</b> = $False will use #mediaPath as the output folder. $True will output converted files to $outPath<br>
+<b>$script:garbage</b> = the extensions of the files you want garbage collection to delete in the format "*.ex1", "*.ex2"<br>
+<b>$appendLog</b> = $False will clear the log at the beginning of every session, $True will append new session log to old session log.<br>
+<b>$keepSubs</b> = $False will discard subtitles from converted files. $True will keep subtitles.<br>
+<b>$useOutPath</b> = $False will use $mediaPath as the output folder. $True will output converted files to $outPath<br>
 <b>$outPath</b> = If $useOutPath = $True, converted files will be written to this directory (no trailing "\")<br></li></ul>
 
 <b>Scheduled task example</b><br>
