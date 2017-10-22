@@ -1,5 +1,5 @@
 <#======================================================================================================================
-conv2mp4-ps v3.1 RELEASE - https://github.com/BrianDMG/conv2mp4-ps
+conv2mp4-ps v3.1.1 RELEASE - https://github.com/BrianDMG/conv2mp4-ps
 
 This Powershell script will recursively search through a user-defined file path and convert all videos of user-specified 
 filetypes to MP4 with H264 video and AAC audio using ffmpeg. If a conversion failure is detected, the script re-encodes
@@ -33,7 +33,7 @@ Import user-defined variables
 Static variables 
 ----------------------------------------------------------------------------------#>
 #Script version information
-	$version = "v3.1 RELEASE"
+	$version = "v3.1.1 RELEASE"
 #Create lock file (for the purpose of ensuring only one instance of this script is running)
 	$lockPath = "$PSScriptRoot"
 	$lockFile = "conv2mp4-ps.lock"	
@@ -425,7 +425,7 @@ Functions
 		}
 		Else
 		{
-				$ffArgs = @($ffArg01, $ffArg02, $ffArg03, $ffArg04, $ffArg05, $ffArg06, $ffArg07, $ffArg08, $ffArg09, $ffArg10, $ffArg11, $ffArg12, $ffArg13, $ffArg14, $ffArg15, $ffArg17)
+				$ffArgs = @($ffArg01, $ffArg02, $ffArg03, $ffArg04, $ffArg05, $ffArg06, $ffArg07, $ffArg08, $ffArg09, $ffArg10, $ffArg11, $ffArg12, $ffArg13, $ffArg15, $ffArg17)
 				$ffCMD = &$ffmpeg $ffArgs
 		
 			# Begin ffmpeg operation
@@ -469,7 +469,7 @@ Functions
 		}
 		Else
 		{
-				$ffArgs = @($ffArg01, $ffArg02, $ffArg03, $ffArg04, $ffArg05, $ffArg06, $ffArg07, $ffArg08, $ffArg09, $ffArg10, $ffArg11, $ffArg12, $ffArg13, $ffArg14, $ffArg17, $ffArg16)
+				$ffArgs = @($ffArg01, $ffArg02, $ffArg03, $ffArg04, $ffArg05, $ffArg06, $ffArg07, $ffArg08, $ffArg09, $ffArg10, $ffArg11, $ffArg12, $ffArg13, $ffArg17, $ffArg16)
 				$ffCMD = &$ffmpeg $ffArgs
 		
 			# Begin ffmpeg operation
@@ -517,7 +517,7 @@ Functions
 		}
 		Else
 		{
-			$ffArgs = @($ffArg01, $ffArg02, $ffArg03, $ffArg04, $ffArg05, $ffArg06, $ffArg07, $ffArg08, $ffArg09, $ffArg10, $ffArg11, $ffArg12, $ffArg13, $ffArg14, $ffArg15, $ffArg16, $ffArg17, $ffArg18, $ffArg21, $ffArg20)
+			$ffArgs = @($ffArg01, $ffArg02, $ffArg03, $ffArg04, $ffArg05, $ffArg06, $ffArg07, $ffArg08, $ffArg09, $ffArg10, $ffArg11, $ffArg12, $ffArg13, $ffArg14, $ffArg15, $ffArg16, $ffArg17, $ffArg21, $ffArg20)
 			$ffCMD = &$ffmpeg $ffArgs
 
 			# Begin ffmpeg operation
@@ -566,7 +566,7 @@ Functions
 		Else
 		{
 
-			$ffArgs = @($ffArg01, $ffArg02, $ffArg03, $ffArg04, $ffArg05, $ffArg06, $ffArg07, $ffArg08, $ffArg09, $ffArg10, $ffArg11, $ffArg12, $ffArg13, $ffArg14, $ffArg15, $ffArg16, $ffArg17, $ffArg18, $ffArg21, $ffArg20)
+			$ffArgs = @($ffArg01, $ffArg02, $ffArg03, $ffArg04, $ffArg05, $ffArg06, $ffArg07, $ffArg08, $ffArg09, $ffArg10, $ffArg11, $ffArg12, $ffArg13, $ffArg14, $ffArg15, $ffArg16, $ffArg17, $ffArg21, $ffArg20)
 			$ffCMD = &$ffmpeg $ffArgs
 				
 			# Begin ffmpeg operations
