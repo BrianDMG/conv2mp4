@@ -734,8 +734,14 @@ Begin search loop
 	{
 		$i++;
 		$oldFile = $file.DirectoryName + "\" + $file.BaseName + $file.Extension;
+		$FileSubfolders = ($file.DirectoryName).Substring($mediaPath.Length,($file.DirectoryName).Length-$mediaPath.Length);
 		If ($useOutPath -eq $True)
 		{
+			$outpath += $FileSubfolders;
+			IF (-Not (test-path $outpath))
+			{
+				md $outpath
+			}
 			$newFile = $outPath + "\" + $file.BaseName + ".mp4";
 			Log "outPath = $outPath"
 		}
