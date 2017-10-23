@@ -729,7 +729,7 @@ Begin search loop
 
 # Begin performing operations of files
 	$i = 0
-
+	$baseOutPath = $outpath;
 	ForEach ($file in $fileList)
 	{
 		$i++;
@@ -737,10 +737,10 @@ Begin search loop
 		$FileSubfolders = ($file.DirectoryName).Substring($mediaPath.Length,($file.DirectoryName).Length-$mediaPath.Length);
 		If ($useOutPath -eq $True)
 		{
-			$outpath += $FileSubfolders;
+			$outPath = $baseOutPath + $FileSubfolders;
 			IF (-Not (test-path $outpath))
 			{
-				md $outpath
+				md $outPath
 			}
 			$newFile = $outPath + "\" + $file.BaseName + ".mp4";
 			Log "outPath = $outPath"
