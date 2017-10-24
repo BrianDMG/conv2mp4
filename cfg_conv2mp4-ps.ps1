@@ -1,5 +1,5 @@
 <#======================================================================================================================
-cfg_conv2mp4-ps v3.1.1 RELEASE - https://github.com/BrianDMG/conv2mp4-ps
+cfg_conv2mp4-ps v3.1.2 RELEASE - https://github.com/BrianDMG/conv2mp4-ps
 This script stores user-defined variables for use by conv2mp4-ps.ps1. 
 ========================================================================================================================
 Dependencies:
