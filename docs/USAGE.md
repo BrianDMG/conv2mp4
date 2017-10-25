@@ -5,7 +5,7 @@ To use this script on a Windows computer, simply right click the file and choose
 	- *NOTE: If you're upgrading from v2.2 or lower, you may copy your old settings over, but take care not to delete the variables that have been added since the last update. Using a diff/merge tool like [WinMerge](http://winmerge.org/downloads/) is recommended*
 
 ### **User-defined variables (*cfg_conv2mp4.ps1*)**
-* There are several user-defined variables you will need to edit using a text editor like [Notepad++](https://notepad-plus-plus.org/download/).
+There are several user-defined variables you will need to edit using a text editor like [Notepad++](https://notepad-plus-plus.org/download/).
 
 * **$mediaPath** = the path to the media you want to convert *(no trailing "\\")*<br>
 	- *NOTE: For network shares, use UNC path if you plan on running this script as a scheduled task. If running manually and using a mapped drive, you must run ```net use z: \\server\share /persistent:yes``` as the user you're going to run the script as (generally Administrator) prior to running the script.*
