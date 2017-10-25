@@ -16,7 +16,7 @@ Please provide enough information so that others can review your pull request:
 * If a new feature is being proposed, update the cfg_conv2mp4.ps1 file to reflect the change
 * Update the README.md file to reflect any changes made in the cfg_conv2mp4.ps1 file.
 * Increase the version numbers in any examples files and the README.md to the new version that this Pull Request would represent. The versioning scheme we use is [SemVer](http://semver.org/).
-* Make sure you didn'y accidentally leave your personal configuration settings in the cfg_conv2mp4.ps1 file.
+* Make sure you didn't accidentally leave your personal configuration settings in the cfg_conv2mp4.ps1 file.
 
 **Closing issues**
 
