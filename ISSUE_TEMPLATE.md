@@ -1,15 +1,14 @@
-Hey there and thank you for using Issue Tracker!
+## Thanks for the feedback!
 
-Do the checklist before filing an issue:
+#### **Review this checklist before filing an issue:**
 
-- [ ] Is this something you can **debug and fix**? Send a pull request! Bug fixes and documentation fixes are welcome.
+- [ ] Is this something you can **debug and fix**? Send a [pull request](docs/PULL_REQUEST_TEMPLATE.md)! Bug fixes and documentation fixes are always welcome.
 - [ ] Have a usage question? Please label your issue as "question".
 - [ ] Have an idea for a feature? Please label your issue as "enhancement". 
 
-None of the above, create a bug report
-------------------------------------------------------------------
+#### **None of the above, create a bug report**
 
-Make sure to add **all the information needed to understand the bug** so that someone can help. If the info is missing we'll add the 'Needs more information' label and close the issue until there is enough information.
+* Make sure to add **all the information needed to understand the bug** so that someone can help. If the info is missing we'll add the '*Needs more information*' label and close the issue until there is enough information.
 
 - [ ] Provide a **minimal code snippet** / example that reproduces the bug.
 - [ ] Provide **screenshots** where appropriate
