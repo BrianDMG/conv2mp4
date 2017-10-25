@@ -75,7 +75,7 @@ Static variables
 			}
 			Catch
 			{
-				Log "$($time.Invoke()) ERROR: $lock could not be deleted. Please delete manually. "
+				Log "$($time.Invoke()) ERROR: $lock could not be deleted. Please delete manually."
 			}
 			Exit
 		}
@@ -93,7 +93,7 @@ Static variables
 			}
 			Catch
 			{
-				Log "$($time.Invoke()) ERROR: $lock could not be deleted. Please delete manually. "
+				Log "$($time.Invoke()) ERROR: $lock could not be deleted. Please delete manually."
 			}
 			Exit
 		}
@@ -125,7 +125,7 @@ Static variables
 		}
 		Catch
 		{
-			Log "$($time.Invoke()) ERROR: $lock could not be deleted. Please delete manually. "
+			Log "$($time.Invoke()) ERROR: $lock could not be deleted. Please delete manually."
 		}
 		Exit
 	}
@@ -196,7 +196,7 @@ Functions
 			}
 			Catch
 			{
-				Log "$($time.Invoke()) ERROR: $lock could not be deleted. Please delete manually. "
+				Log "$($time.Invoke()) ERROR: $lock could not be deleted. Please delete manually."
 			}
 			Exit
 		}
@@ -730,10 +730,10 @@ Begin search loop
 	{
 		$i++;
 		$oldFile = $file.DirectoryName + "\" + $file.BaseName + $file.Extension;
-		$FileSubfolders = ($file.DirectoryName).Substring($mediaPath.Length,($file.DirectoryName).Length-$mediaPath.Length);
+		$fileSubDirs = ($file.DirectoryName).Substring($mediaPath.Length,($file.DirectoryName).Length-$mediaPath.Length);
 		If ($useOutPath -eq $True)
 		{
-			$outPath = $baseOutPath + $FileSubfolders;
+			$outPath = $baseOutPath + $fileSubDirs;
 			IF (-Not (test-path $outpath))
 			{
 				md $outPath
