@@ -3,7 +3,7 @@ Powershell script that recursively searches through a user-defined file path (*o
 
 Python version can be found here: <a href="https://github.com/BrianDMG/conv2mp4-py">conv2mp4-py</a>
 
-**Want to [contribute](docs/CONTRIBUTING.md)? [Pull requests](docs/PULL_REQUEST_TEMPLATE.md) welcome!**
+**Want to [contribute](docs/guidelines/CONTRIBUTING.md)? [Pull requests](docs/guidelines/PULL_REQUEST_TEMPLATE.md) welcome!**
 
 ### **[Dependencies](docs/DEPENDENCIES.md)**
 
