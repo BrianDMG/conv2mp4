@@ -5,10 +5,7 @@ Python version can be found here: <a href="https://github.com/BrianDMG/conv2mp4-
 
 **Want to [contribute](docs/CONTRIBUTING.md)? [Pull requests](docs/PULL_REQUEST_TEMPLATE.md) welcome!**
 
-### **Dependencies**
-This script requires ffmpeg (*ffmpeg.exe, ffprobe.exe*) and Handbrake (*HandbrakeCLI.exe*) to be installed. You can download them from here:
-* [ffmpeg](https://ffmpeg.org/download.html)
-* [Handbrake](https://handbrake.fr/downloads.php)
+### **[Dependencies](docs/DEPENDENCIES.md)**
 
 ### **[Usage](docs/USAGE.md)**
 
