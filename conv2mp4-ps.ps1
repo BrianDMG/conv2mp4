@@ -730,10 +730,12 @@ Begin search loop
 	{
 		$i++;
 		$oldFile = $file.DirectoryName + "\" + $file.BaseName + $file.Extension;
+
 		$fileSubDirs = ($file.DirectoryName).Substring($mediaPath.Length,($file.DirectoryName).Length-$mediaPath.Length);
 		If ($useOutPath -eq $True)
 		{
 			$outPath = $baseOutPath + $fileSubDirs;
+
 			IF (-Not (test-path $outpath))
 			{
 				md $outPath
