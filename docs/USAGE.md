@@ -10,7 +10,7 @@ There are several user-defined variables you will need to edit using a text edit
 * **$mediaPath** = the path to the media you want to convert *(no trailing "\\")*<br>
 	- *NOTE: For network shares, use UNC path if you plan on running this script as a scheduled task. If running manually and using a mapped drive, you must run ```net use z: \\server\share /persistent:yes``` as the user you're going to run the script as (generally Administrator) prior to running the script.*
 * **$fileTypes** = the extensions of the files you want to convert in the format ```"*.ex1", "*.ex2"``` 
-* **$logPath** = the path you want the log file to save to. Defaults to your desktop. *(no trailing "\\")*
+* **$logPath** = the path you want the log file to save to. Defaults to the script's directory. *(no trailing "\\")*
 * **$logName** = the filename of the log file
 * **$usePlex** = if set to ```$True```, Plex settings will be used. Set to ```$False``` if Plex feature is not needed
 * **$plexIP** = the IP address and port (generally ```32400```) of your Plex server (for the purpose of refreshing its libraries)
