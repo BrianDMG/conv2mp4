@@ -1,5 +1,5 @@
 <#======================================================================================================================
-conv2mp4-ps v3.1.2 RELEASE - https://github.com/BrianDMG/conv2mp4-ps
+conv2mp4-ps v3.1.2.3 RELEASE - https://github.com/BrianDMG/conv2mp4-ps
 
 This Powershell script will recursively search through a user-defined file path and convert all videos of user-specified
 filetypes to MP4 with H264 video and AAC audio using ffmpeg. If a conversion failure is detected, the script re-encodes
@@ -33,7 +33,7 @@ Import user-defined variables
 Static variables
 ----------------------------------------------------------------------------------#>
 #Script version information
-	$version = "v3.1.2 RELEASE"
+	$version = "v3.1.2.3 RELEASE"
 #Create lock file (for the purpose of ensuring only one instance of this script is running)
 	$lockPath = "$PSScriptRoot"
 	$lockFile = "conv2mp4-ps.lock"
@@ -285,11 +285,13 @@ Functions
 				If ($diffGT -lt 1)
 				{
 					$diffGT_KB = ($diffGT * 1024)
+					$diffGT_KB = [Math]::Round($diffGT_KB,2)
 					Log "$($time.Invoke()) New file is $($diffGT_KB)KB larger."
 				}
 				Elseif ($diffGT -gt 1024)
 				{
 					$diffGT_GB = ($diffGT / 1024)
+					$diffGT_GB = [Math]::Round($diffGT_GB,2)
 					Log "$($time.Invoke()) New file is $($diffGT_GB)GB larger."
 				}
 				Else
@@ -302,15 +304,18 @@ Functions
 					If ($script:diskUsage -gt -1 -AND $script:diskUsage -lt 1)
 					{
 						$diskUsage_KB = ($script:diskUsage * 1024)
+						$diskUsage_KB = [Math]::Round($diskUsage_KB,2)
 						Log "$($time.Invoke()) Current cumulative storage difference: $($diskUsage_KB)KB"
 					}
 					Elseif ($script:diskUsage -lt -1024 -OR $script:diskUsage -gt 1024)
 					{
 						$diskUsage_GB = ($script:diskUsage / 1024)
+						$diskUsage_GB = [Math]::Round($diskUsage_GB,2)
 						Log "$($time.Invoke()) Current cumulative storage difference: $($diskUsage_GB)GB"
 					}
 					Else
 					{
+						$script:diskUsage = [Math]::Round($script:diskUsage,2)
 						Log "$($time.Invoke()) Current cumulative storage difference: $($script:diskUsage)MB"
 					}
 			}
@@ -333,11 +338,13 @@ Functions
 				If ($diffLT -lt 1)
 				{
 					$diffLT_KB = ($diffLT * 1024)
+					$diffLT_KB = [Math]::Round($diffLT_KB,2)
 					Log "$($time.Invoke()) New file is $($diffLT_KB)KB smaller."
 				}
 				Elseif ($diffLT -lt -1024)
 				{
 					$diffLT_GB = ($diffLT / 1024)
+					$diffLT_GB = [Math]::Round($diffLT_GB,2)
 					Log "$($time.Invoke()) New file is $($diffLT_GB)GB smaller."
 				}
 				Else
@@ -350,15 +357,18 @@ Functions
 					If ($script:diskUsage -gt -1 -AND $script:diskUsage -lt 1)
 					{
 						$diskUsage_KB = ($script:diskUsage * 1024)
+						$diskUsage_KB = [Math]::Round($diskUsage_KB,2)
 						Log "$($time.Invoke()) Current cumulative storage difference: $($diskUsage_KB)KB"
 					}
 					Elseif ($script:diskUsage -lt -1024 -OR $script:diskUsage -gt 1024)
 					{
 						$diskUsage_GB = ($script:diskUsage / 1024)
+						$diskUsage_GB = [Math]::Round($diskUsage_GB,2)
 						Log "$($time.Invoke()) Current cumulative storage difference: $($diskUsage_GB)GB"
 					}
 					Else
 					{
+						$script:diskUsage = [Math]::Round($script:diskUsage,2)
 						Log "$($time.Invoke()) Current cumulative storage difference: $($script:diskUsage)MB"
 					}
 			}
@@ -687,15 +697,18 @@ Functions
 			If ($script:diskUsage -gt -1 -AND $script:diskUsage -lt 1)
 			{
 				$diskUsage_KB = ($script:diskUsage * 1024)
+				$diskUsage_KB = [Math]::Round($diskUsage_KB,2)
 				Log "$($time.Invoke()) Total cumulative storage difference: $($diskUsage_KB)KB"
 			}
 			Elseif ($script:diskUsage -lt -1024 -OR $script:diskUsage -gt 1024)
 			{
 				$diskUsage_GB = ($script:diskUsage / 1024)
+				$diskUsage_GB = [Math]::Round($diskUsage_GB,2)
 				Log "$($time.Invoke()) Total cumulative storage difference: $($diskUsage_GB)GB"
 			}
 			Else
 			{
+				$script:diskUsage = [Math]::Round($script:diskUsage,2)
 				Log "$($time.Invoke()) Total cumulative storage difference: $($script:diskUsage)MB"
 			}
 		#Do some time math to get total script runtime
