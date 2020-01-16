@@ -1,8 +1,6 @@
 <#======================================================================================================================
 setup_conv2mp4-ps.ps1 v3.0-SNAPSHOT04122017
 
-***THIS IS A BETA - DO NOT USE IN PRODUCTION***
-
 Executing this script stores variables as defined by the user to cfg_conv2mp4-ps.ps1. 
 This script also tests user input to ensure that paths, format, and IPs are valid/reachable.
 ========================================================================================================================
@@ -17,7 +15,7 @@ handbrakecli : https://handbrake.fr/downloads.php
 <#------------------------------------------------------------------------------------------------------------------------
 Preparation
 ------------------------------------------------------------------------------------------------------------------------#>
-$version = "v3.0-SNAPSHOT04122017"
+$version = "v3.2"
 # Print version number to console
 	Write-Host "`n------------------------------------------------------------------------------------"
 	Write-Host "conv2mp4-ps1 Configuration Utility $version"

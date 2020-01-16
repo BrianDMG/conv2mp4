@@ -1,5 +1,5 @@
 <#======================================================================================================================
-conv2mp4-ps - https://github.com/BrianDMG/conv2mp4-ps v3.0-SNAPSHOT04122017
+conv2mp4-ps - https://github.com/BrianDMG/conv2mp4-ps v3.2
 
 THIS IS A BETA - DO NOT USE IN PRODUCTION
 
@@ -26,7 +26,7 @@ User-defined variables
 Static variables 
 ----------------------------------------------------------------------------------#>
 #Script version information
-	$version = "v3.0-SNAPSHOT04122017"
+	$version = "v3.2"
 # Time and format used for timestamps in the log
 	$time = {Get-Date -format "MM/dd/yy HH:mm:ss"}
 #Join-Path for log file
