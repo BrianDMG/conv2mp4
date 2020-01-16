@@ -1,5 +1,5 @@
 <#======================================================================================================================
-cfg_conv2mp4-ps v3.1.2 RELEASE - https://github.com/BrianDMG/conv2mp4-ps
+cfg_conv2mp4-ps v3.5 - https://github.com/BrianDMG/conv2mp4-ps
 This script stores user-defined variables for use by conv2mp4-ps.ps1. 
 ========================================================================================================================
 Dependencies:
@@ -31,6 +31,7 @@ $keepSubs = $False will discard subtitles from converted files. $True will keep 
 $useOutPath = $False will use $mediaPath as the output folder. $True will output converted files to $outPath.
 	NOTE: Directory structure is preserved in $outPath
 $outPath = If $useOutPath = $True, converted files will be written to this directory (no trailing "\")
+$setTitle = $True will will set the metadata field of 'Title' to the title of the file. Helps with Plex naming
 -----------------------------------------------------------------------------------------------------------------------#>
 $mediaPath = "\\your\path\here"
 $fileTypes = "*.mkv", "*.avi", "*.flv", "*.mpeg", "*.ts" #Do NOT add .mp4!
@@ -47,3 +48,4 @@ $appendLog = $False
 $keepSubs = $False
 $useOutPath = $False
 $outPath = "\\your\output\path\here"
+$setTitle = $True
