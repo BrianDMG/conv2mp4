@@ -66,7 +66,7 @@ Function ConvertToNewMP4 {
         $ffArgs += "-threads " #Flag to set maximum number of threads (CPU) to use
         $ffArgs += "6 " #Maximum number of threads (CPU) to use
         
-        If ($setTitle){
+        If ($cfg.setTitle){
             $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
             $ffArgs += "title=`"$title`" " #Use $title variable as metadata 'Title'
         }

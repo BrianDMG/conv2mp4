@@ -15,7 +15,7 @@ Function GarbageCollection {
         Log "`nGarbage Collection: The following $garbageNum files were deleted:"
     }
     Else {
-        Log ("`nGarbage Collection: No garbage found in $mediaPath. Congrats!")
+        Log ("`nGarbage Collection: No garbage found in $($cfg.mediaPath). Congrats!")
     }
     Log ""
 

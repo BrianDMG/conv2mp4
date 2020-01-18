@@ -39,12 +39,12 @@ ForEach ($file in $fileList) {
     $title = $file.BaseName
     $oldFile = $file.DirectoryName + "\" + $file.BaseName + $file.Extension;
 
-    $fileSubDirs = ($file.DirectoryName).Substring($mediaPath.Length, ($file.DirectoryName).Length - $mediaPath.Length);
+    $fileSubDirs = ($file.DirectoryName).Substring($cfg.mediaPath.Length, ($file.DirectoryName).Length - $cfg.mediaPath.Length);
     If ($cfg.useOutPath) {
         $cfg.outPath = $baseOutPath + $fileSubDirs;
 
-        If (-Not (Test-Path $outpath)) {
-            mkdir $outPath
+        If (-Not (Test-Path $cfg.outPath)) {
+            mkdir $cfg.outPath
         }
 
         $newFile = $cfg.outPath + "\" + $file.BaseName + "_NEW" + ".mp4";
