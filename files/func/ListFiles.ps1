@@ -6,7 +6,7 @@ Function ListFiles {
         Log ("`nThere are $fileCount file(s) in the queue:`n")
     }
     Else {
-        Write-Host ("`nThere are no files to be converted in $cfg.mediaPath. Congrats!`n")
+        Write-Host ("`nThere are no files to be converted in $($cfg.mediaPath). Congrats!`n")
         Try {
             Remove-Item $lock -Force -ErrorAction Stop
         }
