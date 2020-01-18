@@ -1,6 +1,6 @@
 ## Contributing
 
-* When contributing to this repository, please first discuss the change you wish to make by creating a new issue. Please label and assign your issue according to the **[issue guidelines](ISSUE_TEMPLATE.md)**
+* When contributing to this repository, please first discuss the change you wish to make by creating a new issue. Please label and assign your issue according to the **[issue guidelines](/docs/guidelines/ISSUE_TEMPLATE.md)**
 
 ## Pull Request Process
 
