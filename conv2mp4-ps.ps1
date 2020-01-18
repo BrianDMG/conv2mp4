@@ -192,9 +192,11 @@ ForEach ($file in $fileList) {
         }
         Else {
             Log "$($time.Invoke()) MP4 already compliant."
-            Log "$($time.Invoke()) Added file to ignore list."
-            $addIgnore = $file.BaseName + $file.Extension;
-            AddIgnore "$($addIgnore)"
+            If ($cfg.useIgnore - eq $True) {
+                Log "$($time.Invoke()) Added file to ignore list."
+                $addIgnore = $file.BaseName + $file.Extension;
+                AddIgnore "$($addIgnore)"
+            }
         }
     }
 } # End foreach loop

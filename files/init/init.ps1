@@ -26,7 +26,7 @@ $cfg.keepSubs = [System.Convert]::ToBoolean($cfg.keepSubs)
 $cfg.appendLog = [System.Convert]::ToBoolean($cfg.appendLog)
 $cfg.usePlex = [System.Convert]::ToBoolean($cfg.usePlex)
 $cfg.collectGarbage = [System.Convert]::ToBoolean($cfg.collectGarbage)
-
+$cfg.useIgnore = [System.Convert]::ToBoolean($cfg.useIgnore)
 # Time and format used for timestamps in the log
 $time = {Get-Date -format "MM/dd/yy HH:mm:ss"}
 

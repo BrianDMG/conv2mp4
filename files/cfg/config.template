@@ -23,6 +23,7 @@ keepSubs = true
 
 #Log settings
 appendLog=true
+useIgnore=true
 
 #Plex configuration
 usePlex = false
