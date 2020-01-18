@@ -63,10 +63,13 @@ ForEach ($file in $fileList) {
 
     <#Test if $newFile (.mp4) already exists, if yes then delete $oldFile (.mkv)
     This outputs a more specific log message acknowleding the file already existed.#>
-    If ((Test-Path $newFile) -And $file.Extension -ne ".mp4") {
+    $newFileRename = $file.DirectoryName + "\" + $file.BaseName + ".mp4";
+    $testNewExist = Test-Path $newFileRename
+
+    If ((Test-Path $testNewExist) -And $file.Extension -ne ".mp4") {
         Remove-Item $oldFile -Force
-        Log "$($time.Invoke()) $newFile already exists."
-        Log "$($time.Invoke()) Deleting $oldFile."
+        Log "$($time.Invoke()) Already exists: $newFileRename"
+        Log "$($time.Invoke()) Deleted: $oldFile."
     }
     Else {
         #Codec discovery to determine whether video, audio, or both needs to be encoded
@@ -191,7 +194,7 @@ ForEach ($file in $fileList) {
             Log "$($time.Invoke()) MP4 already compliant."
             Log "$($time.Invoke()) Added file to ignore list."
             $addIgnore = $file.BaseName + $file.Extension;
-            AddIgnore "$($addIgnore)"
+            # AddIgnore "$($addIgnore)"
         }
     }
 } # End foreach loop
