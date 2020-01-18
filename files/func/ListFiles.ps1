@@ -7,12 +7,7 @@ Function ListFiles {
     }
     Else {
         Write-Host ("`nThere are no files to be converted in $($cfg.mediaPath). Congrats!`n")
-        Try {
-            Remove-Item $lock -Force -ErrorAction Stop
-        }
-        Catch {
-            Log "$($time.Invoke()) ERROR: $lock could not be deleted. Please delete manually. "
-        }
+        DeleteLockFile
         Exit
     }
 
