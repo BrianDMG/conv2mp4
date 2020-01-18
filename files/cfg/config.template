@@ -8,7 +8,7 @@ useOutPath=false
 outPath=your\output\path\here
 
 #Conversion settings
-fileTypes=*.mkv, *.avi, *.flv, *.mpeg, *.ts
+fileTypes=*.mkv, *.avi, *.mp4
 setTitle = true
 failOverThresh=.75
 
