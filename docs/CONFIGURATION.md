@@ -9,7 +9,8 @@ There are several user-defined variables you will need to edit using a text edit
 All files paths must be specified in the following formats, and are case-sensitive:
 - `C:\path\to\files` for local files and folders
 - `\\path\to\files` for network shares
-<br>
+
+
 - **mediaPath**: the path to the media you want to convert
     - *NOTE: If running manually and using a mapped drive, you must run `net use z: \\server\share /persistent:yes` as the user you're going to run the script as (generally Administrator) prior to running the script.*
 - **ffmpegBinDir**: path to ffmpeg bin folder. This is the directory containing ffmpeg.exe and ffprobe.exe. Defaults to `C:\ffmpeg\bin` on Windows.
