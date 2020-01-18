@@ -1,0 +1,35 @@
+#User-defined configuration settings
+#See docs\CONFIGURATION.md for documentation
+
+#Make changes and save as 'config'
+
+#File paths
+mediaPath=\\your\path\here
+ffmpegBinDir=C:\ffmpeg\bin
+handbrakeDir=C:\Program Files\HandBrake
+useOutPath=false
+outPath=your\output\path\here
+
+#Conversion settings
+fileTypes=*.mkv, *.avi, *.mp4
+setTitle = true
+failOverThresh=.60
+
+#Audio encoding options
+force2chCopy=false
+
+#Subtitle options
+keepSubs = true
+
+#Log settings
+appendLog=true
+useIgnore=true
+
+#Plex configuration
+usePlex = false
+plexIP=plexip:32400
+plexToken=plextoken
+
+#Garbage collection
+collectGarbage = false
+garbage=*.nfo

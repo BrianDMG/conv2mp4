@@ -1,0 +1,50 @@
+#Version
+version=4.0
+platform=ps
+
+#URLs
+github_url=https://github.com/BrianDMG/conv2mp4-ps
+
+#File Paths
+cfg_path=files\cfg\config
+log_path=files\log\conv2mp4-ps.log
+lock_path=files\lock\conv2mp4-ps.lock
+ignore_path=files\ignore\ignore.list
+
+#Init Paths
+buildqueue=files\init\buildqueue.ps1
+init=files\init\init.ps1
+loadcfg=files\init\loadcfg.ps1
+preflight=files\init\preflight.ps1
+
+#Validation Paths
+validate_ignorepath=files\init\validate\ignorepath.ps1
+validate_lockfile=files\init\validate\lockfile.ps1
+validate_logpath=files\init\validate\logpath.ps1
+validate_ffmpegpath=files\init\validate\ffmpegpath.ps1
+validate_ffprobepath=files\init\validate\ffprobepath.ps1
+validate_handbrakecli=files\init\validate\handbrakecli.ps1
+validate_mediapath=files\init\validate\mediapath.ps1
+
+#Function Paths
+func_addignore=files\func\AddIgnore.ps1
+func_appendlog=files\func\AppendLog.ps1
+func_comparefiles=files\func\CompareFiles.ps1
+func_converttonewmp4=files\func\ConvertToNewMP4.ps1
+func_failuredetected=files\func\FailureDetected.ps1
+func_finalstatistics=files\func\FinalStatistics.ps1
+func_findcodec=files\func\FindCodec.ps1
+func_garbagecollection=files\func\GarbageCollection.ps1
+func_iflarger=files\func\IfLarger.ps1
+func_ifsame=files\func\IfSame.ps1
+func_ifsmaller=files\func\IfSmaller.ps1
+func_listfiles=files\func\ListFiles.ps1
+func_deletelockfile=files\func\DeleteLockFile.ps1
+func_log=files\func\Log.ps1
+func_plexrefresh=files\func\PlexRefresh.ps1
+func_printver=files\func\PrintVersion.ps1
+
+#Formatting
+standard_divider=------------------------------------------------------------------------------------
+standard_indent=>>>>>
+final_stat_divider=____________________________________________________________________________________

@@ -1,0 +1,9 @@
+#Directories
+log/
+lock/
+ignore/
+
+#Files
+config
+config.bk
+ignore.list
