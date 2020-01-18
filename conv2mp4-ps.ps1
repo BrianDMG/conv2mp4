@@ -10,9 +10,6 @@ The purpose of this script is to reduce the amount of transcoding CPU load on a 
 ffmpeg : https://ffmpeg.org/download.html
 handbrakecli : https://handbrake.fr/downloads.php #>
 
-#Remove-Item C:\Users\BrianDmg\Downloads\mkvtest2 -Recurse -Force
-#Copy-Item C:\Users\BrianDmg\Downloads\mkvtest -Destination C:\Users\BrianDmg\Downloads\mkvtest2 -Recurse
-
 #Load properties file
 $propFile = "$PSScriptRoot\files\prop\properties"
 $propRawString = Get-Content "$propFile" | Out-String
