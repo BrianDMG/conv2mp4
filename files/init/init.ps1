@@ -19,7 +19,13 @@ Write-Output "Initializing..."
 . $prop.func_printver
 
 #Convert configuration to boolean
+$cfg.useOutPath = [System.Convert]::ToBoolean($cfg.useOutPath)
+$cfg.setTitle = [System.Convert]::ToBoolean($cfg.setTitle)
+$cfg.force2chCopy = [System.Convert]::ToBoolean($cfg.force2chCopy)
 $cfg.keepSubs = [System.Convert]::ToBoolean($cfg.keepSubs)
+$cfg.appendLog = [System.Convert]::ToBoolean($cfg.appendLog)
+$cfg.usePlex = [System.Convert]::ToBoolean($cfg.usePlex)
+$cfg.collectGarbage = [System.Convert]::ToBoolean($cfg.collectGarbage)
 
 # Time and format used for timestamps in the log
 $time = {Get-Date -format "MM/dd/yy HH:mm:ss"}
