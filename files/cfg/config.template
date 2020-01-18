@@ -1,4 +1,7 @@
-#Make changes and save as config
+#User-defined configuration settings
+#See docs\CONFIGURATION.md for documentation
+
+#Make changes and save as 'config'
 
 #File paths
 mediaPath=\\your\path\here
