@@ -4,7 +4,7 @@
 
 ## Pull Request Process
 
-* Before submitting your pull request, please review to the **[pull request guidelines](PULL_REQUEST_TEMPLATE.md)**
+* Before submitting your pull request, please review to the **[pull request guidelines](/docs/guidelines/PULL_REQUEST_TEMPLATE.md)**
 * The pull request will be merged once the code has been reviewed.
 
 **Thanks for contributing!**

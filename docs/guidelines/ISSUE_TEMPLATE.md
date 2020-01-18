@@ -2,7 +2,7 @@
 
 #### **Review this checklist before filing an issue:**
 
-- [ ] Is this something you can **debug and fix**? Send a [pull request](PULL_REQUEST_TEMPLATE.md)! Bug fixes and documentation fixes are always welcome.
+- [ ] Is this something you can **debug and fix**? Send a [pull request](/docs/guidelines/PULL_REQUEST_TEMPLATE.md)! Bug fixes and documentation fixes are always welcome.
 - [ ] Have a usage question? Please label your issue as "question".
 - [ ] Have an idea for a feature? Please label your issue as "enhancement". 
 
