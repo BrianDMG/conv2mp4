@@ -2,7 +2,7 @@
 Function ConvertToNewMP4 {
     param
     (
-        [Parameter(Position = 0, mandatory = $true)]
+        [Parameter(Position = 0, mandatory = $True)]
         [ValidateSet("Simple", "Audio", "Video", "Both", "Handbrake")]
         [String]$ConvertType,
         [Switch]$KeepSubs

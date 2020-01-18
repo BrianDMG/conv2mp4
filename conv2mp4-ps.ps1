@@ -43,7 +43,7 @@ ForEach ($file in $fileList) {
     $oldFile = $file.DirectoryName + "\" + $file.BaseName + $file.Extension;
 
     $fileSubDirs = ($file.DirectoryName).Substring($mediaPath.Length, ($file.DirectoryName).Length - $mediaPath.Length);
-    If ($cfg.useOutPath -eq 'true') {
+    If ($cfg.useOutPath) {
         $cfg.outPath = $baseOutPath + $fileSubDirs;
 
         If (-Not (Test-Path $outpath)) {
@@ -201,7 +201,7 @@ ForEach ($file in $fileList) {
 
 #Wrap-up
 FinalStatistics
-If ($cfg.collectGarbage -eq 'true') {
+If ($cfg.collectGarbage) {
     GarbageCollection
 }
 

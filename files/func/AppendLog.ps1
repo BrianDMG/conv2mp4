@@ -3,11 +3,11 @@ Function AppendLog {
     $logEmpty = Get-Content $prop.log_path
 
     #Should the log append or clear
-        If ($cfg.appendLog -eq 'false') {
+        If ($cfg.appendLog -eq $False) {
             Clear-Content $prop.log_path
             PrintVersion
         }
-        Elseif ($cfg.appendLog -eq 'true' -AND $logEmpty -eq $Null) {
+        Elseif ($cfg.appendLog -eq $True -AND $logEmpty -eq $Null) {
             PrintVersion
         }
         Else {

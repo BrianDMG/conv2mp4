@@ -2,7 +2,7 @@
 Function Find-Codec {
     param
     (
-        [Parameter(Position = 0, mandatory = $true)]
+        [Parameter(Position = 0, mandatory = $True)]
         [ValidateSet("Audio", "Video", "Duration")]
         [String]$DiscoverType
     )
