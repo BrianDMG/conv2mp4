@@ -7,8 +7,6 @@ Function ListFiles {
     }
     Else {
         Write-Host ("`nThere are no files to be converted in $($cfg.mediaPath). Congrats!`n")
-        DeleteLockFile
-        Exit
     }
 
     $num = 0
