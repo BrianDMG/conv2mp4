@@ -6,7 +6,7 @@ If (Test-Path $prop.cfg_path) {
 
     # Create a backup of the cfg file
     Copy-Item $prop.cfg_path "$($prop.cfg_path).bk"
-    Write-Output "`nCreated a backup of $($prop.cfg_path)" -Foregroundcolor Green
+    Write-Output "`nCreated a backup of $($prop.cfg_path)"
 }
 Else {
     Write-Output "Cannot find $($prop.cfgFile)."
