@@ -1,4 +1,4 @@
-# Log various session statistics 
+# Log various session statistics
 Function FinalStatistics {
     Log "`n$($prop.final_stat_divider)`n"
     #Print total session disk usage changes

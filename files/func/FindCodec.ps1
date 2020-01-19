@@ -52,6 +52,6 @@ Function Find-Codec {
         }
     }
     Else {
-        return $ffprobeCMD	
+        return $ffprobeCMD
     }
 }

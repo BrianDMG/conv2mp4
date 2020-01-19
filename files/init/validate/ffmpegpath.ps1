@@ -1,4 +1,4 @@
-#Validate ffmpeg.exe path 
+#Validate ffmpeg.exe path
 $ffmpeg = Join-Path $cfg.ffmpegBinDir "ffmpeg.exe"
 
 If (-Not (Test-Path $ffmpeg)) {

@@ -9,7 +9,7 @@ Write-Output 'Running preflight checks...'
 #Validate ignore path
 . $prop.validate_ignorepath
 
-#Validate ffmpeg.exe path 
+#Validate ffmpeg.exe path
 . $prop.validate_ffmpegpath
 
 #Validate ffprobe.exe path
