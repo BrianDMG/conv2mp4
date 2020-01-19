@@ -6,7 +6,7 @@ Function ListFiles {
         Log ("`nThere are $fileCount file(s) in the queue:`n")
     }
     Else {
-        Write-Host ("`nThere are no files to be converted in $($cfg.mediaPath). Congrats!`n")
+        Write-Output ("`nThere are no files to be converted in $($cfg.mediaPath). Congrats!`n")
     }
 
     $num = 0
