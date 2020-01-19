@@ -57,6 +57,8 @@ ForEach ($file in $fileList) {
     $progress = ($i / $fileCount) * 100
     $progress = [Math]::Round($progress,2)
 
+    Write-Progress -ACtivity "$oldFile" -PercentComplete $progress -CurrentOperation "$($progress)% Complete"
+
     Log "$($prop.standard_divider)"
     Log "$($time.Invoke()) Processing - $oldFile"
     Log "$($time.Invoke()) File $i of $fileCount - Total queue $progress%"
