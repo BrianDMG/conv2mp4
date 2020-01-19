@@ -1,9 +1,9 @@
 <#======================================================================================================================
 conv2mp4-ps v4.0 - https://github.com/BrianDMG/conv2mp4-ps
 
-This Powershell script will recursively search through a user-defined file path and convert all videos of user-specified 
+This Powershell script will recursively search through a user-defined file path and convert all videos of user-specified
 filetypes to MP4 with H264 video and AAC audio using ffmpeg. If a conversion failure is detected, the script re-encodes
-the file with HandbrakeCLI. Upon successful encoding, Plex libraries are (optionally) refreshed and source file is deleted. 
+the file with HandbrakeCLI. Upon successful encoding, Plex libraries are (optionally) refreshed and source file is deleted.
 The purpose of this script is to reduce the amount of transcoding CPU load on a Plex server.
 ========================================================================================================================
 
@@ -77,13 +77,13 @@ ForEach ($file in $fileList) {
         $script:vCodecCMD = Find-Codec -DiscoverType Video
         $script:duration = Find-Codec -DiscoverType Duration
 
-        #Statistics-gathering derived from Codec Discovery 
+        #Statistics-gathering derived from Codec Discovery
         #Running tally of session container duration (cumulative length of video processed)
         $script:durTotal = $script:durTotal + $script:duration
         #Running tally of ticks (time expressed as an integer) for script runtime
-        $script:durTicksTotal = $script:durTicksTotal + $script:durTicks 
+        $script:durTicksTotal = $script:durTicksTotal + $script:durTicks
 
-        #Begin ffmpeg conversion based on codec discovery 
+        #Begin ffmpeg conversion based on codec discovery
 
         # Video is already H264, Audio is already AAC
         If ($vCodecCMD -eq 'h264' -AND $aCodecCMD -eq 'aac') {
@@ -155,7 +155,7 @@ ForEach ($file in $fileList) {
                     Try {
                         Remove-Item $newFile -Force -ErrorAction Stop
                         Log "$($time.Invoke()) ERROR: New file was too small ($($diffErr)MB)."
-                        Log "$($time.Invoke()) Deleted new file and retained $oldFile."						
+                        Log "$($time.Invoke()) Deleted new file and retained $oldFile."
                     }
                     Catch {
                         Log "$($time.Invoke()) ERROR: New file was too small ($($diffErr)MB). Retained $oldFile."
