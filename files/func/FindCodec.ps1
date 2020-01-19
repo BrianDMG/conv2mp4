@@ -42,17 +42,19 @@ Function Find-Codec {
 
     If ($DiscoverType -eq "Duration") {
 
+        #Test whether the ffprobe result was invalid - usually happens in files with corrupt encoding
         If ($ffprobeCMD -eq 0 -OR $ffprobeCMD -eq 'N/A') {
+            #Pass this value down to the next If/Else
             $ffprobeTemp = 0
         }
         Else {
             $ffprobeTemp = [timespan]::fromseconds($ffprobeCMD)
+            $script:durTicks = $ffprobeTemp.ticks
         }
 
-        $script:durTicks = $ffprobeTemp.ticks
-
+        #Test whether the ffprobe results was invalid AFTER conversion into time format
         If ($ffprobeTemp -eq 0 -OR $ffprobeTemp -eq 'N/A') {
-            return "00:01:00"
+            return "00:00:00"
         }
         Else {
             return "$($ffprobeTemp.hours):$($ffprobeTemp.minutes):$($ffprobeTemp.seconds)"
