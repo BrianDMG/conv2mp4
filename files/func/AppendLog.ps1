@@ -7,7 +7,7 @@ Function AppendLog {
             Clear-Content $prop.log_path
             PrintVersion
         }
-        Elseif ($cfg.appendLog -eq $True -AND $logEmpty -eq $Null) {
+        Elseif ($cfg.appendLog -eq $True -AND $Null -eq $logEmpty) {
             PrintVersion
         }
         Else {
