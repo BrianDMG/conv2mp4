@@ -41,7 +41,14 @@ Function Find-Codec {
     $ffprobeCMD = cmd.exe /c "$ffprobe $ffprobeArgs"
 
     If ($DiscoverType -eq "Duration") {
-        $ffprobeTemp = [timespan]::fromseconds($ffprobeCMD)
+
+        If ($ffprobeCMD -eq 0 -OR $ffprobeCMD -eq 'N/A') {
+            $ffprobeTemp = 0
+        }
+        Else {
+            $ffprobeTemp = [timespan]::fromseconds($ffprobeCMD)
+        }
+
         $script:durTicks = $ffprobeTemp.ticks
 
         If ($ffprobeTemp -eq 0 -OR $ffprobeTemp -eq 'N/A') {
