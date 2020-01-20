@@ -18,17 +18,19 @@ Function FinalStatistics {
     }
 
     #Do some time math to get total script runtime
-    $script:scriptDurTemp = new-timespan $script:scriptDurStart $(get-date -format "HH:mm:ss")
-    $script:scriptDurTotal = "$($script:scriptDurTemp.hours):$($script:scriptDurTemp.minutes):$($script:scriptDurTemp.seconds)"
-    Log "`n$script:durTotal of video processed in $script:scriptDurTotal"
+    $scriptDurStop = (Get-Date)
+    $scriptDurTotal = New-TimeSpan -Start $scriptDurStart -End $scriptDurStop
+
+    Log "`n$script:vidDurTotal of video processed in $scriptDurTotal"
 
     #Do some math/rounding to get session average conversion speed
     Try {
-        $avgConv = $script:durTicksTotal / $script:scriptDurTemp.Ticks
+        $avgConv = $script:vidDurTotal.Ticks / $scriptDurTotal.Ticks
         $avgConv = [math]::Round($avgConv, 2)
         Log "Average conversion speed of $($avgConv)x"
     }
     Catch {
+        Log "$_"
         Log "No time elapsed."
     }
 

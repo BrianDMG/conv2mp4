@@ -65,25 +65,23 @@ ForEach ($file in $fileList) {
 
     <#Test if $newFile (.mp4) already exists, if yes then delete $oldFile (.mkv)
     This outputs a more specific log message acknowleding the file already existed.#>
-    $newFileRename = $file.DirectoryName + "\" + $file.BaseName + ".mp4";
-    $testNewExist = Test-Path $newFileRename
+    $newFileRenamed = $file.DirectoryName + "\" + $file.BaseName + ".mp4";
+    $testIfNewExist = Test-Path $newFileRenamed
 
-    If ((Test-Path $testNewExist) -And $file.Extension -ne ".mp4") {
+    If ((Test-Path $testIfNewExist) -And $file.Extension -ne ".mp4") {
         Remove-Item $oldFile -Force
-        Log "$($time.Invoke()) Already exists: $newFileRename"
+        Log "$($time.Invoke()) Already exists: $newFileRenamed"
         Log "$($time.Invoke()) Deleted: $oldFile."
     }
     Else {
         #Codec discovery to determine whether video, audio, or both needs to be encoded
-        $script:aCodecCMD = Find-Codec -DiscoverType Audio
-        $script:vCodecCMD = Find-Codec -DiscoverType Video
-        $script:duration = Find-Codec -DiscoverType Duration
+        $aCodecCMD = FindCodec -DiscoverType Audio
+        $vCodecCMD = FindCodec -DiscoverType Video
+        $duration = FindCodec -DiscoverType Duration
 
         #Statistics-gathering derived from Codec Discovery
         #Running tally of session container duration (cumulative length of video processed)
-        $script:durTotal = $script:durTotal + $script:duration
-        #Running tally of ticks (time expressed as an integer) for script runtime
-        $script:durTicksTotal = $script:durTicksTotal + $script:durTicks
+        $script:vidDurTotal = $script:vidDurTotal + $duration
 
         #Begin ffmpeg conversion based on codec discovery
 
@@ -188,8 +186,8 @@ ForEach ($file in $fileList) {
             }
 
             #If $oldFile was an mp4, rename $newFile to remove "-NEW"
-            $newFileRename = "$newFile" -replace "_NEW",""
-            Move-Item $newFile $newFileRename
+            $newFileRenamed = "$newFile" -replace "_NEW",""
+            Move-Item $newFile $newFileRenamed
 
         }
         Else {

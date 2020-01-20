@@ -1,5 +1,5 @@
 # Find out what video and audio codecs a file is using
-Function Find-Codec {
+Function FindCodec {
     param
     (
         [Parameter(Position = 0, mandatory = $True)]
@@ -41,26 +41,22 @@ Function Find-Codec {
     $ffprobeCMD = cmd.exe /c "$ffprobe $ffprobeArgs"
 
     If ($DiscoverType -eq "Duration") {
-
         #Test whether the ffprobe result was invalid - usually happens in files with corrupt encoding
         If ($ffprobeCMD -eq 0 -OR $ffprobeCMD -eq 'N/A') {
-            #Pass this value down to the next If/Else
-            $ffprobeTemp = 0
+            $vidDuration=[timespan]::fromseconds(0)
+            return "$($vidDuration.hours):$($vidDuration.minutes):$($vidDuration.seconds)"
+        }
+        ElseIf ($aCodecCMD -eq 'aac' -AND $vCodecCMD -eq 'h264' -AND $oldFile.Extension -eq '.mp4') {
+            $vidDuration=[timespan]::fromseconds(0)
+            return "$($vidDuration.hours):$($vidDuration.minutes):$($vidDuration.seconds)"
         }
         Else {
-            $ffprobeTemp = [timespan]::fromseconds($ffprobeCMD)
-            $script:durTicks = $ffprobeTemp.ticks
-        }
-
-        #Test whether the ffprobe results was invalid AFTER conversion into time format
-        If ($ffprobeTemp -eq 0 -OR $ffprobeTemp -eq 'N/A') {
-            return "00:00:00"
-        }
-        Else {
-            return "$($ffprobeTemp.hours):$($ffprobeTemp.minutes):$($ffprobeTemp.seconds)"
+            $vidDuration=[timespan]::fromseconds($ffprobeCMD)
+            return "$($vidDuration.hours):$($vidDuration.minutes):$($vidDuration.seconds)"
         }
     }
     Else {
+        #Returns video and audio codec information
         return $ffprobeCMD
     }
 }
