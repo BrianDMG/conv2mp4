@@ -20,8 +20,10 @@ Function FinalStatistics {
     #Do some time math to get total script runtime
     $scriptDurStop = (Get-Date)
     $scriptDurTotal = New-TimeSpan -Start $scriptDurStart -End $scriptDurStop
-
-    Log "`n$script:vidDurTotal of video processed in $scriptDurTotal"
+    $scriptDurTotalFormat = $scriptDurTotal.ToString()
+    $scriptDurTotalFormat = $scriptDurTotalFormat.Substring(0, $scriptDurTotalFormat.IndexOf('.'))
+    
+    Log "`n$script:vidDurTotal of video processed in $scriptDurTotalFormat"
 
     #Do some math/rounding to get session average conversion speed
     Try {
