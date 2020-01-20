@@ -80,10 +80,7 @@ ForEach ($file in $fileList) {
         $aCodecCMD = FindCodec -DiscoverType Audio
         $vCodecCMD = FindCodec -DiscoverType Video
         $duration = FindCodec -DiscoverType Duration
-
         #Statistics-gathering derived from Codec Discovery
-        #Running tally of session container duration (cumulative length of video processed)
-        $script:vidDurTotal = $script:vidDurTotal + $duration
 
         #Begin ffmpeg conversion based on codec discovery
 
@@ -95,6 +92,7 @@ ForEach ($file in $fileList) {
                 $skipFile = $False
             }
             Else {
+                $duration = "00:00:00"
                 $skipFile = $True
             }
         }
@@ -200,6 +198,9 @@ ForEach ($file in $fileList) {
                 AddIgnore "$($addIgnore)"
             }
         }
+
+        #Running tally of session container duration (cumulative length of video processed)
+        $script:vidDurTotal = $script:vidDurTotal + $duration
     }
 } # End foreach loop
 

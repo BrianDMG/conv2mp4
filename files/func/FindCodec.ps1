@@ -46,10 +46,6 @@ Function FindCodec {
             $vidDuration=[timespan]::fromseconds(0)
             return "$($vidDuration.hours):$($vidDuration.minutes):$($vidDuration.seconds)"
         }
-        ElseIf ($aCodecCMD -eq 'aac' -AND $vCodecCMD -eq 'h264' -AND $oldFile.Extension -eq '.mp4') {
-            $vidDuration=[timespan]::fromseconds(0)
-            return "$($vidDuration.hours):$($vidDuration.minutes):$($vidDuration.seconds)"
-        }
         Else {
             $vidDuration=[timespan]::fromseconds($ffprobeCMD)
             return "$($vidDuration.hours):$($vidDuration.minutes):$($vidDuration.seconds)"
