@@ -10,8 +10,10 @@ The purpose of this script is to reduce the amount of transcoding CPU load on a 
 ffmpeg : https://ffmpeg.org/download.html
 handbrakecli : https://handbrake.fr/downloads.php #>
 
+Set-Location -Path $PSScriptRoot
+
 #Load properties file
-$propFile = "$PSScriptRoot\files\prop\properties"
+$propFile = "files\prop\properties"
 $propRawString = Get-Content "$propFile" | Out-String
 $propStringToConvert = $propRawString -replace '\\', '\\'
 $prop = ConvertFrom-StringData $propStringToConvert
