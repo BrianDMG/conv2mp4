@@ -67,7 +67,7 @@ ForEach ($file in $fileList) {
 
     <#Test if $newFile (.mp4) already exists, if yes then delete $oldFile (.mkv)
     This outputs a more specific log message acknowleding the file already existed.#>
-    $newFileRenamed = $file.DirectoryName + "\" + $file.BaseName + ".mp4";
+    $newFileRenamed = $file.DirectoryName + "\" + $file.BaseName + ".mp4"
     $testIfNewExist = Test-Path $newFileRenamed
 
     If ((Test-Path $testIfNewExist) -And $file.Extension -ne ".mp4") {
