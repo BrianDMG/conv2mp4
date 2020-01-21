@@ -3,6 +3,8 @@ Function CloneStereo {
     Write-Output "Finding audio channels"
     $copyStereo = FindAudioStreams
 
+    $tempFileName=$file.DirectoryName + "\" + $file.BaseName + "_TEMP" + ".mp4"
+
     #If no stereo channel exists, create one
     If ($copyStereo) {
         write-output "`nWe're converting"
@@ -26,23 +28,29 @@ Function CloneStereo {
         $ffmpegArgs += "$($prop.temp_dir)\$($prop.temp_2in)"
         $ffmpegCMD = cmd.exe /c "$ffmpeg $ffmpegArgs"
 
+        #Rename original source file, necessary to avoid corrupting by using same file as input and output
+        Move-Item $newFileRenamed $tempFileName -Force
+
         Write-Output "Inject audio"
         #ffmpeg inject stereo audio track back into file
         $ffmpegArgs = "-y "
         $ffmpegArgs += "-i "
-        $ffmpegArgs += "$newFileRenamed "
+        $ffmpegArgs += "$tempFileName "
         $ffmpegArgs += "-i "
         $ffmpegArgs += "$($prop.temp_dir)\$($prop.temp_2in) "
         $ffmpegArgs += "-map "
         $ffmpegArgs += "0 "
         $ffmpegArgs += "-map "
         $ffmpegArgs += "1 "
-        $ffmpegArgs += "-codec "
+        $ffmpegArgs += "-c "
         $ffmpegArgs += "copy "
+        $ffmpegArgs += "-metadata:s:a "
+        $ffmpegArgs += "handler=Stereo "
         $ffmpegArgs += "$newFileRenamed"
         $ffmpegCMD = cmd.exe /c "$ffmpeg $ffmpegArgs"
 
         Write-Output "Delete temp files"
+        Remove-Item $tempFileName -Force
         Remove-Item $prop.temp_dir -Force -Recurse
 
         Write-Output "Verify success"
@@ -53,7 +61,7 @@ Function CloneStereo {
             Exit
         }
         Else {
-            Write-Output "Copy successful, moving on.."
+            Log "$($time.Invoke()) Appended a stereo audio stream."
         }
     }
     Else {
