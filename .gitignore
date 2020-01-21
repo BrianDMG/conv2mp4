@@ -2,6 +2,7 @@
 log/
 lock/
 ignore/
+tmp/
 
 #Files
 config

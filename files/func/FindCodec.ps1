@@ -7,7 +7,7 @@ Function FindCodec {
         [String]$DiscoverType
     )
 
-    # Check video codec with ffprobe
+    # Check codec with ffprobe
     $ffprobeArgs += "-v "
     $ffprobeArgs += "error "
 

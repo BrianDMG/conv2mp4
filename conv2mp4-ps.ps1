@@ -115,6 +115,10 @@ ForEach ($file in $fileList) {
             $skipFile = $False
         }
 
+        If ($cfg.force2chCopy -eq $True) {
+            CloneStereo
+        }
+
         # Refresh Plex libraries
         If ($cfg.usePlex) {
             # Refresh Plex libraries

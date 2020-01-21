@@ -29,10 +29,12 @@ validate_mediapath=files\init\validate\mediapath.ps1
 #Function Paths
 func_addignore=files\func\AddIgnore.ps1
 func_appendlog=files\func\AppendLog.ps1
+func_clonestereo=files\func\CloneStereo.ps1
 func_comparefiles=files\func\CompareFiles.ps1
 func_converttonewmp4=files\func\ConvertToNewMP4.ps1
 func_failuredetected=files\func\FailureDetected.ps1
 func_finalstatistics=files\func\FinalStatistics.ps1
+func_findaudiochannels=files\func\FindAudioStreams.ps1
 func_findcodec=files\func\FindCodec.ps1
 func_garbagecollection=files\func\GarbageCollection.ps1
 func_iflarger=files\func\IfLarger.ps1
@@ -43,6 +45,11 @@ func_deletelockfile=files\func\DeleteLockFile.ps1
 func_log=files\func\Log.ps1
 func_plexrefresh=files\func\PlexRefresh.ps1
 func_printver=files\func\PrintVersion.ps1
+
+#Temporary files
+temp_dir=files\tmp\
+temp_51out=51out.aac
+temp_2in=2in.aac
 
 #Formatting
 standard_divider=------------------------------------------------------------------------------------
