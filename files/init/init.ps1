@@ -4,7 +4,6 @@ Write-Output "Initializing..."
 . $prop.func_addignore
 . $prop.func_appendlog
 . $prop.func_clonestereo
-. $prop.func_comparefiles
 . $prop.func_converttonewmp4
 . $prop.func_deletelockfile
 . $prop.func_failuredetected
