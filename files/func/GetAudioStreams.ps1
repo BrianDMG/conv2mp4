@@ -1,6 +1,6 @@
-Function FindAudioStreams {
+Function GetAudioStreams {
     $ffprobeArgs = "-i "
-    $ffprobeArgs += "`"$newFileRenamed`" "
+    $ffprobeArgs += "`"$targetFileRenamed`" "
     $ffprobeArgs += "-show_entries "
     $ffprobeArgs += "stream=channels "
     $ffprobeArgs += "-select_streams "

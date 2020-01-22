@@ -1,5 +1,5 @@
 # Find out what video and audio codecs a file is using
-Function FindCodec {
+Function GetCodec {
     param
     (
         [Parameter(Position = 0, mandatory = $True)]
@@ -36,19 +36,19 @@ Function FindCodec {
 
     $ffprobeArgs += "-of "
     $ffprobeArgs += "default=noprint_wrappers=1:nokey=1 "
-    $ffprobeArgs += "`"$oldFile`""
+    $ffprobeArgs += "`"$sourceFile`""
 
     $ffprobeCMD = cmd.exe /c "$ffprobe $ffprobeArgs"
 
     If ($DiscoverType -eq "Duration") {
         #Test whether the ffprobe result was invalid - usually happens in files with corrupt encoding
         If ($ffprobeCMD -eq 0 -OR $ffprobeCMD -eq 'N/A') {
-            $vidDuration=[timespan]::fromseconds(0)
-            return "$($vidDuration.hours):$($vidDuration.minutes):$($vidDuration.seconds)"
+            $currentVideoDuration=[timespan]::fromseconds(0)
+            return "$($currentVideoDuration.hours):$($currentVideoDuration.minutes):$($currentVideoDuration.seconds)"
         }
         Else {
-            $vidDuration=[timespan]::fromseconds($ffprobeCMD)
-            return "$($vidDuration.hours):$($vidDuration.minutes):$($vidDuration.seconds)"
+            $currentVideoDuration=[timespan]::fromseconds($ffprobeCMD)
+            return "$($currentVideoDuration.hours):$($currentVideoDuration.minutes):$($currentVideoDuration.seconds)"
         }
     }
     Else {

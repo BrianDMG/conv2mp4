@@ -13,9 +13,9 @@ Function ConvertToNewMP4 {
         # Handbrake arguments
         $hbArgs = @()
         $hbArgs += "-i " #Flag to designate input file
-        $hbArgs += "`"$oldFile`"" #Input file
+        $hbArgs += "`"$sourceFile`"" #Input file
         $hbArgs += "-o " #Flag to designate output file
-        $hbArgs += "`"$newFile`"" #Output file
+        $hbArgs += "`"$targetFile`"" #Output file
         $hbArgs += "-f " #Format flag
         $hbArgs += "mp4 " #Format value
         $hbArgs += "-a " #Audio channel flag
@@ -62,7 +62,7 @@ Function ConvertToNewMP4 {
         $ffArgs += "-fflags " #Allows setting of formal flags
         $ffArgs += "+genpts " #Suppresses pointer warning messages
         $ffArgs += "-i " #Flag to designate input file
-        $ffArgs += "`"$oldFile`" " #Input file
+        $ffArgs += "`"$sourceFile`" " #Input file
         $ffArgs += "-threads " #Flag to set maximum number of threads (CPU) to use
         $ffArgs += "6 " #Maximum number of threads (CPU) to use
 
@@ -105,7 +105,7 @@ Function ConvertToNewMP4 {
         Else {
             $ffArgs += "-sn " #Option to remove any existing subtitles
         }
-        $ffArgs += "`"$newFile`"" #Output file
+        $ffArgs += "`"$targetFile`"" #Output file
 
         $ffCMD = cmd.exe /c "$ffmpeg $ffArgs"
 

@@ -33,7 +33,7 @@ $cfg.useIgnore = [System.Convert]::ToBoolean($cfg.useIgnore)
 $time = {Get-Date -format "MM/dd/yy HH:mm:ss"}
 
 # Get current time to store as start time for script
-$scriptDurStart = (Get-Date)
+$startScriptTime = (Get-Date)
 
 # Instantiate corrupted file array
 $duds
@@ -44,7 +44,7 @@ $failures
 $failedEncodes = {$failures}.Invoke()
 
 # Initialize disk usage change to 0
-$diskUsage = 0
+$diskUsageDelta = 0
 
 # Initialize 'video length converted' to 0
-$vidDurTotal = [timespan]::fromseconds(0)
+$cumulativeVideoDuration = [timespan]::fromseconds(0)

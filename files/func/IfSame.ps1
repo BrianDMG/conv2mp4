@@ -1,13 +1,13 @@
 # If new and old files are the same size
 Function IfSame {
     Try {
-        Remove-Item $oldFile -Force -ErrorAction Stop
+        Remove-Item $sourceFile -Force -ErrorAction Stop
         Log "$($time.Invoke()) Same file size."
-        Log "$($time.Invoke()) $oldFile deleted."
+        Log "$($time.Invoke()) $sourceFile deleted."
     }
     Catch
     {
-        Log "$($time.Invoke()) ERROR: $oldFile could not be deleted. Full error below."
+        Log "$($time.Invoke()) ERROR: $sourceFile could not be deleted. Full error below."
         Log $_
     }
 }
