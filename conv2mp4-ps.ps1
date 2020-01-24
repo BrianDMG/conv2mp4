@@ -26,11 +26,8 @@ $time = {Get-Date -format "MM/dd/yy HH:mm:ss"}
 # Get current time to store as start time for script
 $startScriptTime = (Get-Date)
 
-# Initialize disk usage change to 0
-#$diskUsageDelta = 0
-
 # Initialize 'video length converted' to 0
-#$cumulativeVideoDuration = [timespan]::fromseconds(0)
+$cumulativeVideoDuration = [timespan]::fromseconds(0)
 
 #Execute preflight checks
 . $prop.preflight
