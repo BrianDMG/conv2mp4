@@ -1,7 +1,7 @@
 # Delete garbage files
 Function CollectGarbage {
 
-    $garbageList = Get-ChildItem "$($mPath.FullName)\*" -i ( $cfg.garbage -split ',' ).trim() -Recurse
+    $garbageList = Get-ChildItem "$($mPath.FullName)\*" -i ( $cfg.garbage_include_file_types -split ',' ).trim() -Recurse
     $garbageNum = 0
 
     ForEach ($turd in $garbageList) {
@@ -15,7 +15,7 @@ Function CollectGarbage {
         Log "`nGarbage Collection: The following $garbageNum files were deleted:"
     }
     Else {
-        Log ("`nGarbage Collection: No garbage found in $($cfg.mediaPath). Congrats!")
+        Log ("`nGarbage Collection: No garbage found in $($cfg.media_path). Congrats!")
     }
     Log ""
 

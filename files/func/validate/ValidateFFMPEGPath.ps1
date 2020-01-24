@@ -8,7 +8,7 @@ Function ValidateFFMPEGPath {
 
     If (-Not (Test-Path $ffmpeg)) {
         Log "`nffmpeg.exe could not be found at $Path."
-        Log "Ensure the path specified for 'ffmpegBinDir' in $($prop.cfg_path) is correct."
+        Log "Ensure the path specified for 'fmmpeg_bin_dir' in $($prop.cfg_path) is correct."
         Log "Aborting script."
         DeleteLockFile
         Exit
@@ -18,7 +18,7 @@ Function ValidateFFMPEGPath {
 
     If (-Not (Test-Path $ffprobe)) {
         Log "`nffprobe.exe could not be found at $Path."
-        Log "Ensure the path specified for 'ffmpegBinDir' in $($prop.cfg_path) is correct."
+        Log "Ensure the path specified for 'fmmpeg_bin_dir' in $($prop.cfg_path) is correct."
         Log "Aborting script."
         DeleteLockFile
         Exit

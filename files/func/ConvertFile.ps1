@@ -8,8 +8,8 @@ Function ConvertFile {
         [Switch]$KeepSubs
     )
 
-    $ffmpeg = Join-Path $cfg.ffmpegBinDir "ffmpeg.exe"
-    $handbrake = Join-Path $cfg.handbrakeDir "HandBrakeCLI.exe"
+    $ffmpeg = Join-Path $cfg.fmmpeg_bin_dir "ffmpeg.exe"
+    $handbrake = Join-Path $cfg.handbrakecli_bin_dir "HandBrakeCLI.exe"
 
     If ($ConvertType -eq "Handbrake") {
         # Handbrake CLI: https://trac.handbrake.fr/wiki/CLIGuide#presets
@@ -69,7 +69,7 @@ Function ConvertFile {
         $ffArgs += "-threads " #Flag to set maximum number of threads (CPU) to use
         $ffArgs += "6 " #Maximum number of threads (CPU) to use
 
-        If ($cfg.setTitle){
+        If ($cfg.use_set_metadata_title){
             $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
             $ffArgs += "title=`"$title`" " #Use $title variable as metadata 'Title'
         }

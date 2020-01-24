@@ -7,7 +7,7 @@ Function GetCodec {
         [String]$DiscoverType
     )
 
-    $ffprobe = Join-Path $cfg.ffmpegBinDir "ffprobe.exe"
+    $ffprobe = Join-Path $cfg.fmmpeg_bin_dir "ffprobe.exe"
 
     # Check codec with ffprobe
     $ffprobeArgs += "-v "
