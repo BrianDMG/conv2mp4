@@ -17,15 +17,6 @@ init=files\init\init.ps1
 loadcfg=files\init\loadcfg.ps1
 preflight=files\init\preflight.ps1
 
-#Validation Paths
-validate_ignorepath=files\init\validate\ignorepath.ps1
-validate_lockfile=files\init\validate\lockfile.ps1
-validate_logpath=files\init\validate\logpath.ps1
-validate_ffmpegpath=files\init\validate\ffmpegpath.ps1
-validate_ffprobepath=files\init\validate\ffprobepath.ps1
-validate_handbrakecli=files\init\validate\handbrakecli.ps1
-validate_mediapath=files\init\validate\mediapath.ps1
-
 #Function Paths
 func_basepath=files\func
 

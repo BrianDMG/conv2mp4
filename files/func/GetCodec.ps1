@@ -7,6 +7,8 @@ Function GetCodec {
         [String]$DiscoverType
     )
 
+    $ffprobe = Join-Path $cfg.ffmpegBinDir "ffprobe.exe"
+
     # Check codec with ffprobe
     $ffprobeArgs += "-v "
     $ffprobeArgs += "error "
@@ -19,8 +21,6 @@ Function GetCodec {
     }
 
     If ($DiscoverType -eq "Audio") {
-        $ffprobeArgs += "-v "
-        $ffprobeArgs += "error "
         $ffprobeArgs += "-select_streams "
         $ffprobeArgs += "a:0 "
         $ffprobeArgs += "-show_entries "
@@ -28,8 +28,6 @@ Function GetCodec {
     }
 
     If ($DiscoverType -eq "Duration") {
-        $ffprobeArgs += "-v "
-        $ffprobeArgs += "error "
         $ffprobeArgs += "-show_entries "
         $ffprobeArgs += "format=duration "
     }

@@ -5,10 +5,7 @@ This Powershell script will recursively search through a user-defined file path 
 filetypes to MP4 with H264 video and AAC audio using ffmpeg. If a conversion failure is detected, the script re-encodes
 the file with HandbrakeCLI. Upon successful encoding, Plex libraries are (optionally) refreshed and source file is deleted.
 The purpose of this script is to reduce the amount of transcoding CPU load on a Plex server.
-========================================================================================================================
-
-ffmpeg : https://ffmpeg.org/download.html
-handbrakecli : https://handbrake.fr/downloads.php #>
+========================================================================================================================#>
 
 Set-Location -Path $PSScriptRoot
 
@@ -19,16 +16,15 @@ $propStringToConvert = $propRawString -replace '\\', '\\'
 $prop = ConvertFrom-StringData $propStringToConvert
 
 #Load configuration
-. $prop.loadcfg
+$cfgRawString = Get-Content "$($prop.cfg_path)" | Out-String
+$cfgStringToConvert = $cfgRawString -replace '\\', '\\'
+$cfg = ConvertFrom-StringData $cfgStringToConvert
 
 #Initialize script
 . $prop.init
 
 #Execute preflight checks
 . $prop.preflight
-
-# Print initial wait notice to console
-Write-Output "`nBuilding file list, please wait. This may take a while, especially for large libraries.`n"
 
 #Build processing queue and list its contents
 . $prop.buildqueue
@@ -59,7 +55,7 @@ ForEach ($file in $fileList) {
     $progress = ($i / $fileCount) * 100
     $progress = [Math]::Round($progress,2)
 
-    Write-Progress -ACtivity "$sourceFile" -PercentComplete $progress -CurrentOperation "$($progress)% Complete"
+    Write-Progress -Activity "$sourceFile" -PercentComplete $progress -CurrentOperation "$($progress)% Complete"
 
     Log "$($prop.standard_divider)"
     Log "$($time.Invoke()) Processing - $sourceFile"
@@ -79,14 +75,11 @@ ForEach ($file in $fileList) {
         $getAudioCodec = GetCodec -DiscoverType Audio
         $getVideoCodec = GetCodec -DiscoverType Video
         $getVideoDuration = GetCodec -DiscoverType Duration
-        #Statistics-gathering derived from Codec Discovery
-
-        #Begin ffmpeg conversion based on codec discovery
 
         # Video is already H264, Audio is already AAC
         If ($getVideoCodec -eq 'h264' -AND $getAudioCodec -eq 'aac') {
             If ($file.Extension -ne ".mp4") {
-                Log "$($time.Invoke()) Video: $($script:getVideoCodec.ToUpper()), Audio: $($script:getAudioCodec.ToUpper()). Performing simple container conversion to MP4."
+                Log "$($time.Invoke()) Video: $($getVideoCodec.ToUpper()), Audio: $($getAudioCodec.ToUpper()). Performing simple container conversion to MP4."
                 ConvertFile -ConvertType Simple -KeepSubs:$cfg.keepSubs
                 $skipFile = $False
             }
@@ -97,19 +90,19 @@ ForEach ($file in $fileList) {
         }
         # Video is already H264, Audio is not AAC
         ElseIf ($getVideoCodec -eq 'h264' -AND $getAudioCodec -ne 'aac') {
-            Log "$($time.Invoke()) Video: $($script:getVideoCodec.ToUpper()), Audio: $($script:getAudioCodec.ToUpper()). Encoding audio to AAC"
+            Log "$($time.Invoke()) Video: $($getVideoCodec.ToUpper()), Audio: $($getAudioCodec.ToUpper()). Encoding audio to AAC"
             ConvertFile -ConvertType Audio -KeepSubs:$cfg.keepSubs
             $skipFile = $False
         }
         # Video is not H264, Audio is already AAC
         ElseIf ($getVideoCodec -ne 'h264' -AND $getAudioCodec -eq 'aac') {
-            Log "$($time.Invoke()) Video: $($script:getVideoCodec.ToUpper()), Audio: $($script:getAudioCodec.ToUpper()). Encoding video to H264."
+            Log "$($time.Invoke()) Video: $($getVideoCodec.ToUpper()), Audio: $($getAudioCodec.ToUpper()). Encoding video to H264."
             ConvertFile -ConvertType Video -KeepSubs:$cfg.keepSubs
             $skipFile = $False
         }
         # Video is not H264, Audio is not AAC
         ElseIf ($getVideoCodec -ne 'h264' -AND $getAudioCodec -ne 'aac') {
-            Log "$($time.Invoke()) Video: $($script:getVideoCodec.ToUpper()), Audio: $($script:getAudioCodec.ToUpper()). Encoding video to H264 and audio to AAC."
+            Log "$($time.Invoke()) Video: $($getVideoCodec.ToUpper()), Audio: $($getAudioCodec.ToUpper()). Encoding video to H264 and audio to AAC."
             ConvertFile -ConvertType Both -KeepSubs:$cfg.keepSubs
             $skipFile = $False
         }
@@ -120,7 +113,6 @@ ForEach ($file in $fileList) {
 
         # Refresh Plex libraries
         If ($cfg.usePlex) {
-            # Refresh Plex libraries
             PlexRefresh
         }
 

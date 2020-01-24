@@ -1,22 +1,28 @@
 Write-Output 'Running preflight checks...'
 
+#Import functions
+Get-ChildItem -Path $prop.func_basepath -Include "*.ps1" -Recurse |
+    ForEach-Object {
+        . $_
+    }
+
 #Validate and create or wait on lock file
-. $prop.validate_lockfile
+ValidateLockFilePath -Path $prop.lock_path
 
 #Validate log path
-. $prop.validate_logpath
+ValidateLogPath -Path $prop.log_path
 
 #Validate ignore path
-. $prop.validate_ignorepath
+ValidateIgnorePath -Path $prop.ignore_path
 
 #Validate ffmpeg.exe path
-. $prop.validate_ffmpegpath
-
-#Validate ffprobe.exe path
-. $prop.validate_ffprobepath
+ValidateFFMPEGPath -Path $cfg.ffmpegBinDir
 
 #Validate HandbrakeCLI path
-. $prop.validate_handbrakecli
+ValidateHandbrakeCLIPath -Path $cfg.handbrakeDir
 
 #Validate mediaPath
-. $prop.validate_mediapath
+ValidateMediaPath -Path $cfg.mediaPath
+
+#Validate config booleans
+ValidateConfigBooleans
