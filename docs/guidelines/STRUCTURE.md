@@ -11,9 +11,9 @@
         - `config`
         - `config.bk`
     - **func**: Contains script functions
+        - **validate**: Contains properties and configuration validation functions
     - **ignore**: Contains the ignore list
-    - **init**: Contains script initilization and validation-related scripts
-        - **validate**: Contains configuration validation scripts
+    - **init**: Contains helper scripts
     - **lock**: Contains lock file while script is executing
     - **log**: Contains the log file
         - `conv2mp4-ps.log`
