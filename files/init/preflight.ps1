@@ -16,13 +16,13 @@ ValidateLogPath -Path $prop.log_path
 ValidateIgnorePath -Path $prop.ignore_path
 
 #Validate ffmpeg.exe path
-ValidateFFMPEGPath -Path $cfg.ffmpegBinDir
+ValidateFFMPEGPath -Path $cfg.fmmpeg_bin_dir
 
 #Validate HandbrakeCLI path
-ValidateHandbrakeCLIPath -Path $cfg.handbrakeDir
+ValidateHandbrakeCLIPath -Path $cfg.handbrakecli_bin_dir
 
-#Validate mediaPath
-ValidateMediaPath -Path $cfg.mediaPath
+#Validate media_path
+Validatemedia_path -Path $cfg.media_path
 
 #Validate config booleans
 ValidateConfigBooleans

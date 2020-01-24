@@ -2,7 +2,7 @@
 conv2mp4-ps v4.0 - https://github.com/BrianDMG/conv2mp4-ps
 
 This Powershell script will recursively search through a user-defined file path and convert all videos of user-specified
-filetypes to MP4 with H264 video and AAC audio using ffmpeg. If a conversion failure is detected, the script re-encodes
+include_file_types to MP4 with H264 video and AAC audio using ffmpeg. If a conversion failure is detected, the script re-encodes
 the file with HandbrakeCLI. Upon successful encoding, Plex libraries are (optionally) refreshed and source file is deleted.
 The purpose of this script is to reduce the amount of transcoding CPU load on a Plex server.
 ========================================================================================================================#>
@@ -37,16 +37,16 @@ ForEach ($file in $fileList) {
     $title = $file.BaseName
     $sourceFile = $file.DirectoryName + "\" + $file.BaseName + $file.Extension;
 
-    $fileSubDirs = ($file.DirectoryName).Substring($cfg.mediaPath.Length, ($file.DirectoryName).Length - $cfg.mediaPath.Length);
-    If ($cfg.useOutPath) {
-        $cfg.outPath = $baseOutPath + $fileSubDirs;
+    $fileSubDirs = ($file.DirectoryName).Substring($cfg.media_path.Length, ($file.DirectoryName).Length - $cfg.media_path.Length);
+    If ($cfg.use_out_path) {
+        $cfg.out_path = $baseout_path + $fileSubDirs;
 
-        If (-Not (Test-Path $cfg.outPath)) {
-            mkdir $cfg.outPath
+        If (-Not (Test-Path $cfg.out_path)) {
+            mkdir $cfg.out_path
         }
 
-        $targetFile = $cfg.outPath + "\" + $file.BaseName + "_NEW" + ".mp4";
-        Log "outPath = $($cfg.outPath)"
+        $targetFile = $cfg.out_path + "\" + $file.BaseName + "_NEW" + ".mp4";
+        Log "out_path = $($cfg.out_path)"
     }
     Else {
         $targetFile = $file.DirectoryName + "\" + $file.BaseName + "_NEW" + ".mp4";
@@ -80,7 +80,7 @@ ForEach ($file in $fileList) {
         If ($getVideoCodec -eq 'h264' -AND $getAudioCodec -eq 'aac') {
             If ($file.Extension -ne ".mp4") {
                 Log "$($time.Invoke()) Video: $($getVideoCodec.ToUpper()), Audio: $($getAudioCodec.ToUpper()). Performing simple container conversion to MP4."
-                ConvertFile -ConvertType Simple -KeepSubs:$cfg.keepSubs
+                ConvertFile -ConvertType Simple -KeepSubs:$cfg.keep_subtitles
                 $skipFile = $False
             }
             Else {
@@ -91,28 +91,28 @@ ForEach ($file in $fileList) {
         # Video is already H264, Audio is not AAC
         ElseIf ($getVideoCodec -eq 'h264' -AND $getAudioCodec -ne 'aac') {
             Log "$($time.Invoke()) Video: $($getVideoCodec.ToUpper()), Audio: $($getAudioCodec.ToUpper()). Encoding audio to AAC"
-            ConvertFile -ConvertType Audio -KeepSubs:$cfg.keepSubs
+            ConvertFile -ConvertType Audio -KeepSubs:$cfg.keep_subtitles
             $skipFile = $False
         }
         # Video is not H264, Audio is already AAC
         ElseIf ($getVideoCodec -ne 'h264' -AND $getAudioCodec -eq 'aac') {
             Log "$($time.Invoke()) Video: $($getVideoCodec.ToUpper()), Audio: $($getAudioCodec.ToUpper()). Encoding video to H264."
-            ConvertFile -ConvertType Video -KeepSubs:$cfg.keepSubs
+            ConvertFile -ConvertType Video -KeepSubs:$cfg.keep_subtitles
             $skipFile = $False
         }
         # Video is not H264, Audio is not AAC
         ElseIf ($getVideoCodec -ne 'h264' -AND $getAudioCodec -ne 'aac') {
             Log "$($time.Invoke()) Video: $($getVideoCodec.ToUpper()), Audio: $($getAudioCodec.ToUpper()). Encoding video to H264 and audio to AAC."
-            ConvertFile -ConvertType Both -KeepSubs:$cfg.keepSubs
+            ConvertFile -ConvertType Both -KeepSubs:$cfg.keep_subtitles
             $skipFile = $False
         }
 
-        If ($cfg.force2chCopy -eq $True) {
+        If ($cfg.force_stereo_clone -eq $True) {
             CloneStereoStream
         }
 
         # Refresh Plex libraries
-        If ($cfg.usePlex) {
+        If ($cfg.use_plex) {
             PlexRefresh
         }
 
@@ -132,18 +132,18 @@ ForEach ($file in $fileList) {
                 CompareIfLarger
             }
             # If new file is much smaller than old file (indicating a failed conversion), log status, delete new file, and re-encode with HandbrakeCLI
-            Elseif ($targetFileCompare.length -lt ($sourceFileCompare.length * $cfg.failOverThresh)) {
+            Elseif ($targetFileCompare.length -lt ($sourceFileCompare.length * $cfg.failover_threshold)) {
                 PrintEncodeError
 
                 #Begin Handbrake encode (lossy)
-                ConvertFile -ConvertType Handbrake -KeepSubs:$cfg.keepSubs
+                ConvertFile -ConvertType Handbrake -KeepSubs:$cfg.keep_subtitles
 
                 # Load files for comparison
                 $sourceFileCompare = Get-Item $sourceFile
                 $targetFileCompare = Get-Item $targetFile
 
                 # If new file is much smaller than old file (likely because the script was aborted re-encode), leave original file alone and print error
-                If ($targetFileCompare.length -lt ($sourceFileCompare.length * $cfg.failOverThresh)) {
+                If ($targetFileCompare.length -lt ($sourceFileCompare.length * $cfg.failover_threshold)) {
                     $fileSizeDelta = [Math]::Round($targetFileCompare.length - $sourceFileCompare.length)/1MB
                     $fileSizeDelta = [Math]::Round($fileSizeDelta, 2)
 
@@ -187,7 +187,7 @@ ForEach ($file in $fileList) {
         }
         Else {
             Log "$($time.Invoke()) MP4 already compliant."
-            If ($cfg.useIgnore -eq $True) {
+            If ($cfg.use_ignore_list -eq $True) {
                 Log "$($time.Invoke()) Added file to ignore list."
                 $fileToIgnore = $file.BaseName + $file.Extension;
                 AddToIgnoreList "$($fileToIgnore)"
@@ -201,7 +201,7 @@ ForEach ($file in $fileList) {
 
 #Wrap-up
 PrintStatistics
-If ($cfg.collectGarbage) {
+If ($cfg.collect_garbage) {
     CollectGarbage
 }
 

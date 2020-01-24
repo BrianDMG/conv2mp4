@@ -1,6 +1,6 @@
 #Validate boolean settings from the config file
 Function ValidateConfigBooleans {
-    $boolArray = 'useOutPath', 'setTitle', 'force2chCopy', 'keepSubs', 'appendLog', 'useIgnore', 'usePlex', 'collectGarbage'
+    $boolArray = 'use_out_path', 'use_set_metadata_title', 'force_stereo_clone', 'keep_subtitles', 'append_log', 'use_ignore_list', 'use_plex', 'collect_garbage'
 
     ForEach ($value in $boolArray) {
         $curVal = $cfg.$value

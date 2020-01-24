@@ -4,32 +4,32 @@
 #Make changes and save as 'config'
 
 #File paths
-mediaPath=\\your\path\here
-ffmpegBinDir=C:\ffmpeg\bin
-handbrakeDir=C:\Program Files\HandBrake
-useOutPath=false
-outPath=your\output\path\here
+media_path=\\your\path\here
+fmmpeg_bin_dir=C:\ffmpeg\bin
+handbrakecli_bin_dir=C:\Program Files\HandBrake
+use_out_path=false
+out_path=your\output\path\here
 
 #Conversion settings
-fileTypes=*.mkv, *.avi, *.mp4
-setTitle = true
-failOverThresh=.60
+include_file_types=*.mkv, *.avi, *.mp4
+use_set_metadata_title = true
+failover_threshold=.60
 
 #Audio encoding options
-force2chCopy=false
+force_stereo_clone=false
 
 #Subtitle options
-keepSubs = true
+keep_subtitles = true
 
 #Log settings
-appendLog=true
-useIgnore=true
+append_log=true
+use_ignore_list=true
 
 #Plex configuration
-usePlex = false
-plexIP=plexip:32400
-plexToken=plextoken
+use_plex = false
+plex_ip=plexip:32400
+plex_token=plextoken
 
 #Garbage collection
-collectGarbage = false
-garbage=*.nfo
+collect_garbage = false
+garbage_include_file_types=*.nfo
