@@ -1,23 +1,10 @@
 Write-Output "Initializing..."
 
 #Import functions
-. $prop.func_addignore
-. $prop.func_appendlog
-. $prop.func_clonestereo
-. $prop.func_converttonewmp4
-. $prop.func_deletelockfile
-. $prop.func_failuredetected
-. $prop.func_finalstatistics
-. $prop.func_findaudiochannels
-. $prop.func_findcodec
-. $prop.func_garbagecollection
-. $prop.func_iflarger
-. $prop.func_ifsame
-. $prop.func_ifsmaller
-. $prop.func_listfiles
-. $prop.func_log
-. $prop.func_plexrefresh
-. $prop.func_printver
+Get-ChildItem -Path $prop.func_basepath -Include "*.ps1" -Recurse |
+    ForEach-Object {
+        . $_
+    }
 
 #Convert configuration to boolean
 $cfg.useOutPath = [System.Convert]::ToBoolean($cfg.useOutPath)
