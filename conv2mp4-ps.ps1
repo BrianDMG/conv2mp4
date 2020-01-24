@@ -20,8 +20,17 @@ $cfgRawString = Get-Content "$($prop.cfg_path)" | Out-String
 $cfgStringToConvert = $cfgRawString -replace '\\', '\\'
 $cfg = ConvertFrom-StringData $cfgStringToConvert
 
-#Initialize script
-. $prop.init
+# Time and format used for timestamps in the log
+$time = {Get-Date -format "MM/dd/yy HH:mm:ss"}
+
+# Get current time to store as start time for script
+$startScriptTime = (Get-Date)
+
+# Initialize disk usage change to 0
+#$diskUsageDelta = 0
+
+# Initialize 'video length converted' to 0
+#$cumulativeVideoDuration = [timespan]::fromseconds(0)
 
 #Execute preflight checks
 . $prop.preflight
@@ -142,21 +151,10 @@ ForEach ($file in $fileList) {
                 $sourceFileCompare = Get-Item $sourceFile
                 $targetFileCompare = Get-Item $targetFile
 
-                # If new file is much smaller than old file (likely because the script was aborted re-encode), leave original file alone and print error
+                # If new file still exceeds failover threshold, leave original file in place and log failure
                 If ($targetFileCompare.length -lt ($sourceFileCompare.length * $cfg.failover_threshold)) {
-                    $fileSizeDelta = [Math]::Round($targetFileCompare.length - $sourceFileCompare.length)/1MB
-                    $fileSizeDelta = [Math]::Round($fileSizeDelta, 2)
-
-                    Try {
-                        Remove-Item $targetFile -Force -ErrorAction Stop
-                        Log "$($time.Invoke()) ERROR: New file was too small ($($fileSizeDelta)MB)."
-                        Log "$($time.Invoke()) Deleted new file and retained $sourceFile."
-                    }
-                    Catch {
-                        Log "$($time.Invoke()) ERROR: New file was too small ($($fileSizeDelta)MB). Retained $sourceFile."
-                        Log "$($time.Invoke()) ERROR: $targetFile could not be deleted. Full error below."
-                        Log $_
-                    }
+                    $failures += "$sourceFile`n"
+                    PrintEncodeFailure
                 }
 
                 # If new file is the same size as old file, log status and delete old file
@@ -187,7 +185,7 @@ ForEach ($file in $fileList) {
         }
         Else {
             Log "$($time.Invoke()) MP4 already compliant."
-            If ($cfg.use_ignore_list -eq $True) {
+            If ($cfg.use_ignore_list) {
                 Log "$($time.Invoke()) Added file to ignore list."
                 $fileToIgnore = $file.BaseName + $file.Extension;
                 AddToIgnoreList "$($fileToIgnore)"
