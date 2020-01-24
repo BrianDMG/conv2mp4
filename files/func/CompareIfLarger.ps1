@@ -1,5 +1,5 @@
 # If new file is larger than old file
-Function IfLarger {
+Function CompareIfLarger {
     $deltaGT = [Math]::Round($targetFileCompare.length - $sourceFileCompare.length)/1MB
     $deltaGT = [Math]::Round($deltaGT, 2)
     Try {

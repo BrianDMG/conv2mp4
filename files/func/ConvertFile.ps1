@@ -1,5 +1,5 @@
 # Master Encoding function
-Function ConvertToNewMP4 {
+Function ConvertFile {
     param
     (
         [Parameter(Position = 0, mandatory = $True)]

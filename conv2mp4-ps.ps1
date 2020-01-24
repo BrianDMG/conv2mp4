@@ -87,7 +87,7 @@ ForEach ($file in $fileList) {
         If ($getVideoCodec -eq 'h264' -AND $getAudioCodec -eq 'aac') {
             If ($file.Extension -ne ".mp4") {
                 Log "$($time.Invoke()) Video: $($script:getVideoCodec.ToUpper()), Audio: $($script:getAudioCodec.ToUpper()). Performing simple container conversion to MP4."
-                ConvertToNewMP4 -ConvertType Simple -KeepSubs:$cfg.keepSubs
+                ConvertFile -ConvertType Simple -KeepSubs:$cfg.keepSubs
                 $skipFile = $False
             }
             Else {
@@ -98,24 +98,24 @@ ForEach ($file in $fileList) {
         # Video is already H264, Audio is not AAC
         ElseIf ($getVideoCodec -eq 'h264' -AND $getAudioCodec -ne 'aac') {
             Log "$($time.Invoke()) Video: $($script:getVideoCodec.ToUpper()), Audio: $($script:getAudioCodec.ToUpper()). Encoding audio to AAC"
-            ConvertToNewMP4 -ConvertType Audio -KeepSubs:$cfg.keepSubs
+            ConvertFile -ConvertType Audio -KeepSubs:$cfg.keepSubs
             $skipFile = $False
         }
         # Video is not H264, Audio is already AAC
         ElseIf ($getVideoCodec -ne 'h264' -AND $getAudioCodec -eq 'aac') {
             Log "$($time.Invoke()) Video: $($script:getVideoCodec.ToUpper()), Audio: $($script:getAudioCodec.ToUpper()). Encoding video to H264."
-            ConvertToNewMP4 -ConvertType Video -KeepSubs:$cfg.keepSubs
+            ConvertFile -ConvertType Video -KeepSubs:$cfg.keepSubs
             $skipFile = $False
         }
         # Video is not H264, Audio is not AAC
         ElseIf ($getVideoCodec -ne 'h264' -AND $getAudioCodec -ne 'aac') {
             Log "$($time.Invoke()) Video: $($script:getVideoCodec.ToUpper()), Audio: $($script:getAudioCodec.ToUpper()). Encoding video to H264 and audio to AAC."
-            ConvertToNewMP4 -ConvertType Both -KeepSubs:$cfg.keepSubs
+            ConvertFile -ConvertType Both -KeepSubs:$cfg.keepSubs
             $skipFile = $False
         }
 
         If ($cfg.force2chCopy -eq $True) {
-            CloneStereo
+            CloneStereoStream
         }
 
         # Refresh Plex libraries
@@ -132,19 +132,19 @@ ForEach ($file in $fileList) {
 
             # If new file is the same size as old file, log status and delete old file
             If ($targetFileCompare.length -eq $sourceFileCompare.length) {
-                IfSame
+                CompareIfSame
             }
 
             # If new file is larger than old file, log status and delete old file
             Elseif ($targetFileCompare.length -gt $sourceFileCompare.length) {
-                IfLarger
+                CompareIfLarger
             }
             # If new file is much smaller than old file (indicating a failed conversion), log status, delete new file, and re-encode with HandbrakeCLI
             Elseif ($targetFileCompare.length -lt ($sourceFileCompare.length * $cfg.failOverThresh)) {
-                FailureDetected
+                PrintEncodeError
 
                 #Begin Handbrake encode (lossy)
-                ConvertToNewMP4 -ConvertType Handbrake -KeepSubs:$cfg.keepSubs
+                ConvertFile -ConvertType Handbrake -KeepSubs:$cfg.keepSubs
 
                 # Load files for comparison
                 $sourceFileCompare = Get-Item $sourceFile
@@ -169,23 +169,23 @@ ForEach ($file in $fileList) {
 
                 # If new file is the same size as old file, log status and delete old file
                 Elseif ($targetFileCompare.length -eq $sourceFileCompare.length) {
-                    IfSame
+                    CompareIfSame
                 }
 
                 # If new file is larger than old file, log status and delete old file
                 Elseif ($targetFileCompare.length -gt $sourceFileCompare.length) {
-                    IfLarger
+                    CompareIfLarger
                 }
 
                 # If new file is smaller than old file, log status and delete old file
                 Elseif ($targetFileCompare.length -lt $sourceFileCompare.length) {
-                    IfSmaller
+                    CompareIfSmaller
                 }
             }
 
             # If new file is smaller than old file, log status and delete old file
             Elseif ($targetFileCompare.length -lt $sourceFileCompare.length) {
-                IfSmaller
+                CompareIfSmaller
             }
 
             #If $sourceFile was an mp4, rename $targetFile to remove "-NEW"
@@ -198,7 +198,7 @@ ForEach ($file in $fileList) {
             If ($cfg.useIgnore -eq $True) {
                 Log "$($time.Invoke()) Added file to ignore list."
                 $fileToIgnore = $file.BaseName + $file.Extension;
-                AddIgnore "$($fileToIgnore)"
+                AddToIgnoreList "$($fileToIgnore)"
             }
         }
 
@@ -208,9 +208,9 @@ ForEach ($file in $fileList) {
 } # End foreach loop
 
 #Wrap-up
-FinalStatistics
+PrintStatistics
 If ($cfg.collectGarbage) {
-    GarbageCollection
+    CollectGarbage
 }
 
 Log "`nFinished"

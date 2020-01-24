@@ -1,5 +1,5 @@
 # Log various session statistics
-Function FinalStatistics {
+Function PrintStatistics {
     Log "`n$($prop.final_stat_divider)`n"
     #Print total session disk usage changes
     If ($script:diskUsageDelta -gt -1 -AND $script:diskUsageDelta -lt 1) {
