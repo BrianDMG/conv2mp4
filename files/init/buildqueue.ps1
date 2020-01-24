@@ -1,3 +1,6 @@
+# Print initial wait notice to console
+Write-Output "`nBuilding file list, please wait. This may take a while, especially for large libraries.`n"
+
 # Populate file list
 $fileCount=0
 $mPath = Get-Item -Path $cfg.mediaPath

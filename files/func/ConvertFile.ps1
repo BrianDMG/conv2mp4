@@ -8,6 +8,9 @@ Function ConvertFile {
         [Switch]$KeepSubs
     )
 
+    $ffmpeg = Join-Path $cfg.ffmpegBinDir "ffmpeg.exe"
+    $handbrake = Join-Path $cfg.handbrakeDir "HandBrakeCLI.exe"
+
     If ($ConvertType -eq "Handbrake") {
         # Handbrake CLI: https://trac.handbrake.fr/wiki/CLIGuide#presets
         # Handbrake arguments
