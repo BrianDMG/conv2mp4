@@ -1,5 +1,5 @@
 # Delete garbage files
-Function GarbageCollection {
+Function CollectGarbage {
 
     $garbageList = Get-ChildItem "$($mPath.FullName)\*" -i ( $cfg.garbage -split ',' ).trim() -Recurse
     $garbageNum = 0

@@ -1,5 +1,5 @@
 # If new and old files are the same size
-Function IfSame {
+Function CompareIfSame {
     Try {
         Remove-Item $sourceFile -Force -ErrorAction Stop
         Log "$($time.Invoke()) Same file size."

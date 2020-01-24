@@ -1,5 +1,5 @@
 # If new file is over 25% smaller than the original file, trigger encoding failure
-Function FailureDetected {
+Function PrintEncodeError {
     $fileSizeDelta = [Math]::Round($targetFileCompare.length - $sourceFileCompare.length)/1MB
     $fileSizeDelta = [Math]::Round($fileSizeDelta, 2)
     Try {

@@ -1,5 +1,5 @@
 # List files in the queue in the log
-Function ListFiles {
+Function PrintFileQueue {
 
     If ($fileCount -ge 1) {
         AppendLog

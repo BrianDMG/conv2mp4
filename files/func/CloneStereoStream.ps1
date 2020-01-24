@@ -1,4 +1,4 @@
-Function CloneStereo {
+Function CloneStereoStream {
 
     $copyStereo = GetAudioStreams
 
