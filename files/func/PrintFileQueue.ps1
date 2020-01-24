@@ -2,7 +2,6 @@
 Function PrintFileQueue {
 
     If ($fileCount -ge 1) {
-        AppendLog
         Log ("`nThere are $fileCount file(s) in the queue:`n")
     }
     Else {

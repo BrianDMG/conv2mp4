@@ -26,3 +26,6 @@ Validatemedia_path -Path $cfg.media_path
 
 #Validate config booleans
 ValidateConfigBooleans
+
+#Validate append_log
+ValidateAppendLog
