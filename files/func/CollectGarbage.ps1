@@ -1,7 +1,7 @@
 # Delete garbage files
 Function CollectGarbage {
 
-    $garbageList = Get-ChildItem "$($mPath.FullName)\*" -i ( $cfg.garbage_include_file_types -split ',' ).trim() -Recurse
+    $garbageList = Get-ChildItem "$((Get-Item -Path $cfg.media_path).FullName)" -Include ( $cfg.garbage_include_file_types -split ',' ).trim() -Recurse
     $garbageNum = 0
 
     ForEach ($turd in $garbageList) {

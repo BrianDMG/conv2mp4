@@ -3,9 +3,8 @@ Write-Output "`nBuilding file list, please wait. This may take a while, especial
 
 # Populate file list
 $fileCount=0
-$mPath = Get-Item -Path $cfg.media_path
-$ignoreList = Get-Content $prop.ignore_path
-$fileList = Get-ChildItem "$($mPath.FullName)" -Include ( $cfg.include_file_types -split ',' ).trim() -Exclude $ignoreList -Recurse |
+
+$fileList = Get-ChildItem "$((Get-Item -Path $cfg.media_path).FullName)" -Include ( $cfg.include_file_types -split ',' ).trim() -Exclude $(Get-Content $prop.ignore_path) -Recurse |
     ForEach-Object {
         $fileCount++
         Write-Progress "`rFound $fileCount file(s) so far..."
