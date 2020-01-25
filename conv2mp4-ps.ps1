@@ -14,11 +14,13 @@ $propFile = "files\prop\properties"
 $propRawString = Get-Content "$propFile" | Out-String
 $propStringToConvert = $propRawString -replace '\\', '\\'
 $prop = ConvertFrom-StringData $propStringToConvert
+Remove-Variable -Name propFile, propRawString, propSTringToConvert
 
 #Load configuration
 $cfgRawString = Get-Content "$($prop.cfg_path)" | Out-String
 $cfgStringToConvert = $cfgRawString -replace '\\', '\\'
 $cfg = ConvertFrom-StringData $cfgStringToConvert
+Remove-Variable -Name cfgRawString, cfgStringToConvert
 
 # Time and format used for timestamps in the log
 $time = {Get-Date -format "MM/dd/yy HH:mm:ss"}
