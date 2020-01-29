@@ -32,4 +32,4 @@ plex_token=plextoken
 
 #Garbage collection
 collect_garbage = false
-garbage_include_file_types=*.nfo
+garbage_include_file_types=*.nfo, *_NEW_
