@@ -85,10 +85,11 @@ ForEach ($file in $fileList) {
         $getVideoDuration = GetCodec -DiscoverType Duration
 
         # Video is already H264, Audio is already AAC
-        If ($getAudioCodec -eq '' -OR $getVideoCodec -eq '') {
+        If (!$getAudioCodec -OR !$getVideoCodec) {
             $failures += "$sourceFile`n"
             $failureCause = 'corruptCodec'
             PrintEncodeFailure
+            Continue
         }
         Elseif ($getVideoCodec -eq 'h264' -AND $getAudioCodec -eq 'aac') {
             If ($file.Extension -ne ".mp4") {
@@ -120,7 +121,7 @@ ForEach ($file in $fileList) {
             $skipFile = $False
         }
 
-        If ($cfg.force_stereo_clone -eq $True) {
+        If ($cfg.force_stereo_clone) {
             CloneStereoStream
         }
 
@@ -130,7 +131,7 @@ ForEach ($file in $fileList) {
         }
 
         #Begin file comparison between old file and new file to determine conversion success
-        If ($skipFile -eq $False) {
+        If (-Not ($skipFile)) {
 
             $sourceFileCompare = Get-Item $sourceFile
             $targetFileCompare = Get-Item $targetFile
@@ -204,6 +205,7 @@ ForEach ($file in $fileList) {
 
 #Wrap-up
 PrintStatistics
+PrintFailures
 If ($cfg.collect_garbage) {
     CollectGarbage
 }

@@ -4,15 +4,18 @@ Function PrintEncodeFailure {
     $fileSizeDelta = [Math]::Round($fileSizeDelta, 2)
 
     Try {
-        Remove-Item $targetFile -Force -ErrorAction Stop
-        Log "$($time.Invoke()) Deleted new file and retained $sourceFile."
-
         Switch($failureCause) {
             corruptCodec {
-                Log "$($time.Invoke()) ERROR: File is corrupt (either audio or video codec is unobtainable). $targetFile deleted."
+                $script:corruptFiles += $sourceFile
+                Log "$($time.Invoke()) ERROR: File is corrupt and will not be processed."
+                Log "$($time.Invoke()) Aborted encoding and logged the failure."
+                Log "$($time.Invoke()) $sourceFile retained."
             }
             encodeFailure {
+                $script:failedEncodes += $sourceFile
+                Remove-Item $targetFile -Force -ErrorAction Stop
                 Log "$($time.Invoke()) ERROR: Failover threshold exceeded even after failover: ($($fileSizeDelta)MB). $targetFile deleted."
+                Log "$($time.Invoke()) Deleted new file and retained $sourceFile."
             }
         }
     }
