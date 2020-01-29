@@ -19,7 +19,7 @@ All files paths must be specified in the following formats, and are case-sensiti
 - **out_path**: If `use_out_path=true`, converted files will be written to this directory.
 
 ### Conversion settings
-- **include_file_types**: the extensions of the files you want to convert in the format `*.ext1, *.ext2`. Types specified in `files\cfg\config.template` are defualts that should not be removed (`*.mkv` and `*.mp4`)
+- **include_file_types**: the extensions of the files you want to convert in the format `*.ext1, *.ext2`. Types specified in `files\cfg\config.template` are defaults that should not be removed (`*.mkv`)
 - **use_set_metadata_title**: true
 - **failover_threshold** =.60
 

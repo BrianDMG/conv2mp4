@@ -11,7 +11,7 @@ use_out_path=false
 out_path=your\output\path\here
 
 #Conversion settings
-include_file_types=*.mkv, *.avi, *.mp4
+include_file_types=*.mkv
 use_set_metadata_title = true
 failover_threshold=.60
 
