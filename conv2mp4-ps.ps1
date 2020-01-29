@@ -85,7 +85,12 @@ ForEach ($file in $fileList) {
         $getVideoDuration = GetCodec -DiscoverType Duration
 
         # Video is already H264, Audio is already AAC
-        If ($getVideoCodec -eq 'h264' -AND $getAudioCodec -eq 'aac') {
+        If ($getAudioCodec -eq '' -OR $getVideoCodec -eq '') {
+            $failures += "$sourceFile`n"
+            $failureCause = 'corruptCodec'
+            PrintEncodeFailure
+        }
+        Elseif ($getVideoCodec -eq 'h264' -AND $getAudioCodec -eq 'aac') {
             If ($file.Extension -ne ".mp4") {
                 Log "$($time.Invoke()) Video: $($getVideoCodec.ToUpper()), Audio: $($getAudioCodec.ToUpper()). Performing simple container conversion to MP4."
                 ConvertFile -ConvertType Simple -KeepSubs:$cfg.keep_subtitles
@@ -153,6 +158,7 @@ ForEach ($file in $fileList) {
                 # If new file still exceeds failover threshold, leave original file in place and log failure
                 If ($targetFileCompare.length -lt ($sourceFileCompare.length * $cfg.failover_threshold)) {
                     $failures += "$sourceFile`n"
+                    $failureCause = 'encodeFailure'
                     PrintEncodeFailure
                 }
 
