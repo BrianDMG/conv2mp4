@@ -2,10 +2,10 @@
 Function PrintFileQueue {
 
     If ($fileCount -ge 1) {
-        Log ("`nThere are $fileCount file(s) in the queue:`n")
+        Log "`nThere are $fileCount file(s) in the queue:`n"
     }
     Else {
-        Write-Output ("`nThere are no files to be converted in $($cfg.media_path).`n")
+        Write-Output "`nThere are no files to be converted in $($cfg.media_path)."
     }
 
     $num = 0
