@@ -5,6 +5,7 @@ Function CompareIfLarger {
     Try {
         Remove-Item -LiteralPath $sourceFile -Force -ErrorAction Stop
         Log "$($time.Invoke()) $sourceFile deleted."
+        Log "$($time.Invoke()) $targetFileRenamed created."
 
         If ($deltaGT -lt 1) {
             $deltaGT_KB = ($deltaGT * 1024)

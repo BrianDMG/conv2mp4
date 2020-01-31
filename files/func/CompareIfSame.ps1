@@ -4,6 +4,7 @@ Function CompareIfSame {
         Remove-Item $sourceFile -Force -ErrorAction Stop
         Log "$($time.Invoke()) Same file size."
         Log "$($time.Invoke()) $sourceFile deleted."
+        Log "$($time.Invoke()) $targetFileRenamed created."
     }
     Catch
     {

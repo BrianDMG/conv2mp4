@@ -114,6 +114,6 @@ Function ConvertFile {
 
         # Begin ffmpeg operation
         $ffCMD
-        Log "$($time.Invoke()) ffmpeg completed"
+        Write-Output "$($time.Invoke()) ffmpeg completed"
     }
 }
