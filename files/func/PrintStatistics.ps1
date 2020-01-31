@@ -1,6 +1,6 @@
 # Log various session statistics
 Function PrintStatistics {
-    If ($fileCount -ge 1) {
+    If ($fileList.Count -ge 1) {
         Log "`n$($prop.final_stat_divider)`n"
         #Print total session disk usage changes
         If ($script:diskUsageDelta -gt -1 -AND $script:diskUsageDelta -lt 1) {

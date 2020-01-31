@@ -38,10 +38,7 @@ $cumulativeVideoDuration = [timespan]::fromseconds(0)
 . $prop.buildqueue
 
 # Begin performing operations of files
-$i = 0
-
 ForEach ($file in $fileList) {
-    $i++;
     $title = $file.BaseName
     $sourceFile = $file.DirectoryName + "\" + $file.BaseName + $file.Extension;
 
@@ -60,14 +57,14 @@ ForEach ($file in $fileList) {
         $targetFile = $file.DirectoryName + "\" + $file.BaseName + "_NEW" + ".mp4";
     }
 
-    $progress = ($i / $fileCount) * 100
+    $progress = ($(@($fileList).indexOf($file)+1) / $fileList.Count) * 100
     $progress = [Math]::Round($progress,2)
 
     Write-Progress -Activity "$sourceFile" -PercentComplete $progress -CurrentOperation "$($progress)% Complete"
 
     Log "$($prop.standard_divider)"
     Log "$($time.Invoke()) Processing - $sourceFile"
-    Log "$($time.Invoke()) File $i of $fileCount - Total queue $progress%"
+    Log "$($time.Invoke()) File $(@($fileList).indexOf($file)+1) of $($fileList.Count) - Total queue $progress%"
 
     <#Test if $targetFile (.mp4) already exists, if yes then delete $sourceFile (.mkv)
     This outputs a more specific log message acknowleding the file already existed.#>
