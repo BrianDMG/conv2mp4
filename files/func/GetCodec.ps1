@@ -40,7 +40,7 @@ Function GetCodec {
 
     If ($DiscoverType -eq "Duration") {
         #Test whether the ffprobe result was invalid - usually happens in files with corrupt encoding
-        If ($ffprobeCMD -eq 0 -OR $ffprobeCMD -eq 'N/A') {
+        If ($ffprobeCMD -eq 0 -OR $ffprobeCMD -eq 'N/A' -OR !$getAudioCodec -OR !$getVideoCodec) {
             $currentVideoDuration=[timespan]::fromseconds(0)
             return "$($currentVideoDuration.hours):$($currentVideoDuration.minutes):$($currentVideoDuration.seconds)"
         }
