@@ -6,13 +6,13 @@ Function PrintEncodeFailure {
     Try {
         Switch($failureCause) {
             corruptCodec {
-                $script:corruptFiles += $sourceFile
+                $script:corruptFiles += @($sourceFile)
                 Log "$($time.Invoke()) ERROR: File is corrupt and will not be processed."
                 Log "$($time.Invoke()) Aborted encoding and logged the failure."
                 Log "$($time.Invoke()) $sourceFile retained."
             }
             encodeFailure {
-                $script:failedEncodes += $sourceFile
+                $script:failedEncodes += @($sourceFile)
                 Remove-Item $targetFile -Force -ErrorAction Stop
                 Log "$($time.Invoke()) ERROR: Failover threshold exceeded even after failover: ($($fileSizeDelta)MB). $targetFile deleted."
                 Log "$($time.Invoke()) Deleted new file and retained $sourceFile."
