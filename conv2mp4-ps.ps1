@@ -83,7 +83,6 @@ ForEach ($file in $fileList) {
 
         # Video is already H264, Audio is already AAC
         If (!$getAudioCodec -OR !$getVideoCodec) {
-            $failures += "$sourceFile`n"
             $failureCause = 'corruptCodec'
             PrintEncodeFailure
             Continue
@@ -155,7 +154,6 @@ ForEach ($file in $fileList) {
 
                 # If new file still exceeds failover threshold, leave original file in place and log failure
                 If ($targetFileCompare.length -lt ($sourceFileCompare.length * $cfg.failover_threshold)) {
-                    $failures += "$sourceFile`n"
                     $failureCause = 'encodeFailure'
                     PrintEncodeFailure
                 }
