@@ -210,7 +210,7 @@ If ($cfg.collect_garbage) {
     CollectGarbage
 }
 
-Log "`nFinished"
+Write-Output "`nFinished"
 
 DeleteLockFile
 
