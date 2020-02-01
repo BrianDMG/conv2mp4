@@ -36,9 +36,9 @@ Function PrintStatistics {
             Log "$_"
             Log "No time elapsed."
         }
+        Log "`n$($prop.final_stat_divider)"
     }
     Else {
         Write-Output "`nNo video was encoded/converted."
     }
-    Log "`n$($prop.final_stat_divider)"
 }

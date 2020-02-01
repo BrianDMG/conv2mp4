@@ -12,8 +12,6 @@ Function ValidateAppendLog {
     Elseif ($cfg.append_log -eq $True -AND $Null -eq $logEmpty) {
         PrintVersion
     }
-    Else {
-        Log "`n$($prop.standard_divider)"
-        Log "$($prop.standard_indent) New Session (started $($time.Invoke()))"
-    }
+    Log "$($prop.standard_divider)"
+    Log "$($prop.standard_indent) New Session (started $($time.Invoke()))"
 }
