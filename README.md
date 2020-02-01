@@ -7,6 +7,7 @@ Powershell script that recursively searches through a user-defined file path and
 - **Plex integration**: Refreshes Plex libraries upon completion of each item in the queue.
 - **Garbage collection**: Allows user-specified file types to be deleted during each execution, keeping non-media files such as .nfo or thumbs.db from accumulating.
 
-### [Dependencies](/docs/DEPENDENCIES.md)
-### [Usage](/docs/USAGE.md)
-### [Configuration](/docs/CONFIGURATION.md)
+### [Dependencies](/docs/DEPENDENCIES.md) • [Usage](/docs/USAGE.md) • [Configuration](/docs/CONFIGURATION.md)
+
+
+<sub><sup>[Github](https://github.com/BrianDMG/conv2mp4-ps) | [GitLab](https://gitlab.com/BrianDMG/conv2mp4-ps)</sub></sup>
