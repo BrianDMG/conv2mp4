@@ -4,6 +4,7 @@ platform=ps
 
 #URLs
 github_url=https://github.com/BrianDMG/conv2mp4-ps
+gitlab_url=https://gitlab.com/BrianDMG/conv2mp4-ps
 
 #File Paths
 cfg_path=files\cfg\config
