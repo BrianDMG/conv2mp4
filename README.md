@@ -10,6 +10,6 @@ Powershell script that recursively searches through a user-defined file path and
 ### [Dependencies](/docs/DEPENDENCIES.md) • [Usage](/docs/USAGE.md) • [Configuration](/docs/CONFIGURATION.md)
 
 
-<sub><sup>Python version can be found here: [conv2mp4-py](https://github.com/BrianDMG/conv2mp4-py)</sub></sup>
-<sub><sup>Want to [contribute](https://github.com/BrianDMG/conv2mp4-ps/blob/master/docs/guidelines/CONTRIBUTING.md)? [Pull requests](https://github.com/BrianDMG/conv2mp4-ps/blob/master/docs/guidelines/PULL_REQUEST_TEMPLATE.md) welcome!</sub></sup>
-<sub><sup>[Github](https://github.com/BrianDMG/conv2mp4-ps) | [GitLab](https://gitlab.com/BrianDMG/conv2mp4-ps)</sub></sup>
+<sub><sup>Python version can be found here: [conv2mp4-py](https://github.com/BrianDMG/conv2mp4-py)<br>
+Want to [contribute](https://github.com/BrianDMG/conv2mp4-ps/blob/master/docs/guidelines/CONTRIBUTING.md)? [Pull requests](https://github.com/BrianDMG/conv2mp4-ps/blob/master/docs/guidelines/PULL_REQUEST_TEMPLATE.md) welcome!<br>
+[Github](https://github.com/BrianDMG/conv2mp4-ps) | [GitLab](https://gitlab.com/BrianDMG/conv2mp4-ps)</sub></sup>
