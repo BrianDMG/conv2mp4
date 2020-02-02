@@ -1,0 +1,10 @@
+#Directories
+log/
+lock/
+ignore/
+tmp/
+
+#Files
+config
+config.bk
+ignore.list
