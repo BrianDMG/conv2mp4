@@ -122,7 +122,7 @@ ForEach ($file in $fileList) {
         }
 
         # Refresh Plex libraries
-        If ($cfg.use_plex) {
+        If ($cfg.use_plex -AND (-Not($skipFile))) {
             PlexRefresh
         }
 
