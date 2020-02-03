@@ -39,7 +39,7 @@ Function PrintStatistics {
 
         #Print process type totals
         If ($duplicatesDeleted.Count -ge 1) {
-            Log "Duplicates deleted: $($duplicateDeleted.Count)"
+            Log "Duplicates deleted: $($duplicatesDeleted.Count)"
         }
         If ($simpleConversion.Count -ge 1) {
             Log "Simple container conversions: $($simpleConversion.Count)"
