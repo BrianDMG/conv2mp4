@@ -200,7 +200,7 @@ ForEach ($file in $fileList) {
         }
 
         #Running tally of session container duration (cumulative length of video processed)
-        $script:cumulativeVideoDuration = $script:cumulativeVideoDuration + $getVideoDuration
+        $script:cumulativeVideoDuration = $cumulativeVideoDuration + $getVideoDuration
     }
 } # End foreach loop
 
