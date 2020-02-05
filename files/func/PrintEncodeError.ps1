@@ -5,7 +5,7 @@ Function PrintEncodeError {
     Try {
         Remove-Item -LiteralPath $targetFile -Force -ErrorAction Stop
         Log "$($time.Invoke()) EXCEPTION: New file is over 25% smaller ($($fileSizeDelta)MB)."
-        Log "$targetFileRenamed deleted."
+        Log "$($time.Invoke()) $targetFileRenamed deleted."
         Log "$($time.Invoke()) FAILOVER: Re-encoding $sourceFile with Handbrake."
     }
     Catch {
