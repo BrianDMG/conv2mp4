@@ -68,6 +68,8 @@ Function ConvertFile {
         $ffArgs += "`"$sourceFile`" " #Input file
         $ffArgs += "-threads " #Flag to set maximum number of threads (CPU) to use
         $ffArgs += "6 " #Maximum number of threads (CPU) to use
+        $ffArgs += "-movflags"
+        $ffArgs += "+faststart"
 
         If ($cfg.use_set_metadata_title){
             $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
