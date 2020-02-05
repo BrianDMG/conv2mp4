@@ -4,11 +4,12 @@ Function PrintEncodeError {
     $fileSizeDelta = [Math]::Round($fileSizeDelta, 2)
     Try {
         Remove-Item -LiteralPath $targetFile -Force -ErrorAction Stop
-        Log "$($time.Invoke()) EXCEPTION: New file is over 25% smaller ($($fileSizeDelta)MB). $targetFile deleted."
+        Log "$($time.Invoke()) EXCEPTION: New file is over 25% smaller ($($fileSizeDelta)MB)."
+        Log "$targetFileRenamed deleted."
         Log "$($time.Invoke()) FAILOVER: Re-encoding $sourceFile with Handbrake."
     }
     Catch {
-        Log "$($time.Invoke()) ERROR: $targetFile could not be deleted. Full error below."
+        Log "$($time.Invoke()) ERROR: $targetFileRenamed could not be deleted. Full error below."
         Log $_
     }
 }

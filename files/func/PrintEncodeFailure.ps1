@@ -14,7 +14,8 @@ Function PrintEncodeFailure {
             encodeFailure {
                 $script:failedEncodes += @($sourceFile)
                 Remove-Item $targetFile -Force -ErrorAction Stop
-                Log "$($time.Invoke()) ERROR: Failover threshold exceeded even after failover: ($($fileSizeDelta)MB). $targetFile deleted."
+                Log "$($time.Invoke()) ERROR: Failover threshold exceeded even after failover: ($($fileSizeDelta)MB)."
+                Log "$targetFileRenamed deleted."
                 Log "$($time.Invoke()) Deleted new file and retained $sourceFile."
             }
         }
