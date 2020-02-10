@@ -1,6 +1,9 @@
 Function GetAudioStreams {
-    $ffprobeArgs = "-i "
-    $ffprobeArgs += "`"$targetFileRenamed`" "
+    $ffprobe = Join-Path $cfg.fmmpeg_bin_dir "ffprobe.exe"
+
+    $ffprobeArgs += "-v "
+    $ffprobeArgs += "error "
+    $ffprobeArgs += "`"$targetFile`" "
     $ffprobeArgs += "-show_entries "
     $ffprobeArgs += "stream=channels "
     $ffprobeArgs += "-select_streams "
@@ -11,7 +14,7 @@ Function GetAudioStreams {
     [int[]] $audioStreamArray = cmd.exe /c "$ffprobe $ffprobeArgs"
 
     #If last channel is not stereo, create one
-    If ($audioStreamArray[$audioStreamArray.Length-1] -ne 2) {
+    If ($audioStreamArray[$audioStreamArray.Length-1] -gt 2 ) {
         return $True
     }
     #If not, skip stream clone
