@@ -39,7 +39,14 @@ $cumulativeVideoDuration = [timespan]::fromseconds(0)
 
 # Begin performing operations of files
 ForEach ($file in $fileList) {
+
     $title = $file.BaseName
+    $remove= $title | Select-String -Pattern '^(.*?)(19|20)[0-9]{2}(.*$)'  | ForEach-Object { "$($_.matches.groups[3])" }
+    $title = $title -replace "$remove",''
+    $title = $title -replace '\W',' '
+    $title = $title -replace '(\d{4})$', '($1)';
+
+
     $sourceFile = $file.DirectoryName + "\" + $file.BaseName + $file.Extension;
 
     $fileSubDirs = ($file.DirectoryName).Substring($cfg.media_path.Length, ($file.DirectoryName).Length - $cfg.media_path.Length);
