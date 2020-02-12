@@ -72,6 +72,11 @@ Function ConvertFile {
         $ffArgs += "+faststart"
 
         If ($cfg.use_set_metadata_title){
+            $remove= $title | Select-String -Pattern '^(.*?)(19|20)[0-9]{2}(.*$)'  | ForEach-Object { "$($_.matches.groups[3])" }
+            $title = $title -replace "$remove",''
+            $title = $title -replace '\W',' '
+            $title = $title -replace '(\d{4})$', '($1)';
+
             $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
             $ffArgs += "title=`"$title`" " #Use $title variable as metadata 'Title'
         }
