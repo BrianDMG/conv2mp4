@@ -8,9 +8,11 @@ Function CloneStereoStream {
     If ($copyStereo) {
         mkdir $($prop.tmp_dir) -Force
 
+        $ffmpeg = Join-Path $cfg.fmmpeg_bin_dir "ffmpeg.exe"
+
         #ffmpeg pull audio track from file
         $ffmpegArgs = "-i "
-        $ffmpegArgs += "$targetFileRenamed "
+        $ffmpegArgs += "$targetFile "
         $ffmpegArgs += "-vn "
         $ffmpegArgs += "-acodec "
         $ffmpegArgs += "copy "
@@ -26,7 +28,7 @@ Function CloneStereoStream {
         $ffmpegCMD = cmd.exe /c "$ffmpeg $ffmpegArgs"
 
         #Rename original source file, necessary to avoid corrupting by using same file as input and output
-        Move-Item $targetFileRenamed $tempFileName -Force
+        Move-Item $targetFile $tempFileName -Force
 
         #ffmpeg inject stereo audio track back into file
         $ffmpegArgs = "-y "
@@ -42,7 +44,7 @@ Function CloneStereoStream {
         $ffmpegArgs += "copy "
         $ffmpegArgs += "-metadata:s:a "
         $ffmpegArgs += "handler=Stereo "
-        $ffmpegArgs += "$targetFileRenamed"
+        $ffmpegArgs += "$targetFile"
         $ffmpegCMD = cmd.exe /c "$ffmpeg $ffmpegArgs"
 
         Remove-Item $tempFileName -Force

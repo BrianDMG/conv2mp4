@@ -1,5 +1,5 @@
 <#======================================================================================================================
-conv2mp4-ps v4.0 - https://github.com/BrianDMG/conv2mp4-ps
+conv2mp4-ps v4.1 - https://github.com/BrianDMG/conv2mp4-ps
 
 This Powershell script will recursively search through a user-defined file path and convert all videos of user-specified
 include_file_types to MP4 with H264 video and AAC audio using ffmpeg. If a conversion failure is detected, the script re-encodes
@@ -39,7 +39,9 @@ $cumulativeVideoDuration = [timespan]::fromseconds(0)
 
 # Begin performing operations of files
 ForEach ($file in $fileList) {
+
     $title = $file.BaseName
+
     $sourceFile = $file.DirectoryName + "\" + $file.BaseName + $file.Extension;
 
     $fileSubDirs = ($file.DirectoryName).Substring($cfg.media_path.Length, ($file.DirectoryName).Length - $cfg.media_path.Length);
@@ -74,6 +76,7 @@ ForEach ($file in $fileList) {
         Remove-Item $sourceFile -Force
         Log "$($time.Invoke()) Already exists: $targetFileRenamed"
         Log "$($time.Invoke()) Deleted: $sourceFile."
+        $duplicatesDeleted += @($sourceFile)
     }
     Else {
         #Codec discovery to determine whether video, audio, or both needs to be encoded
@@ -91,10 +94,12 @@ ForEach ($file in $fileList) {
             If ($file.Extension -ne ".mp4") {
                 Log "$($time.Invoke()) Video: $($getVideoCodec.ToUpper()), Audio: $($getAudioCodec.ToUpper()). Performing simple container conversion to MP4."
                 ConvertFile -ConvertType Simple -KeepSubs:$cfg.keep_subtitles
+                $simpleConversion += @($sourceFile)
                 $skipFile = $False
             }
             Else {
                 $getVideoDuration = "00:00:00"
+                $fileCompliant += @($sourceFile)
                 $skipFile = $True
             }
         }
@@ -102,18 +107,21 @@ ForEach ($file in $fileList) {
         ElseIf ($getVideoCodec -eq 'h264' -AND $getAudioCodec -ne 'aac') {
             Log "$($time.Invoke()) Video: $($getVideoCodec.ToUpper()), Audio: $($getAudioCodec.ToUpper()). Encoding audio to AAC"
             ConvertFile -ConvertType Audio -KeepSubs:$cfg.keep_subtitles
+            $audioConversion += @($sourceFile)
             $skipFile = $False
         }
         # Video is not H264, Audio is already AAC
         ElseIf ($getVideoCodec -ne 'h264' -AND $getAudioCodec -eq 'aac') {
             Log "$($time.Invoke()) Video: $($getVideoCodec.ToUpper()), Audio: $($getAudioCodec.ToUpper()). Encoding video to H264."
             ConvertFile -ConvertType Video -KeepSubs:$cfg.keep_subtitles
+            $videoConversion += @($sourceFile)
             $skipFile = $False
         }
         # Video is not H264, Audio is not AAC
         ElseIf ($getVideoCodec -ne 'h264' -AND $getAudioCodec -ne 'aac') {
             Log "$($time.Invoke()) Video: $($getVideoCodec.ToUpper()), Audio: $($getAudioCodec.ToUpper()). Encoding video to H264 and audio to AAC."
             ConvertFile -ConvertType Both -KeepSubs:$cfg.keep_subtitles
+            $bothConversion += @($sourceFile)
             $skipFile = $False
         }
 
@@ -122,7 +130,7 @@ ForEach ($file in $fileList) {
         }
 
         # Refresh Plex libraries
-        If ($cfg.use_plex) {
+        If ($cfg.use_plex -AND (-Not($skipFile))) {
             PlexRefresh
         }
 
@@ -194,7 +202,7 @@ ForEach ($file in $fileList) {
         }
 
         #Running tally of session container duration (cumulative length of video processed)
-        $script:cumulativeVideoDuration = $script:cumulativeVideoDuration + $getVideoDuration
+        $script:cumulativeVideoDuration = $cumulativeVideoDuration + $getVideoDuration
     }
 } # End foreach loop
 

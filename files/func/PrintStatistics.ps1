@@ -30,12 +30,34 @@ Function PrintStatistics {
         Try {
             $averageConversionRate = $cumulativeVideoDuration.Ticks / $scriptExecutionDuration.Ticks
             $averageConversionRate = [math]::Round($averageConversionRate, 2)
-            Log "Average conversion speed of $($averageConversionRate)x"
+            Log "Average conversion speed of $($averageConversionRate)x`n"
         }
         Catch {
             Log "$_"
-            Log "No time elapsed."
+            Log "No time elapsed.`n"
         }
+
+        #Print process type totals
+        If ($duplicatesDeleted.Count -ge 1) {
+            Log "Duplicates deleted: $($duplicatesDeleted.Count)"
+        }
+        If ($simpleConversion.Count -ge 1) {
+            Log "Simple container conversions: $($simpleConversion.Count)"
+        }
+        If ($videoConversion.Count -ge 1) {
+            Log "Video-only encodes: $($videoConversion.Count)"
+        }
+        If ($audioConversion.Count -ge 1) {
+            Log "Audio-only encodes: $($audioConversion.Count)"
+        }
+        If ($bothConversion.Count -ge 1) {
+            Log "Video and audio encodes: $($bothConversion.Count)"
+        }
+        If ($fileCompliant.Count -ge 1) {
+            Log "Compliant files: $($fileCompliant.Count)"
+        }
+
+
         Log "`n$($prop.final_stat_divider)"
     }
     Else {
