@@ -46,7 +46,9 @@ ForEach ($file in $fileList) {
 
     $fileSubDirs = ($file.DirectoryName).Substring($cfg.media_path.Length, ($file.DirectoryName).Length - $cfg.media_path.Length);
     If ($cfg.use_out_path) {
-        $cfg.out_path = $baseout_path + $fileSubDirs;
+	
+        $cfg.outpath = ""
+        $cfg.out_path = $cfg.out_path + $fileSubDirs;
 
         If (-Not (Test-Path $cfg.out_path)) {
             mkdir $cfg.out_path
