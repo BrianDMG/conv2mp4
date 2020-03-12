@@ -73,10 +73,9 @@ ForEach ($file in $fileList) {
     If ($cfg.use_out_path) {
         $targetFileRenamed = $targetPath + $file.BaseName + ".mp4"
 
-        #If using out_path, create out path if it doesn't exist
+        #If using out_path, create target path if it doesn't exist
         If ($cfg.use_out_path) {
             If (-Not (Test-Path $targetPath)) {
-                Log "target path: $targetPath"
                 mkdir $$targetPath -Force
             }
         }
