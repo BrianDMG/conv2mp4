@@ -24,6 +24,11 @@ ValidateHandbrakeCLIPath -Path $cfg.handbrakecli_bin_dir
 #Validate media_path
 Validatemedia_path -Path $cfg.media_path
 
+#Validate OutPath
+If ($cfg.use_out_path) {
+    ValidateOutPath -Path $cfg.out_path
+}
+
 #Validate config booleans
 ValidateConfigBooleans
 
