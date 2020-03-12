@@ -68,8 +68,7 @@ ForEach ($file in $fileList) {
     Log "$($time.Invoke()) Processing - $sourceFile"
     Log "$($time.Invoke()) File $(@($fileList).indexOf($file)+1) of $($fileList.Count) - Total queue $progress%"
 
-    <#Test if $targetFile (.mp4) already exists, if yes then delete $sourceFile (.mkv)
-    This outputs a more specific log message acknowleding the file already existed.#>
+    #Set targetFile final name
     If ($cfg.use_out_path) {
         $targetFileRenamed = $targetPath + $file.BaseName + ".mp4"
 
@@ -84,6 +83,8 @@ ForEach ($file in $fileList) {
         $targetFileRenamed = $file.DirectoryName + "\" + $file.BaseName + ".mp4"
     }
 
+    <#Test if $targetFile (.mp4) already exists, if yes then delete $sourceFile (.mkv)
+    This outputs a more specific log message acknowleding the file already existed.#>
     If ((Test-Path $targetFileRenamed) -And $file.Extension -ne ".mp4") {
         Remove-Item $sourceFile -Force
         Log "$($time.Invoke()) Already exists: $targetFileRenamed"
