@@ -1,5 +1,5 @@
 <#======================================================================================================================
-conv2mp4-ps v4.1 - https://github.com/BrianDMG/conv2mp4-ps
+conv2mp4-ps v4.1.1 - https://github.com/BrianDMG/conv2mp4-ps
 
 This Powershell script will recursively search through a user-defined file path and convert all videos of user-specified
 include_file_types to MP4 with H264 video and AAC audio using ffmpeg. If a conversion failure is detected, the script re-encodes
@@ -42,23 +42,21 @@ ForEach ($file in $fileList) {
 
     $title = $file.BaseName
 
-    $sourceFile = $file.DirectoryName + "\" + $file.BaseName + $file.Extension;
+    $sourceFile = $file.DirectoryName + "\" + $file.BaseName + $file.Extension
 
-    $fileSubDirs = ($file.DirectoryName).Substring($cfg.media_path.Length, ($file.DirectoryName).Length - $cfg.media_path.Length);
+    $fileSubDirs = ($file.DirectoryName).Substring($cfg.media_path.Length, ($file.DirectoryName).Length - $cfg.media_path.Length)
+
     If ($cfg.use_out_path) {
-	
-        $cfg.outpath = ""
-        $cfg.out_path = $cfg.out_path + $fileSubDirs;
+        $targetPath = $targetFile = $cfg.out_path + $fileSubDirs + "\"
 
-        If (-Not (Test-Path $cfg.out_path)) {
-            mkdir $cfg.out_path
+        If (-Not (Test-Path $targetPath)) {
+            mkdir $targetPath -Force
         }
 
-        $targetFile = $cfg.out_path + "\" + $file.BaseName + "_NEW" + ".mp4";
-        Log "out_path = $($cfg.out_path)"
+        $targetFile = $targetPath + $file.BaseName + "_NEW" + ".mp4"
     }
     Else {
-        $targetFile = $file.DirectoryName + "\" + $file.BaseName + "_NEW" + ".mp4";
+        $targetFile = $file.DirectoryName + "\" + $file.BaseName + "_NEW" + ".mp4"
     }
 
     $progress = ($(@($fileList).indexOf($file)+1) / $fileList.Count) * 100
@@ -72,7 +70,19 @@ ForEach ($file in $fileList) {
 
     <#Test if $targetFile (.mp4) already exists, if yes then delete $sourceFile (.mkv)
     This outputs a more specific log message acknowleding the file already existed.#>
-    $targetFileRenamed = $file.DirectoryName + "\" + $file.BaseName + ".mp4"
+    If ($cfg.use_out_path) {
+        $targetFileRenamed = $targetPath + $file.BaseName + ".mp4"
+
+        #If using out_path, create target path if it doesn't exist
+        If ($cfg.use_out_path) {
+            If (-Not (Test-Path $targetPath)) {
+                mkdir $$targetPath -Force
+            }
+        }
+    }
+    Else {
+        $targetFileRenamed = $file.DirectoryName + "\" + $file.BaseName + ".mp4"
+    }
 
     If ((Test-Path $targetFileRenamed) -And $file.Extension -ne ".mp4") {
         Remove-Item $sourceFile -Force
@@ -193,12 +203,19 @@ ForEach ($file in $fileList) {
             $targetFileRenamed = "$targetFile" -replace "_NEW",""
             Move-Item $targetFile $targetFileRenamed
 
+            #If using out_path, delete empty source directories
+            If ($cfg.use_out_path) {
+                If ($Null -eq (Get-ChildItem -Force $file.DirectoryName) -AND $file.DirectoryName -ne $cfg.media_path) {
+                    Remove-Item $file.DirectoryName
+                }
+            }
+
         }
         Else {
             Log "$($time.Invoke()) MP4 already compliant."
             If ($cfg.use_ignore_list) {
                 Log "$($time.Invoke()) Added file to ignore list."
-                $fileToIgnore = $file.BaseName + $file.Extension;
+                $fileToIgnore = $file.BaseName + $file.Extension
                 AddToIgnoreList "$($fileToIgnore)"
             }
         }
