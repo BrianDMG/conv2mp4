@@ -47,7 +47,7 @@ ForEach ($file in $fileList) {
     $fileSubDirs = ($file.DirectoryName).Substring($cfg.media_path.Length, ($file.DirectoryName).Length - $cfg.media_path.Length)
 
     If ($cfg.use_out_path) {
-        $targetPath = $targetFile = $cfg.out_path + $fileSubDirs + "\"
+        $targetPath = $cfg.out_path + $fileSubDirs + "\"
 
         If (-Not (Test-Path $targetPath)) {
             mkdir $targetPath -Force
@@ -71,13 +71,6 @@ ForEach ($file in $fileList) {
     #Set targetFile final name
     If ($cfg.use_out_path) {
         $targetFileRenamed = $targetPath + $file.BaseName + ".mp4"
-
-        #If using out_path, create target path if it doesn't exist
-        If ($cfg.use_out_path) {
-            If (-Not (Test-Path $targetPath)) {
-                mkdir $$targetPath -Force
-            }
-        }
     }
     Else {
         $targetFileRenamed = $file.DirectoryName + "\" + $file.BaseName + ".mp4"
