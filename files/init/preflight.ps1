@@ -25,7 +25,7 @@ ValidateHandbrakeCLIPath -Path $cfg.handbrakecli_bin_dir
 Validatemedia_path -Path $cfg.media_path
 
 #Validate OutPath
-If ($cfg.use_out_path) {
+If ($cfg.use_out_path -eq 'true') {
     ValidateOutPath -Path $cfg.out_path
 }
 

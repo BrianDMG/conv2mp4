@@ -75,10 +75,16 @@ Function ConvertFile {
             $remove= $title | Select-String -Pattern '^(.*?)(19|20)[0-9]{2}(.*$)'  | ForEach-Object { "$($_.matches.groups[3])" }
             $title = $title -replace "$remove",''
             $title = $title -replace '\W',' '
-            $title = $title -replace '(\d{4})$', '($1)';
+            $year = $($title.split()[-1])
+            $title = $title.SubString(0, $title.LastIndexOf(' '))
+            $encodingTool = "conv2mp4-$($prop.platform) $($prop.version) - $($prop.github_url)"
 
             $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
             $ffArgs += "title=`"$title`" " #Use $title variable as metadata 'Title'
+            $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
+            $ffArgs += "date=`"$year`" " #Use $title variable as metadata 'Title'
+            $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
+            $ffArgs += "encoding_tool=`"$encodingTool`" " #Use $title variable as metadata 'Title'
         }
 
         $ffArgs += "-map " #Flag to use channel mapping
