@@ -72,19 +72,46 @@ Function ConvertFile {
         $ffArgs += "+faststart"
 
         If ($cfg.use_set_metadata_title){
-            $remove= $title | Select-String -Pattern '^(.*?)(19|20)[0-9]{2}(.*$)'  | ForEach-Object { "$($_.matches.groups[3])" }
-            $title = $title -replace "$remove",''
-            $title = $title -replace '\W',' '
-            $year = $($title.split()[-1])
-            $title = $title.SubString(0, $title.LastIndexOf(' '))
-            $encodingTool = "conv2mp4-$($prop.platform) $($prop.version) - $($prop.github_url)"
+
+            #Check if it's a TV episode
+            If ($title -match 's\d+'){
+                Log 'matched tv'
+                $remove = $title | Select-String -Pattern '^(.*?)(S\d+)(E\d+)(\D+)(.*$)'  | ForEach-Object { "$($_.matches.groups[5])" }
+                $title = $title -replace "$remove",''
+                $title = $title -replace '\W',' '
+                $showTitle = $title | Select-String -Pattern '^(.*?)(S\d+)(E\d+)(\D+)(.*$)'  | ForEach-Object { "$($_.matches.groups[1])" }
+                $seasonNumber = $title | Select-String -Pattern '^(.*?)(S\d+)(E\d+)(\D+)(.*$)'  | ForEach-Object { "$($_.matches.groups[2])" }
+                $seasonNumber = $seasonNumber -replace 's',''
+                $episodeNumber = $title | Select-String -Pattern '^(.*?)(S\d+)(E\d+)(\D+)(.*$)'  | ForEach-Object { "$($_.matches.groups[3])" }
+                $episodeNumber = $episodeNumber -replace 'e',''
+                $episodeTitle = $title | Select-String -Pattern '^(.*?)(S\d+)(E\d+)(\D+)(.*$)'  | ForEach-Object { "$($_.matches.groups[4])" }
+
+                $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
+                $ffArgs += "show=`"$showTitle`" " #Use $showTitle variable as metadata 'show'
+                $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
+                $ffArgs += "season_number=`"$seasonNumber`" " #Use $seasonNumber variable as metadata 'season_number'
+                $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
+                $ffArgs += "episode_id=`"$episodeNumber`" " #Use $episodeNumber variable as metadata 'episode_id'
+                $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
+                $ffArgs += "title=`"$episodeTitle`" " #Use $episodeTitleitle variable as metadata 'title'
+            }
+            #Otherwise it's assumed to be a movie
+            Else {
+                $remove= $title | Select-String -Pattern '^(.*?)(19|20)[0-9]{2}(.*$)'  | ForEach-Object { "$($_.matches.groups[3])" }
+                $title = $title -replace "$remove",''
+                $title = $title -replace '\W',' '
+                $year = $($title.split()[-1])
+                $title = $title.SubString(0, $title.LastIndexOf(' '))
+                $encodingTool = "conv2mp4-$($prop.platform) $($prop.version) - $($prop.github_url)"
+
+                $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
+                $ffArgs += "title=`"$title`" " #Use $title variable as metadata 'title'
+                $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
+                $ffArgs += "date=`"$year`" " #Use $year variable as metadata 'date'
+            }
 
             $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
-            $ffArgs += "title=`"$title`" " #Use $title variable as metadata 'Title'
-            $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
-            $ffArgs += "date=`"$year`" " #Use $title variable as metadata 'Title'
-            $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
-            $ffArgs += "encoding_tool=`"$encodingTool`" " #Use $title variable as metadata 'Title'
+            $ffArgs += "encoding_tool=`"$encodingTool`" " #Use $encodingTool variable as metadata 'encoding_tool'
         }
 
         $ffArgs += "-map " #Flag to use channel mapping
