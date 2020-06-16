@@ -102,7 +102,6 @@ Function ConvertFile {
                 $title = $title -replace '\W',' '
                 $year = $($title.split()[-1])
                 $title = $title.SubString(0, $title.LastIndexOf(' '))
-                $encodingTool = "conv2mp4-$($prop.platform) $($prop.version) - $($prop.github_url)"
 
                 $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
                 $ffArgs += "title=`"$title`" " #Use $title variable as metadata 'title'
@@ -110,6 +109,7 @@ Function ConvertFile {
                 $ffArgs += "date=`"$year`" " #Use $year variable as metadata 'date'
             }
 
+            $encodingTool = "conv2mp4-$($prop.platform) $($prop.version) - $($prop.github_url)"
             $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
             $ffArgs += "encoding_tool=`"$encodingTool`" " #Use $encodingTool variable as metadata 'encoding_tool'
         }
