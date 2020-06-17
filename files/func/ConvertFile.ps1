@@ -75,7 +75,7 @@ Function ConvertFile {
 
             #Check if it's a TV episode
             If ($title -match 's\d+'){
-                Log 'matched tv'
+                $unparsedTitle = $title
                 $remove = $title | Select-String -Pattern '^(.*?)(S\d+)(E\d+)(\D+)(.*$)'  | ForEach-Object { "$($_.matches.groups[5])" }
                 $title = $title -replace "$remove",''
                 $title = $title -replace '\W',' '
@@ -87,13 +87,15 @@ Function ConvertFile {
                 $episodeTitle = $title | Select-String -Pattern '^(.*?)(S\d+)(E\d+)(\D+)(.*$)'  | ForEach-Object { "$($_.matches.groups[4])" }
 
                 $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
-                $ffArgs += "show=`"$showTitle`" " #Use $showTitle variable as metadata 'show'
+                $ffArgs += "show=`"$($showTitle.trim())`" " #Use $showTitle variable as metadata 'show'
                 $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
-                $ffArgs += "season_number=`"$seasonNumber`" " #Use $seasonNumber variable as metadata 'season_number'
+                $ffArgs += "season_number=`"$('{0:d2}' -f [int]$seasonNumber)`" " #Use $seasonNumber variable as metadata 'season_number'
                 $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
-                $ffArgs += "episode_id=`"$episodeNumber`" " #Use $episodeNumber variable as metadata 'episode_id'
+                $ffArgs += "episode_id=`"$('{0:d2}' -f [int]$episodeNumber)`" " #Use $episodeNumber variable as metadata 'episode_id'
                 $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
-                $ffArgs += "title=`"$episodeTitle`" " #Use $episodeTitleitle variable as metadata 'title'
+                $ffArgs += "title=`"$($episodeTitle.trim())`" " #Use $episodeTitleitle variable as metadata 'title'
+                $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
+                $ffArgs += "comment=`"$unparsedTitle`" " #Use $episodeTitleitle variable as metadata 'title'
             }
             #Otherwise it's assumed to be a movie
             Else {
@@ -109,9 +111,8 @@ Function ConvertFile {
                 $ffArgs += "date=`"$year`" " #Use $year variable as metadata 'date'
             }
 
-            $encodingTool = "conv2mp4-$($prop.platform) $($prop.version) - $($prop.github_url)"
             $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
-            $ffArgs += "encoding_tool=`"$encodingTool`" " #Use $encodingTool variable as metadata 'encoding_tool'
+            $ffArgs += "encoding_tool=`"$(PrintVersion)`" " #Use $encodingTool variable as metadata 'encoding_tool'
         }
 
         $ffArgs += "-map " #Flag to use channel mapping
