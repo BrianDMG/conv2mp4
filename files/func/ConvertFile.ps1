@@ -111,8 +111,9 @@ Function ConvertFile {
                 $ffArgs += "date=`"$year`" " #Use $year variable as metadata 'date'
             }
 
+            $encodingTool = "conv2mp4-$($prop.platform) $($prop.version) - $($prop.github_url)"
             $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
-            $ffArgs += "encoding_tool=`"$(PrintVersion)`" " #Use $encodingTool variable as metadata 'encoding_tool'
+            $ffArgs += "encoding_tool=`"$encodingTool`" " #Use $encodingTool variable as metadata 'encoding_tool'
         }
 
         $ffArgs += "-map " #Flag to use channel mapping
