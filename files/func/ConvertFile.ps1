@@ -95,7 +95,7 @@ Function ConvertFile {
                 $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
                 $ffArgs += "title=`"$($episodeTitle.trim())`" " #Use $episodeTitleitle variable as metadata 'title'
                 $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
-                $ffArgs += "synopsis=`"$unparsedTitle`" " #Use $episodeTitleitle variable as metadata 'title'
+                $ffArgs += "description=`"$unparsedTitle`" " #Use $episodeTitleitle variable as metadata 'title'
             }
             #Otherwise it's assumed to be a movie
             Else {
@@ -111,7 +111,7 @@ Function ConvertFile {
                 $ffArgs += "date=`"$year`" " #Use $year variable as metadata 'date'
             }
 
-            $encodingTool = "Encoded by conv2mp4-$($prop.platform) $($prop.version) - $($prop.github_url) on $($time.Invoke())"
+            $encodingTool = "Encoded by conv2mp4-$($prop.platform) v$($prop.version) ($($prop.github_url)) on $($time.Invoke())"
             $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
             $ffArgs += "comment=`"$encodingTool`" " #Use $encodingTool variable as metadata 'encoding_tool'
         }
@@ -150,6 +150,7 @@ Function ConvertFile {
         Else {
             $ffArgs += "-sn " #Option to remove any existing subtitles
         }
+        $ffArgs+= "-f mp4 "
         $ffArgs += "`"$targetFile`"" #Output file
 
         $ffCMD = cmd.exe /c "$ffmpeg $ffArgs"
