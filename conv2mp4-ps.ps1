@@ -53,10 +53,10 @@ ForEach ($file in $fileList) {
             mkdir $targetPath -Force
         }
 
-        $targetFile = $targetPath + $file.BaseName + "_NEW" + ".mp4"
+        $targetFile = $targetPath + $file.BaseName + ".mp4" + ".conv2mp4"
     }
     Else {
-        $targetFile = $file.DirectoryName + "\" + $file.BaseName + "_NEW" + ".mp4"
+        $targetFile = $file.DirectoryName + "\" + $file.BaseName + ".mp4" + ".conv2mp4"
     }
 
     $progress = ($(@($fileList).indexOf($file)+1) / $fileList.Count) * 100
@@ -194,7 +194,7 @@ ForEach ($file in $fileList) {
             }
 
             #If $sourceFile was an mp4, rename $targetFile to remove "-NEW"
-            $targetFileRenamed = "$targetFile" -replace "_NEW",""
+            $targetFileRenamed = "$targetFile" -replace ".conv2mp4",""
             Move-Item $targetFile $targetFileRenamed
 
             #If using out_path, delete empty source directories
