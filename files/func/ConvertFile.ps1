@@ -95,7 +95,7 @@ Function ConvertFile {
                 $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
                 $ffArgs += "title=`"$($episodeTitle.trim())`" " #Use $episodeTitleitle variable as metadata 'title'
                 $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
-                $ffArgs += "comment=`"$unparsedTitle`" " #Use $episodeTitleitle variable as metadata 'title'
+                $ffArgs += "synopsis=`"$unparsedTitle`" " #Use $episodeTitleitle variable as metadata 'title'
             }
             #Otherwise it's assumed to be a movie
             Else {
@@ -111,9 +111,9 @@ Function ConvertFile {
                 $ffArgs += "date=`"$year`" " #Use $year variable as metadata 'date'
             }
 
-            $encodingTool = "conv2mp4-$($prop.platform) $($prop.version) - $($prop.github_url)"
+            $encodingTool = "Encoded by conv2mp4-$($prop.platform) $($prop.version) - $($prop.github_url) on $($time.Invoke())"
             $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
-            $ffArgs += "encoding_tool=`"$encodingTool`" " #Use $encodingTool variable as metadata 'encoding_tool'
+            $ffArgs += "comment=`"$encodingTool`" " #Use $encodingTool variable as metadata 'encoding_tool'
         }
 
         $ffArgs += "-map " #Flag to use channel mapping
