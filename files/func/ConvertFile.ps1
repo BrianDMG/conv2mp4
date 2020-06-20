@@ -99,7 +99,7 @@ Function ConvertFile {
             }
             #Otherwise it's assumed to be a movie
             Else {
-                $remove= $title | Select-String -Pattern '^(.*?)(\(?)((19|20)[0-9]{2})(.*$)'  | ForEach-Object { "$($_.matches.groups[3])" }
+                $remove= $title | Select-String -Pattern '^(.*?)(\(?)((19|20)[0-9]{2})(.*$)'  | ForEach-Object { "$($_.matches.groups[2,4,5])" }
                 $title = $title -replace "$remove",''
                 $title = $title -replace '\W',' '
                 $year = $($title.split()[-1])
