@@ -78,7 +78,7 @@ Function ConvertFile {
                 $regex = '^(.*?)(S\d+)(E\d+-?\s?E?\d*?)(\D+)(.*$)'
                 $unparsedTitle = $title
                 $remove = $title | Select-String -Pattern $regex  | ForEach-Object { "$($_.matches.groups[5])" }
-                $title = $title -replace "$remove",''
+                $title = $title -replace [Regex]::Escape("$remove"),''
                 $title = $title -replace '\W',' '
                 $title = $($title.trim() -replace "\s+"," ")
                 $showTitle = $title | Select-String -Pattern $regex  | ForEach-Object { "$($_.matches.groups[1])" }
@@ -101,9 +101,9 @@ Function ConvertFile {
             }
             #Otherwise it's assumed to be a movie
             Else {
-                $regex = '^(.*?)(\(?)((19|20)[0-9]{2})(.*$)'
-                $remove = $title | Select-String -Pattern $regex  | ForEach-Object { "$($_.matches.groups[2,4,5])" }
-                $title = $title -replace "$remove",''
+                $regex = '^(.+)((19|20)\d{2})(.*$)'
+                $remove = $title | Select-String -Pattern $regex  | ForEach-Object { "$($_.matches.groups[4])" }
+                $title = $title -replace [Regex]::Escape("$remove"),''
                 $title = $title -replace '\W',' '
                 $title = $($title.trim() -replace "\s+"," ")
                 $year = $($title.split()[-1])
