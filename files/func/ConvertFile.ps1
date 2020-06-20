@@ -75,16 +75,18 @@ Function ConvertFile {
 
             #Check if it's a TV episode
             If ($title -match 's\d+'){
+                $regex = '^(.*?)(S\d+)(E\d+-?\s?E?\d*?)(\D+)(.*$)'
                 $unparsedTitle = $title
-                $remove = $title | Select-String -Pattern '^(.*?)(S\d+)(E\d+)(\D+)(.*$)'  | ForEach-Object { "$($_.matches.groups[5])" }
+                $remove = $title | Select-String -Pattern $regex  | ForEach-Object { "$($_.matches.groups[5])" }
                 $title = $title -replace "$remove",''
                 $title = $title -replace '\W',' '
-                $showTitle = $title | Select-String -Pattern '^(.*?)(S\d+)(E\d+)(\D+)(.*$)'  | ForEach-Object { "$($_.matches.groups[1])" }
-                $seasonNumber = $title | Select-String -Pattern '^(.*?)(S\d+)(E\d+)(\D+)(.*$)'  | ForEach-Object { "$($_.matches.groups[2])" }
+                $title = $($title.trim() -replace "\s+"," ")
+                $showTitle = $title | Select-String -Pattern $regex  | ForEach-Object { "$($_.matches.groups[1])" }
+                $seasonNumber = $title | Select-String -Pattern $regex  | ForEach-Object { "$($_.matches.groups[2])" }
                 $seasonNumber = $seasonNumber -replace 's',''
-                $episodeNumber = $title | Select-String -Pattern '^(.*?)(S\d+)(E\d+)(\D+)(.*$)'  | ForEach-Object { "$($_.matches.groups[3])" }
+                $episodeNumber = $title | Select-String -Pattern $regex  | ForEach-Object { "$($_.matches.groups[3])" }
                 $episodeNumber = $episodeNumber -replace 'e',''
-                $episodeTitle = $title | Select-String -Pattern '^(.*?)(S\d+)(E\d+)(\D+)(.*$)'  | ForEach-Object { "$($_.matches.groups[4])" }
+                $episodeTitle = $title | Select-String -Pattern $regex  | ForEach-Object { "$($_.matches.groups[4])" }
 
                 $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
                 $ffArgs += "show=`"$($showTitle.trim())`" " #Use $showTitle variable as metadata 'show'
@@ -99,10 +101,11 @@ Function ConvertFile {
             }
             #Otherwise it's assumed to be a movie
             Else {
-                $remove= $title | Select-String -Pattern '^(.*?)(\(?)((19|20)[0-9]{2})(.*$)'  | ForEach-Object { "$($_.matches.groups[2,4,5])" }
+                $regex = '^(.*?)(\(?)((19|20)[0-9]{2})(.*$)'
+                $remove = $title | Select-String -Pattern $regex  | ForEach-Object { "$($_.matches.groups[2,4,5])" }
                 $title = $title -replace "$remove",''
                 $title = $title -replace '\W',' '
-                $title=$($title.trim() -replace "\s+"," ")
+                $title = $($title.trim() -replace "\s+"," ")
                 $year = $($title.split()[-1])
                 $title = $title.SubString(0, $title.LastIndexOf(' '))
 
@@ -112,9 +115,9 @@ Function ConvertFile {
                 $ffArgs += "date=`"$year`" " #Use $year variable as metadata 'date'
             }
 
-            $encodingTool = "Encoded by conv2mp4-$($prop.platform) v$($prop.version) ($($prop.github_url)) on $($time.Invoke())"
+            $encodeInformation = "Encoded by conv2mp4-$($prop.platform) v$($prop.version) ($($prop.github_url)) on $($time.Invoke())"
             $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
-            $ffArgs += "comment=`"$encodingTool`" " #Use $encodingTool variable as metadata 'encoding_tool'
+            $ffArgs += "comment=`"$encodeInformation`" " #Use $encodingTool variable as metadata 'encoding_tool'
         }
 
         $ffArgs += "-map " #Flag to use channel mapping
