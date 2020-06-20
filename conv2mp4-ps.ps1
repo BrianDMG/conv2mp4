@@ -1,5 +1,5 @@
 <#======================================================================================================================
-conv2mp4-ps v4.1.3 - https://github.com/BrianDMG/conv2mp4-ps
+conv2mp4-ps v4.2 - https://github.com/BrianDMG/conv2mp4-ps
 
 This Powershell script will recursively search through a user-defined file path and convert all videos of user-specified
 include_file_types to MP4 with H264 video and AAC audio using ffmpeg. If a conversion failure is detected, the script re-encodes
