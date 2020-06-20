@@ -102,6 +102,7 @@ Function ConvertFile {
                 $remove= $title | Select-String -Pattern '^(.*?)(\(?)((19|20)[0-9]{2})(.*$)'  | ForEach-Object { "$($_.matches.groups[2,4,5])" }
                 $title = $title -replace "$remove",''
                 $title = $title -replace '\W',' '
+                $title=$($title.trim() -replace "\s+"," ")
                 $year = $($title.split()[-1])
                 $title = $title.SubString(0, $title.LastIndexOf(' '))
 
