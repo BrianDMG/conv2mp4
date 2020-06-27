@@ -9,6 +9,7 @@ Function ConvertFile {
     )
 
     $ffmpeg = Join-Path $cfg.fmmpeg_bin_dir "ffmpeg.exe"
+    $ffprobe = Join-Path $cfg.fmmpeg_bin_dir "ffprobe.exe"
     $handbrake = Join-Path $cfg.handbrakecli_bin_dir "HandBrakeCLI.exe"
 
     If ($ConvertType -eq "Handbrake") {
@@ -148,8 +149,17 @@ Function ConvertFile {
         }
 
         If ($KeepSubs) {
-            $ffArgs += "-c:s " #Subtitle codec flag
-            $ffArgs += "mov_text " #Name of subtitle channel after export
+            $info = & $ffprobe -i $sourceFile 2>&1
+            #Detect if bitmap subs exist, and do not keep them if they do. 
+            #Resolves error that causes ffmpeg to fail and launch failover
+            If (!$($info -Match 'pgssub')) {
+                $ffArgs += "-c:s " #Subtitle codec flag
+                $ffArgs += "mov_text " #Name of subtitle channel after export
+            }
+            Else {
+                Log "$($time.Invoke()) Detected bitmap subtitles, not keeping subtitles."
+                $ffArgs += "-sn " #Option to remove any existing subtitles
+            }
         }
         Else {
             $ffArgs += "-sn " #Option to remove any existing subtitles
