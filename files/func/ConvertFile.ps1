@@ -152,7 +152,7 @@ Function ConvertFile {
             $info = & $ffprobe -i $sourceFile 2>&1
             #Detect if bitmap subs exist, and do not keep them if they do. 
             #Resolves error that causes ffmpeg to fail and launch failover
-            If (!$($info -Match 'pgssub')) {
+            If (!$($info -Match '(pgssub|dvdsub)')) {
                 $ffArgs += "-c:s " #Subtitle codec flag
                 $ffArgs += "mov_text " #Name of subtitle channel after export
             }
