@@ -87,6 +87,7 @@ Function ConvertFile {
                 $seasonNumber = $seasonNumber -replace 's',''
                 $episodeNumber = $title | Select-String -Pattern $regex  | ForEach-Object { "$($_.matches.groups[3])" }
                 $episodeNumber = $episodeNumber -replace 'e',''
+                $episodeNumber = $episodeNumber -replace '\W','-'
                 $episodeTitle = $title | Select-String -Pattern $regex  | ForEach-Object { "$($_.matches.groups[4])" }
 
                 $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
@@ -94,7 +95,7 @@ Function ConvertFile {
                 $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
                 $ffArgs += "season_number=`"$('{0:d2}' -f [int]$seasonNumber)`" " #Use $seasonNumber variable as metadata 'season_number'
                 $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
-                $ffArgs += "episode_id=`"$('{0:d2}' -f [int]$episodeNumber)`" " #Use $episodeNumber variable as metadata 'episode_id'
+                $ffArgs += "episode_id=`"$episodeNumber`" " #Use $episodeNumber variable as metadata 'episode_id'
                 $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
                 $ffArgs += "title=`"$($episodeTitle.trim())`" " #Use $episodeTitleitle variable as metadata 'title'
                 $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
