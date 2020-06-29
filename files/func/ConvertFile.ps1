@@ -87,7 +87,7 @@ Function ConvertFile {
                 $seasonNumber = $seasonNumber -replace 's',''
                 $episodeNumber = $title | Select-String -Pattern $regex  | ForEach-Object { "$($_.matches.groups[3])" }
                 $episodeNumber = $episodeNumber -replace 'e',''
-                $episodeNumber = $episodeNumber -replace '\W','-'
+                $episodeNumber = $episodeNumber.trim() -replace '\W','-'
                 $episodeTitle = $title | Select-String -Pattern $regex  | ForEach-Object { "$($_.matches.groups[4])" }
 
                 $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
