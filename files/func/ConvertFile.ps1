@@ -9,6 +9,7 @@ Function ConvertFile {
     )
 
     $ffmpeg = Join-Path $cfg.fmmpeg_bin_dir "ffmpeg.exe"
+    $ffprobe = Join-Path $cfg.fmmpeg_bin_dir "ffprobe.exe"
     $handbrake = Join-Path $cfg.handbrakecli_bin_dir "HandBrakeCLI.exe"
 
     If ($ConvertType -eq "Handbrake") {
@@ -86,6 +87,7 @@ Function ConvertFile {
                 $seasonNumber = $seasonNumber -replace 's',''
                 $episodeNumber = $title | Select-String -Pattern $regex  | ForEach-Object { "$($_.matches.groups[3])" }
                 $episodeNumber = $episodeNumber -replace 'e',''
+                $episodeNumber = $episodeNumber.trim() -replace '\W','-'
                 $episodeTitle = $title | Select-String -Pattern $regex  | ForEach-Object { "$($_.matches.groups[4])" }
 
                 $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
@@ -93,7 +95,7 @@ Function ConvertFile {
                 $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
                 $ffArgs += "season_number=`"$('{0:d2}' -f [int]$seasonNumber)`" " #Use $seasonNumber variable as metadata 'season_number'
                 $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
-                $ffArgs += "episode_id=`"$('{0:d2}' -f [int]$episodeNumber)`" " #Use $episodeNumber variable as metadata 'episode_id'
+                $ffArgs += "episode_id=`"$episodeNumber`" " #Use $episodeNumber variable as metadata 'episode_id'
                 $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
                 $ffArgs += "title=`"$($episodeTitle.trim())`" " #Use $episodeTitleitle variable as metadata 'title'
                 $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
@@ -148,8 +150,17 @@ Function ConvertFile {
         }
 
         If ($KeepSubs) {
-            $ffArgs += "-c:s " #Subtitle codec flag
-            $ffArgs += "mov_text " #Name of subtitle channel after export
+            $info = & $ffprobe -i $sourceFile 2>&1
+            #Detect if bitmap subs exist, and do not keep them if they do. 
+            #Resolves error that causes ffmpeg to fail and launch failover
+            If (!$($info -Match '(pgssub|dvd_subtitle)')) {
+                $ffArgs += "-c:s " #Subtitle codec flag
+                $ffArgs += "mov_text " #Name of subtitle channel after export
+            }
+            Else {
+                Log "$($time.Invoke()) Detected bitmap subtitles, not keeping subtitles."
+                $ffArgs += "-sn " #Option to remove any existing subtitles
+            }
         }
         Else {
             $ffArgs += "-sn " #Option to remove any existing subtitles
