@@ -1,5 +1,5 @@
 <#======================================================================================================================
-conv2mp4-ps v4.1.2 - https://github.com/BrianDMG/conv2mp4-ps
+conv2mp4-ps v4.2 - https://github.com/BrianDMG/conv2mp4-ps
 
 This Powershell script will recursively search through a user-defined file path and convert all videos of user-specified
 include_file_types to MP4 with H264 video and AAC audio using ffmpeg. If a conversion failure is detected, the script re-encodes
@@ -47,16 +47,16 @@ ForEach ($file in $fileList) {
     $fileSubDirs = ($file.DirectoryName).Substring($cfg.media_path.Length, ($file.DirectoryName).Length - $cfg.media_path.Length)
 
     If ($cfg.use_out_path) {
-        $targetPath = $targetFile = $cfg.out_path + $fileSubDirs + "\"
+        $targetPath = $cfg.out_path + $fileSubDirs + "\"
 
         If (-Not (Test-Path $targetPath)) {
             mkdir $targetPath -Force
         }
 
-        $targetFile = $targetPath + $file.BaseName + "_NEW" + ".mp4"
+        $targetFile = $targetPath + $file.BaseName + ".mp4" + ".conv2mp4"
     }
     Else {
-        $targetFile = $file.DirectoryName + "\" + $file.BaseName + "_NEW" + ".mp4"
+        $targetFile = $file.DirectoryName + "\" + $file.BaseName + ".mp4" + ".conv2mp4"
     }
 
     $progress = ($(@($fileList).indexOf($file)+1) / $fileList.Count) * 100
@@ -71,13 +71,6 @@ ForEach ($file in $fileList) {
     #Set targetFile final name
     If ($cfg.use_out_path) {
         $targetFileRenamed = $targetPath + $file.BaseName + ".mp4"
-
-        #If using out_path, create target path if it doesn't exist
-        If ($cfg.use_out_path) {
-            If (-Not (Test-Path $targetPath)) {
-                mkdir $$targetPath -Force
-            }
-        }
     }
     Else {
         $targetFileRenamed = $file.DirectoryName + "\" + $file.BaseName + ".mp4"
@@ -201,7 +194,7 @@ ForEach ($file in $fileList) {
             }
 
             #If $sourceFile was an mp4, rename $targetFile to remove "-NEW"
-            $targetFileRenamed = "$targetFile" -replace "_NEW",""
+            $targetFileRenamed = "$targetFile" -replace ".conv2mp4",""
             Move-Item $targetFile $targetFileRenamed
 
             #If using out_path, delete empty source directories

@@ -8,7 +8,8 @@ Function ConvertFile {
         [Switch]$KeepSubs
     )
 
-    $ffmpeg = Join-Path $cfg.fmmpeg_bin_dir "ffmpeg.exe"
+    $ffmpeg = Join-Path "$($cfg.fmmpeg_bin_dir)" "ffmpeg.exe"
+    $ffprobe = Join-Path "$($cfg.fmmpeg_bin_dir)" "ffprobe.exe"
     $handbrake = Join-Path $cfg.handbrakecli_bin_dir "HandBrakeCLI.exe"
 
     If ($ConvertType -eq "Handbrake") {
@@ -72,13 +73,53 @@ Function ConvertFile {
         $ffArgs += "+faststart"
 
         If ($cfg.use_set_metadata_title){
-            $remove= $title | Select-String -Pattern '^(.*?)(19|20)[0-9]{2}(.*$)'  | ForEach-Object { "$($_.matches.groups[3])" }
-            $title = $title -replace "$remove",''
-            $title = $title -replace '\W',' '
-            $title = $title -replace '(\d{4})$', '($1)';
 
+            #Check if it's a TV episode
+            If ($title -match 's\d+'){
+                $regex = '^(.*?)(S\d+)(E\d+-?\s?E?\d*?)(\D+)(.*$)'
+                $unparsedTitle = $title
+                $remove = $title | Select-String -Pattern $regex  | ForEach-Object { "$($_.matches.groups[5])" }
+                $title = $title -replace [Regex]::Escape("$remove"),''
+                $title = $title -replace '\W',' '
+                $title = $($title.trim() -replace "\s+"," ")
+                $showTitle = $title | Select-String -Pattern $regex  | ForEach-Object { "$($_.matches.groups[1])" }
+                $seasonNumber = $title | Select-String -Pattern $regex  | ForEach-Object { "$($_.matches.groups[2])" }
+                $seasonNumber = $seasonNumber -replace 's',''
+                $episodeNumber = $title | Select-String -Pattern $regex  | ForEach-Object { "$($_.matches.groups[3])" }
+                $episodeNumber = $episodeNumber -replace 'e',''
+                $episodeNumber = $episodeNumber.trim() -replace '\W','-'
+                $episodeTitle = $title | Select-String -Pattern $regex  | ForEach-Object { "$($_.matches.groups[4])" }
+
+                $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
+                $ffArgs += "show=`"$($showTitle.trim())`" " #Use $showTitle variable as metadata 'show'
+                $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
+                $ffArgs += "season_number=`"$('{0:d2}' -f [int]$seasonNumber)`" " #Use $seasonNumber variable as metadata 'season_number'
+                $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
+                $ffArgs += "episode_id=`"$episodeNumber`" " #Use $episodeNumber variable as metadata 'episode_id'
+                $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
+                $ffArgs += "title=`"$($episodeTitle.trim())`" " #Use $episodeTitleitle variable as metadata 'title'
+                $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
+                $ffArgs += "description=`"$unparsedTitle`" " #Use $episodeTitleitle variable as metadata 'title'
+            }
+            #Otherwise it's assumed to be a movie
+            Else {
+                $regex = '^(.+)((19|20)\d{2})(.*$)'
+                $remove = $title | Select-String -Pattern $regex  | ForEach-Object { "$($_.matches.groups[4])" }
+                $title = $title -replace [Regex]::Escape("$remove"),''
+                $title = $title -replace '\W',' '
+                $title = $($title.trim() -replace "\s+"," ")
+                $year = $($title.split()[-1])
+                $title = $title.SubString(0, $title.LastIndexOf(' '))
+
+                $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
+                $ffArgs += "title=`"$title`" " #Use $title variable as metadata 'title'
+                $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
+                $ffArgs += "date=`"$year`" " #Use $year variable as metadata 'date'
+            }
+
+            $encodeInformation = "Encoded by conv2mp4-$($prop.platform) v$($prop.version) ($($prop.github_url)) on $($time.Invoke())"
             $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
-            $ffArgs += "title=`"$title`" " #Use $title variable as metadata 'Title'
+            $ffArgs += "comment=`"$encodeInformation`" " #Use $encodingTool variable as metadata 'encoding_tool'
         }
 
         $ffArgs += "-map " #Flag to use channel mapping
@@ -109,15 +150,25 @@ Function ConvertFile {
         }
 
         If ($KeepSubs) {
-            $ffArgs += "-c:s " #Subtitle codec flag
-            $ffArgs += "mov_text " #Name of subtitle channel after export
+            $info = & $ffprobe -i $sourceFile 2>&1
+            #Detect if bitmap subs exist, and do not keep them if they do. 
+            #Resolves error that causes ffmpeg to fail and launch failover
+            If (!$($info -Match '(pgssub|dvd_subtitle)')) {
+                $ffArgs += "-c:s " #Subtitle codec flag
+                $ffArgs += "mov_text " #Name of subtitle channel after export
+            }
+            Else {
+                Log "$($time.Invoke()) Detected bitmap subtitles, not keeping subtitles."
+                $ffArgs += "-sn " #Option to remove any existing subtitles
+            }
         }
         Else {
             $ffArgs += "-sn " #Option to remove any existing subtitles
         }
+        $ffArgs+= "-f mp4 "
         $ffArgs += "`"$targetFile`"" #Output file
 
-        $ffCMD = cmd.exe /c "$ffmpeg $ffArgs"
+        $ffCMD = cmd.exe /c "`"$ffmpeg`" $ffArgs"
 
         # Begin ffmpeg operation
         $ffCMD
