@@ -8,8 +8,8 @@ Function ConvertFile {
         [Switch]$KeepSubs
     )
 
-    $ffmpeg = Join-Path $cfg.fmmpeg_bin_dir "ffmpeg.exe"
-    $ffprobe = Join-Path $cfg.fmmpeg_bin_dir "ffprobe.exe"
+    $ffmpeg = Join-Path "$($cfg.fmmpeg_bin_dir)" "ffmpeg.exe"
+    $ffprobe = Join-Path "$($cfg.fmmpeg_bin_dir)" "ffprobe.exe"
     $handbrake = Join-Path $cfg.handbrakecli_bin_dir "HandBrakeCLI.exe"
 
     If ($ConvertType -eq "Handbrake") {
@@ -168,7 +168,7 @@ Function ConvertFile {
         $ffArgs+= "-f mp4 "
         $ffArgs += "`"$targetFile`"" #Output file
 
-        $ffCMD = cmd.exe /c "$ffmpeg $ffArgs"
+        $ffCMD = cmd.exe /c "`"$ffmpeg`" $ffArgs"
 
         # Begin ffmpeg operation
         $ffCMD
