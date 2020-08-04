@@ -36,7 +36,7 @@ Function GetCodec {
     $ffprobeArgs += "default=noprint_wrappers=1:nokey=1 "
     $ffprobeArgs += "`"$sourceFile`""
 
-    $ffprobeCMD = cmd.exe /c "$ffprobe $ffprobeArgs"
+    $ffprobeCMD = cmd.exe /c "`"$ffprobe`" $ffprobeArgs"
 
     If ($DiscoverType -eq "Duration") {
         #Test whether the ffprobe result was invalid - usually happens in files with corrupt encoding
