@@ -19,7 +19,12 @@ Function ValidateFFMPEGPath {
         Exit
     }
 
-    $ffprobe = Join-Path $Path "ffprobe.exe"
+    If ($isWindows) {
+        $ffprobe = Join-Path $Path "ffprobe.exe"
+    }
+    Else {
+        $ffprobe = Join-Path $Path "ffprobe"
+    }
 
     If (-Not (Test-Path $ffprobe)) {
         Log "`nffprobe.exe could not be found at $Path."
