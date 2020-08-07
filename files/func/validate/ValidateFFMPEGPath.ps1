@@ -4,7 +4,11 @@ Function ValidateFFMPEGPath {
         [String]$Path
     )
 
-    $ffmpeg = Join-Path $Path "ffmpeg.exe"
+    If ($isWindows) {
+        $ffmpeg = Join-Path $Path "ffmpeg.exe"
+    Else {
+        $ffmpeg = Join-Path $Path "ffmpeg"
+    }
 
     If (-Not (Test-Path $ffmpeg)) {
         Log "`nffmpeg.exe could not be found at $Path."
