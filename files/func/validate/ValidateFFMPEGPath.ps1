@@ -6,6 +6,7 @@ Function ValidateFFMPEGPath {
 
     If ($isWindows) {
         $ffmpeg = Join-Path $Path "ffmpeg.exe"
+    }
     Else {
         $ffmpeg = Join-Path $Path "ffmpeg"
     }
