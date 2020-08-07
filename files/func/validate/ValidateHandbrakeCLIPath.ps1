@@ -9,7 +9,7 @@ Function ValidateHandbrakeCLIPath {
         $handbrake = Join-Path $Path "HandBrakeCLI.exe"
     }
     Else {
-        $$handbrake = Join-Path $Path "handbrake-cli"
+        $handbrake = Join-Path $Path "handbrake-cli"
     }
 
     If (-Not (Test-Path $handbrake)) {
