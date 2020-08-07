@@ -10,7 +10,7 @@ The purpose of this script is to reduce the amount of transcoding CPU load on a 
 Set-Location -Path $PSScriptRoot
 
 #Load properties file
-$propFile = "files\prop\properties"
+$propFile = Convert-Path "files\prop\properties"
 $propRawString = Get-Content "$propFile" | Out-String
 $propStringToConvert = $propRawString -replace '\\', '\\'
 $prop = ConvertFrom-StringData $propStringToConvert
@@ -32,10 +32,12 @@ $startScriptTime = (Get-Date)
 $cumulativeVideoDuration = [timespan]::fromseconds(0)
 
 #Execute preflight checks
-. $prop.preflight
+$preflightPath = convert-path "$($prop.preflight)"
+. $preflightPath
 
 #Build processing queue and list its contents
-. $prop.buildqueue
+$buildQueuePath = convert-path "$($prop.buildqueue)"
+. $buildQueuePath
 
 # Begin performing operations of files
 ForEach ($file in $fileList) {
