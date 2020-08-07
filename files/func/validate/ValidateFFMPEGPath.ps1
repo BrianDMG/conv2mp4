@@ -18,6 +18,11 @@ Function ValidateFFMPEGPath {
         DeleteLockFile
         Exit
     }
+    Else {
+        If ($Path -eq [Environment]::FFMPEG_BIN_DIR) {
+            $cfg.ffmpeg_bin_dir = [Environment]::FFMPEG_BIN_DIR
+        }
+    }
 
     If ($isWindows) {
         $ffprobe = Join-Path $Path "ffprobe.exe"

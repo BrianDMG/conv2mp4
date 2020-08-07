@@ -16,17 +16,37 @@ ValidateLogPath -Path $prop.log_path
 ValidateIgnorePath -Path $prop.ignore_path
 
 #Validate ffmpeg.exe path
-ValidateFFMPEGPath -Path $cfg.fmmpeg_bin_dir
+If ([Environment]::FFMPEG_BIN_DIR) {
+    ValidateFFMPEGPath -Path [Environment]::FFMPEG_BIN_DIR
+}
+Else {
+    ValidateFFMPEGPath -Path $cfg.fmmpeg_bin_dir
+}
 
 #Validate HandbrakeCLI path
-ValidateHandbrakeCLIPath -Path $cfg.handbrakecli_bin_dir
+If ([Environment]::HANDBRAKECLI_BIN_DIR) {
+    ValidateHandbrakeCLIPath -Path [Environment]::HANDBRAKECLI_BIN_DIR
+}
+Else {
+    ValidateHandbrakeCLIPath -Path $cfg.handbrakecli_bin_dir
+}
 
 #Validate media_path
-Validatemedia_path -Path $cfg.media_path
+If ([Environment]::MEDIA_PATH) {
+    Validatemedia_path -Path [Environment]::MEDIA_PATH
+}
+Else {
+    ValidateHandbrakeCLIPath -Path $cfg.handbrakecli_bin_dir
+}
 
 #Validate OutPath
 If ($cfg.use_out_path -eq 'true') {
-    ValidateOutPath -Path $cfg.out_path
+    If ([Environment]::OUTPATH) {
+        ValidateOutPath -Path [Environment]::OUTPATH
+    }
+    Else {
+        ValidateHandbrakeCLIPath -Path $cfg.handbrakecli_bin_dir
+    }
 }
 
 #Validate config booleans

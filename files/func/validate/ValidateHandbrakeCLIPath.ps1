@@ -5,7 +5,12 @@ Function ValidateHandbrakeCLIPath {
         [String]$Path
     )
 
-    $handbrake = Join-Path $Path "HandBrakeCLI.exe"
+    If ($isWindows) {
+        $handbrake = Join-Path $Path "HandBrakeCLI.exe"
+    }
+    Else {
+        $$handbrake = Join-Path $Path "handbrake-cli"
+    }
 
     If (-Not (Test-Path $handbrake)) {
         Log "`nhandbrakecli.exe could not be found at $Path."
