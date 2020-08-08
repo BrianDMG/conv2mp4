@@ -44,7 +44,7 @@ ForEach ($file in $fileList) {
 
     $title = $file.BaseName
 
-    $sourceFile = $file.DirectoryName + "\" + $file.BaseName + $file.Extension
+    $sourceFile = Convert-Path "$($file.DirectoryName)\$($file.BaseName)$($file.Extension)"
 
     $fileSubDirs = ($file.DirectoryName).Substring($cfg.media_path.Length, ($file.DirectoryName).Length - $cfg.media_path.Length)
 
