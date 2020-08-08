@@ -7,7 +7,13 @@ Function GetCodec {
         [String]$DiscoverType
     )
 
-    $ffprobe = Join-Path $cfg.fmmpeg_bin_dir "ffprobe.exe"
+    $bin = 'ffprobe'
+
+    If ($isWindows) {
+        $bin = $bin + '.exe'
+    }
+
+    $ffprobe = Join-Path $cfg.fmmpeg_bin_dir $bin
 
     # Check codec with ffprobe
     $ffprobeArgs += "-v "
@@ -36,7 +42,12 @@ Function GetCodec {
     $ffprobeArgs += "default=noprint_wrappers=1:nokey=1 "
     $ffprobeArgs += "`"$sourceFile`""
 
-    $ffprobeCMD = cmd.exe /c "`"$ffprobe`" $ffprobeArgs"
+    If ($isWindows) {
+        $ffprobeCMD = cmd.exe /c "`"$ffprobe`" $ffprobeArgs"
+    }
+    Else {
+        $ffprobeCMD = "`"$ffprobe`" $ffprobeArgs"
+    }
 
     If ($DiscoverType -eq "Duration") {
         #Test whether the ffprobe result was invalid - usually happens in files with corrupt encoding
