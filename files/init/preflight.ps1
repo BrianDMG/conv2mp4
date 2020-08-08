@@ -16,19 +16,18 @@ ValidateLogPath -Path $prop.log_path
 ValidateIgnorePath -Path $prop.ignore_path
 
 #Validate ffmpeg.exe path
-Log "FFMPEG ENV VAR: $([Environment]::GetEnvironmentVariable('FFMPEG_BIN_DIR'))"
 If ([Environment]::GetEnvironmentVariable('FFMPEG_BIN_DIR')) {
-    ValidateFFMPEGPath -Path [Environment]::GetEnvironmentVariable('FFMPEG_BIN_DIR')
-    $cfg.ffmpeg_bin_dir = "$([Environment]::GetEnvironmentVariable('FFMPEG_BIN_DIR'))"
-    Log "FFMPEG_BIN_DIR = $($cfg.ffmpeg_bin_dir)"
+    ValidateFFMPEGPath -Path $([Environment]::GetEnvironmentVariable('FFMPEG_BIN_DIR'))
+    $cfg.ffmpeg_bin_dir = $([Environment]::GetEnvironmentVariable('FFMPEG_BIN_DIR'))
 }
 Else {
     ValidateFFMPEGPath -Path $cfg.fmmpeg_bin_dir
 }
 
 #Validate HandbrakeCLI path
-If ([Environment]::HANDBRAKECLI_BIN_DIR) {
-    ValidateHandbrakeCLIPath -Path [Environment]::HANDBRAKECLI_BIN_DIR
+If ([Environment]::GetEnvironmentVariable('FFMPEG_BIN_DIR')) {
+    ValidateFFMPEGPath -Path $([Environment]::GetEnvironmentVariable('HANDBRAKECLI_BIN_DIR'))
+    $cfg.ffmpeg_bin_dir = $([Environment]::GetEnvironmentVariable('HANDBRAKECLI_BIN_DIR'))
 }
 Else {
     ValidateHandbrakeCLIPath -Path $cfg.handbrakecli_bin_dir
