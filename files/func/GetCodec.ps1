@@ -46,7 +46,7 @@ Function GetCodec {
         $ffprobeCMD = cmd.exe /c "`"$ffprobe`" $ffprobeArgs"
     }
     Else {
-        $ffprobeCMD = /bin/bash -c "`"$ffprobe`" $ffprobeArgs"
+        $ffprobeCMD = $ffprobe $ffprobeArgs
     }
 
     If ($DiscoverType -eq "Duration") {
