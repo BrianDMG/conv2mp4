@@ -8,7 +8,7 @@ Function CloneStereoStream {
     If ($copyStereo) {
         mkdir $($prop.tmp_dir) -Force
 
-        $ffmpeg = Join-Path $cfg.fmmpeg_bin_dir "ffmpeg.exe"
+        $ffmpeg = Join-Path $cfg.ffmpeg_bin_dir "ffmpeg.exe"
 
         #ffmpeg pull audio track from file
         $ffmpegArgs = "-i "

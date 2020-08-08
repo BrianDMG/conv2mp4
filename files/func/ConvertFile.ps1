@@ -8,8 +8,8 @@ Function ConvertFile {
         [Switch]$KeepSubs
     )
 
-    $ffmpeg = Join-Path "$($cfg.fmmpeg_bin_dir)" "ffmpeg.exe"
-    $ffprobe = Join-Path "$($cfg.fmmpeg_bin_dir)" "ffprobe.exe"
+    $ffmpeg = Join-Path "$($cfg.ffmpeg_bin_dir)" "ffmpeg.exe"
+    $ffprobe = Join-Path "$($cfg.ffmpeg_bin_dir)" "ffprobe.exe"
     $handbrake = Join-Path $cfg.handbrakecli_bin_dir "HandBrakeCLI.exe"
 
     If ($ConvertType -eq "Handbrake") {
