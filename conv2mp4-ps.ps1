@@ -32,11 +32,11 @@ $startScriptTime = (Get-Date)
 $cumulativeVideoDuration = [timespan]::fromseconds(0)
 
 #Execute preflight checks
-$preflightPath = convert-path "$($prop.preflight)"
+$preflightPath = Convert-Path "$($prop.preflight)"
 . $preflightPath
 
 #Build processing queue and list its contents
-$buildQueuePath = convert-path "$($prop.buildqueue)"
+$buildQueuePath = Convert-Path "$($prop.buildqueue)"
 . $buildQueuePath
 
 # Begin performing operations of files

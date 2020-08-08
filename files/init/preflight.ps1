@@ -17,38 +17,28 @@ ValidateIgnorePath -Path $prop.ignore_path
 
 #Validate ffmpeg.exe path
 If ([Environment]::GetEnvironmentVariable('FFMPEG_BIN_DIR')) {
-    ValidateFFMPEGPath -Path $([Environment]::GetEnvironmentVariable('FFMPEG_BIN_DIR'))
     $cfg.ffmpeg_bin_dir = $([Environment]::GetEnvironmentVariable('FFMPEG_BIN_DIR'))
 }
-Else {
-    ValidateFFMPEGPath -Path $cfg.fmmpeg_bin_dir
-}
+ValidateFFMPEGPath -Path $cfg.fmmpeg_bin_dir
 
 #Validate HandbrakeCLI path
-If ([Environment]::GetEnvironmentVariable('FFMPEG_BIN_DIR')) {
-    ValidateFFMPEGPath -Path $([Environment]::GetEnvironmentVariable('HANDBRAKECLI_BIN_DIR'))
-    $cfg.ffmpeg_bin_dir = $([Environment]::GetEnvironmentVariable('HANDBRAKECLI_BIN_DIR'))
+If ([Environment]::GetEnvironmentVariable('HANDBRAKECLI_BIN_DIR')) {
+    $cfg.handbrakecli_bin_dir = $([Environment]::GetEnvironmentVariable('HANDBRAKECLI_BIN_DIR'))
 }
-Else {
-    ValidateHandbrakeCLIPath -Path $cfg.handbrakecli_bin_dir
-}
+ValidateHandbrakeCLIPath -Path $cfg.handbrakecli_bin_dir
 
 #Validate media_path
-If ([Environment]::MEDIA_PATH) {
-    Validatemedia_path -Path [Environment]::MEDIA_PATH
+If ([Environment]::GetEnvironmentVariable('MEDIA_PATH')) {
+    $cfg.media_path = $([Environment]::GetEnvironmentVariable('MEDIA_PATH'))
 }
-Else {
-    ValidateHandbrakeCLIPath -Path $cfg.handbrakecli_bin_dir
-}
+ValidateMediaPath -Path $cfg.media_path
 
 #Validate OutPath
 If ($cfg.use_out_path -eq 'true') {
-    If ([Environment]::OUTPATH) {
-        ValidateOutPath -Path [Environment]::OUTPATH
+    If ([Environment]::GetEnvironmentVariable('OUTPATH')) {
+        $cfg.out_path = $([Environment]::GetEnvironmentVariable('OUTPATH'))
     }
-    Else {
-        ValidateHandbrakeCLIPath -Path $cfg.handbrakecli_bin_dir
-    }
+    ValidateOutPath -Path $cfg.out_path
 }
 
 #Validate config booleans

@@ -1,5 +1,5 @@
 #Validate media_path
-Function Validatemedia_path {
+Function ValidateMediaPath {
 
     param(
         [String]$Path
