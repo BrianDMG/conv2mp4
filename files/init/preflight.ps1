@@ -18,6 +18,8 @@ ValidateIgnorePath -Path $prop.ignore_path
 #Validate ffmpeg.exe path
 If ([Environment]::FFMPEG_BIN_DIR) {
     ValidateFFMPEGPath -Path [Environment]::FFMPEG_BIN_DIR
+    $cfg.ffmpeg_bin_dir = [Environment]::FFMPEG_BIN_DIR
+    Log 'FFMPEG_BIN_DIR = ' + $cfg.ffmpeg_bin_dir
 }
 Else {
     ValidateFFMPEGPath -Path $cfg.fmmpeg_bin_dir
