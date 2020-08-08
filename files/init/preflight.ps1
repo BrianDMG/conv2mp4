@@ -19,7 +19,7 @@ ValidateIgnorePath -Path $prop.ignore_path
 If ([Environment]::GetEnvironmentVariable('FFMPEG_BIN_DIR')) {
     $cfg.ffmpeg_bin_dir = $([Environment]::GetEnvironmentVariable('FFMPEG_BIN_DIR'))
 }
-ValidateFFMPEGPath -Path $cfg.fmmpeg_bin_dir
+ValidateFFMPEGPath -Path $cfg.ffmpeg_bin_dir
 
 #Validate HandbrakeCLI path
 If ([Environment]::GetEnvironmentVariable('HANDBRAKECLI_BIN_DIR')) {
