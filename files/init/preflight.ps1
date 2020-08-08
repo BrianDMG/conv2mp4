@@ -16,11 +16,11 @@ ValidateLogPath -Path $prop.log_path
 ValidateIgnorePath -Path $prop.ignore_path
 
 #Validate ffmpeg.exe path
-Log "Media path: " + [Environment]::GetEnvironmentVariable('FFMPEG_BIN_DIR')
+Log "FFMPEG ENV VAR: $([Environment]::GetEnvironmentVariable('FFMPEG_BIN_DIR'))"
 If ([Environment]::GetEnvironmentVariable('FFMPEG_BIN_DIR')) {
     ValidateFFMPEGPath -Path [Environment]::GetEnvironmentVariable('FFMPEG_BIN_DIR')
-    $cfg.ffmpeg_bin_dir = [Environment]::GetEnvironmentVariable('FFMPEG_BIN_DIR')
-    Log 'FFMPEG_BIN_DIR = ' + $cfg.ffmpeg_bin_dir
+    $cfg.ffmpeg_bin_dir = "$([Environment]::GetEnvironmentVariable('FFMPEG_BIN_DIR'))"
+    Log "FFMPEG_BIN_DIR = $($cfg.ffmpeg_bin_dir)"
 }
 Else {
     ValidateFFMPEGPath -Path $cfg.fmmpeg_bin_dir
