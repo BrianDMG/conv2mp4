@@ -13,7 +13,7 @@ Function GetCodec {
         $bin = $bin + '.exe'
     }
 
-    $ffprobe = Join-Path $cfg.ffmpeg_bin_dir $bin
+    $ffprobe = Convert-Path "$($cfg.ffmpeg_bin_dir)\$($bin)"
 
     # Check codec with ffprobe
     $ffprobeArgs += "-v "
@@ -46,7 +46,7 @@ Function GetCodec {
         $ffprobeCMD = cmd.exe /c "`"$ffprobe`" $ffprobeArgs"
     }
     Else {
-        $ffprobeCMD = "`"$ffprobe`" $ffprobeArgs"
+        $ffprobeCMD = /bin/bash -c "`"$ffprobe`" $ffprobeArgs"
     }
 
     If ($DiscoverType -eq "Duration") {
