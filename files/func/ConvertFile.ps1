@@ -182,8 +182,12 @@ Function ConvertFile {
         $ffArgs+= "-f mp4 "
         $ffArgs += "`"$targetFile`"" #Output file
 
-        $ffCMD = cmd.exe /c "`"$ffmpeg`" $ffArgs"
-
+        If ($IsWindows) {
+            $ffCMD = cmd.exe /c "`"$ffmpeg`" $ffArgs"
+        }
+        Else {
+            $ffCMD = Invoke-Expression -Command "$($ffmpeg) $($ffArgs)"
+        }
         # Begin ffmpeg operation
         $ffCMD
         Write-Output "$($time.Invoke()) ffmpeg completed"
