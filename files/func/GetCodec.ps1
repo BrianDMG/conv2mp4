@@ -9,7 +9,7 @@ Function GetCodec {
 
     $bin = 'ffprobe'
 
-    If ($isWindows) {
+    If ($IsWindows) {
         $bin = $bin + '.exe'
     }
 
@@ -42,7 +42,7 @@ Function GetCodec {
     $ffprobeArgs += "default=noprint_wrappers=1:nokey=1 "
     $ffprobeArgs += "`"$sourceFile`""
 
-    If ($isWindows) {
+    If ($IsWindows) {
         $ffprobeCMD = cmd.exe /c "`"$ffprobe`" $ffprobeArgs"
     }
     Else {

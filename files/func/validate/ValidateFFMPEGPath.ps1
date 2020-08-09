@@ -6,8 +6,8 @@ Function ValidateFFMPEGPath {
 
     $bin = 'ffmpeg'
 
-    If ($isWindows) {
-        $bin = $bin + '.exe'
+    If ($IsWindows) {
+        $bin = "$($bin).exe"
     }
 
     $ffmpeg = Join-Path $Path $bin
@@ -22,7 +22,7 @@ Function ValidateFFMPEGPath {
 
     $bin = 'ffprobe'
 
-    If ($isWindows) {
+    If ($IsWindows) {
         $bin = $bin + '.exe'
     }
 
