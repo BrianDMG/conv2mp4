@@ -49,16 +49,16 @@ ForEach ($file in $fileList) {
     $fileSubDirs = ($file.DirectoryName).Substring($cfg.media_path.Length, ($file.DirectoryName).Length - $cfg.media_path.Length)
 
     If ($cfg.use_out_path) {
-        $targetPath = $cfg.out_path + $fileSubDirs + "\"
+        $targetPath = Convert-Path "$($cfg.out_path)$($fileSubDirs)\"
 
         If (-Not (Test-Path $targetPath)) {
             mkdir $targetPath -Force
         }
 
-        $targetFile = $targetPath + $file.BaseName + ".mp4" + ".conv2mp4"
+        $targetFile = Convert-Path "$($targetPath)$($file.BaseName).mp4.conv2mp4"
     }
     Else {
-        $targetFile = $file.DirectoryName + "\" + $file.BaseName + ".mp4" + ".conv2mp4"
+        $targetFile = Convert-Path "$($file.DirectoryName)\$($file.BaseName).mp4.conv2mp4"
     }
 
     $progress = ($(@($fileList).indexOf($file)+1) / $fileList.Count) * 100
@@ -72,10 +72,10 @@ ForEach ($file in $fileList) {
 
     #Set targetFile final name
     If ($cfg.use_out_path) {
-        $targetFileRenamed = $targetPath + $file.BaseName + ".mp4"
+        $targetFileRenamed = Convert-Path "$($targetPath)\$($file.BaseName).mp4"
     }
     Else {
-        $targetFileRenamed = $file.DirectoryName + "\" + $file.BaseName + ".mp4"
+        $targetFileRenamed = Convert-Path "$($file.DirectoryName)\$($file.BaseName).mp4"
     }
 
     <#Test if $targetFile (.mp4) already exists, if yes then delete $sourceFile (.mkv)
