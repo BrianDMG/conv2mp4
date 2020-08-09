@@ -46,7 +46,7 @@ Function GetCodec {
         $ffprobeCMD = cmd.exe /c "`"$ffprobe`" $ffprobeArgs"
     }
     Else {
-        $ffprobeCMD = $ffprobe $ffprobeArgs
+        $ffprobeCMD = Invoke-Expression "`"$ffprobe`" $ffprobeArgs"
     }
 
     If ($DiscoverType -eq "Duration") {
