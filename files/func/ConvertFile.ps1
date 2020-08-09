@@ -123,8 +123,12 @@ Function ConvertFile {
                 $title = $title -replace '\W',' '
                 $title = $($title.trim() -replace "\s+"," ")
                 $year = $($title.split()[-1])
-                $title = $title.SubString(0, $title.LastIndexOf(' '))
-
+                If ($title.LastIndexOf(' ') -ge 0) {
+                    $title = $title.SubString(0, $title.LastIndexOf(' '))
+                }
+                Else {
+                    $title = $title.SubString(0)
+                }
                 $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
                 $ffArgs += "title=`"$title`" " #Use $title variable as metadata 'title'
                 $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
@@ -165,7 +169,7 @@ Function ConvertFile {
 
         If ($KeepSubs) {
             $info = Invoke-Expression "$($ffprobe) -i $($sourceFile) 2>&1"
-            #Detect if bitmap subs exist, and do not keep them if they do. 
+            #Detect if bitmap subs exist, and do not keep them if they do
             #Resolves error that causes ffmpeg to fail and launch failover
             If (!$($info -Match '(pgssub|dvd_subtitle)')) {
                 $ffArgs += "-c:s " #Subtitle codec flag
