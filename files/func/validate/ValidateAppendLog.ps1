@@ -6,7 +6,7 @@ Function ValidateAppendLog {
 
     #Should the log append or clear
     If ($cfg.append_log -eq $False) {
-        #Clear-Content $prop.log_path
+        Clear-Content $prop.log_path
         PrintVersion
     }
     Elseif ($cfg.append_log -eq $True -AND $Null -eq $logEmpty) {
