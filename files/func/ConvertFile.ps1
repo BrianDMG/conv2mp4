@@ -8,9 +8,23 @@ Function ConvertFile {
         [Switch]$KeepSubs
     )
 
-    $ffmpeg = Join-Path "$($cfg.ffmpeg_bin_dir)" "ffmpeg.exe"
-    $ffprobe = Join-Path "$($cfg.ffmpeg_bin_dir)" "ffprobe.exe"
-    $handbrake = Join-Path $cfg.handbrakecli_bin_dir "HandBrakeCLI.exe"
+    $bin = 'ffmpeg'
+    If ($IsWindows) {
+        $bin = "$($bin).exe"
+    }
+    $ffmpeg = Convert-Path "$($cfg.ffmpeg_bin_dir)\$($bin)"
+
+    $bin = 'ffprobe'
+    If ($IsWindows) {
+        $bin = "$($bin).exe"
+    }
+    $ffprobe = Convert-Path "$($cfg.ffmpeg_bin_dir)\$($bin)"
+
+    $bin = 'handbrake-cli'
+    If ($IsWindows) {
+        $bin = "HandBrakeCLI.exe"
+    }
+    $handbrake = Convert-Path "$($cfg.handbrakecli_bin_dir)\$($bin)"
 
     If ($ConvertType -eq "Handbrake") {
         # Handbrake CLI: https://trac.handbrake.fr/wiki/CLIGuide#presets
@@ -150,7 +164,7 @@ Function ConvertFile {
         }
 
         If ($KeepSubs) {
-            $info = & $ffprobe -i $sourceFile 2>&1
+            $info = Invoke-Expression "$($ffprobe) -i $($sourceFile) 2>&1"
             #Detect if bitmap subs exist, and do not keep them if they do. 
             #Resolves error that causes ffmpeg to fail and launch failover
             If (!$($info -Match '(pgssub|dvd_subtitle)')) {
