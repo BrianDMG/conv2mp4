@@ -9,6 +9,13 @@ The purpose of this script is to reduce the amount of transcoding CPU load on a 
 
 Set-Location -Path $PSScriptRoot
 
+#Test if $IsWindows variable exists, if not assumes platform is Windows (backwards compatibility)
+If(-not (Test-Path Variable:IsWindows))
+{
+    $IsWindows = $true
+    $IsLinux = $IsMacOS = $false
+}
+
 #Load properties file
 $propFile = Convert-Path "files\prop\properties"
 $propRawString = Get-Content "$propFile" | Out-String
@@ -74,7 +81,7 @@ ForEach ($file in $fileList) {
 
     #Set targetFile final name
     If ($cfg.use_out_path) {
-        $targetFileRenamed = Convert-Path "$($targetPath)\$($file.BaseName).mp4"
+        $targetFileRenamed = Convert-Path "$($targetPath)\"
         $targetFileRenamed = "$($targetFileRenamed)" + "$($file.BaseName).mp4"
     }
     Else {
