@@ -7,22 +7,22 @@ github_url=https://github.com/BrianDMG/conv2mp4-ps
 gitlab_url=https://gitlab.com/BrianDMG/conv2mp4-ps
 
 #File Paths
-cfg_path=files\cfg\config
-log_path=files\log\conv2mp4-ps.log
-lock_path=files\lock\conv2mp4-ps.lock
-ignore_path=files\ignore\ignore.list
+cfg_path=/config
+log_path=files/log/conv2mp4-ps.log
+lock_path=files/lock/conv2mp4-ps.lock
+ignore_path=/ignore/ignore.list
 
 #Init Paths
-buildqueue=files\init\buildqueue.ps1
-init=files\init\init.ps1
-loadcfg=files\init\loadcfg.ps1
-preflight=files\init\preflight.ps1
+buildqueue=files/init/buildqueue.ps1
+init=files/init/init.ps1
+loadcfg=files/init/loadcfg.ps1
+preflight=files/init/preflight.ps1
 
 #Function Paths
-func_basepath=files\func
+func_basepath=files/func
 
 #Temporary files
-tmp_dir=files\tmp\
+tmp_dir=files/tmp/
 tmp_51out=51out.aac
 tmp_2in=2in.aac
 
