@@ -8,8 +8,8 @@ gitlab_url=https://gitlab.com/BrianDMG/conv2mp4-ps
 
 #File Paths
 cfg_path=/cfg/config
-log_path=files/log/conv2mp4-ps.log
-lock_path=files/lock/conv2mp4-ps.lock
+log_path=/log/conv2mp4-ps.log
+lock_path=/lock/conv2mp4-ps.lock
 ignore_path=/ignore/ignore.list
 
 #Init Paths
