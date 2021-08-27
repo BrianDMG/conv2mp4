@@ -1,13 +1,13 @@
 #Version
 version=5.0.0
-platform=ps
+platform=docker
 
 #URLs
 github_url=https://github.com/BrianDMG/conv2mp4-ps
 gitlab_url=https://gitlab.com/BrianDMG/conv2mp4-ps
 
 #File Paths
-cfg_path=/config
+cfg_path=/cfg/config
 log_path=files/log/conv2mp4-ps.log
 lock_path=files/lock/conv2mp4-ps.lock
 ignore_path=/ignore/ignore.list
