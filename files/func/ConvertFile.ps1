@@ -24,6 +24,9 @@ Function ConvertFile {
     If ($IsWindows) {
         $bin = "HandBrakeCLI.exe"
     }
+    Else {
+        $bin = "HandBrakeCLI"
+    }
     $handbrake = Convert-Path "$($cfg.handbrakecli_bin_dir)\$($bin)"
 
     If ($ConvertType -eq "Handbrake") {

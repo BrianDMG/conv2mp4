@@ -10,6 +10,9 @@ Function ValidateHandbrakeCLIPath {
     If ($isWindows) {
         $bin = 'HandBrakeCLI.exe'
     }
+    Else {
+        $bin = "HandBrakeCLI"
+    }
 
     $handbrake = Join-Path $Path $bin
 
