@@ -17,7 +17,7 @@ Function CloneStereoStream {
         $ffmpegArgs += "-acodec "
         $ffmpegArgs += "copy "
         $ffmpegArgs += "$($prop.tmp_dir)\$($prop.tmp_51out)"
-        $ffmpegCMD = cmd.exe /c "`"$ffmpeg`" $ffmpegArgs"
+        $ffmpegCMD = "`"$ffmpeg`" $ffmpegArgs"
 
         #ffmpeg convert audio track
         $ffmpegArgs = "-i "
@@ -25,7 +25,7 @@ Function CloneStereoStream {
         $ffmpegArgs += "-ac "
         $ffmpegArgs += "2 "
         $ffmpegArgs += "$($prop.tmp_dir)\$($prop.tmp_2in)"
-        $ffmpegCMD = cmd.exe /c "`"$ffmpeg`" $ffmpegArgs"
+        $ffmpegCMD = "`"$ffmpeg`" $ffmpegArgs"
 
         #Rename original source file, necessary to avoid corrupting by using same file as input and output
         Move-Item $targetFile $tempFileName -Force
@@ -45,7 +45,7 @@ Function CloneStereoStream {
         $ffmpegArgs += "-metadata:s:a "
         $ffmpegArgs += "handler=Stereo "
         $ffmpegArgs += "$targetFile"
-        $ffmpegCMD = cmd.exe /c "`"$ffmpeg`" $ffmpegArgs"
+        $ffmpegCMD = "`"$ffmpeg`" $ffmpegArgs"
 
         Remove-Item $tempFileName -Force
         Remove-Item $prop.tmp_dir -Force -Recurse
