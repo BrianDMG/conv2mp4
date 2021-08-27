@@ -62,7 +62,7 @@ Function ConvertFile {
         $hbArgs += "--modulus " #Flag to set storage width modulus
         $hbArgs += "2" #Storage width modulus value
 
-        $hbCMD = cmd.exe /c "`"$handbrake`" $hbArgs"
+        $hbCMD = "`"$handbrake`" $hbArgs"
         # Begin Handbrake operation
         Try {
             $hbCMD
@@ -187,7 +187,7 @@ Function ConvertFile {
         $ffArgs += "`"$targetFile`"" #Output file
 
         If ($IsWindows) {
-            $ffCMD = cmd.exe /c "`"$ffmpeg`" $ffArgs"
+            $ffCMD = "`"$ffmpeg`" $ffArgs"
         }
         Else {
             $ffCMD = Invoke-Expression -Command "$($ffmpeg) $($ffArgs)"

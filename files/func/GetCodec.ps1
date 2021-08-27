@@ -43,7 +43,7 @@ Function GetCodec {
     $ffprobeArgs += "`"$sourceFile`""
 
     If ($IsWindows) {
-        $ffprobeCMD = cmd.exe /c "`"$ffprobe`" $ffprobeArgs"
+        $ffprobeCMD = "`"$ffprobe`" $ffprobeArgs"
     }
     Else {
         $ffprobeCMD = Invoke-Expression -Command "$($ffprobe) $($ffprobeArgs)"
