@@ -1,5 +1,5 @@
 #Load properties file
-$propFile = Convert-Path "files\prop\properties"
+$propFile = Convert-Path "$($env:APP_HOME)\files\prop\properties"
 $propRawString = Get-Content "$propFile" | Out-String
 $propStringToConvert = $propRawString -replace '\\', '\\'
 $prop = ConvertFrom-StringData $propStringToConvert
@@ -23,7 +23,7 @@ Function Sleep-Progress($seconds) {
 }
 
 Do {
-  pwsh /c /app/conv2mp4-ps.ps1
+  pwsh /c "$($env:APP_HOME)/conv2mp4-ps.ps1"
   Write-Output "Sleeping $($cfg.run_interval) seconds..."
   Sleep-Progress $($cfg.run_interval)
 }
