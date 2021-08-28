@@ -14,4 +14,4 @@ ps-script-analyzer:
   image: ${CI_REGISTRY_IMAGE}/lint:latest
   script:
     # Execute recursively the analyzer
-    - pwsh -Command "Invoke-ScriptAnalyzer -EnableExit -Recurse -Path ."
+    - pwsh -Command "Invoke-ScriptAnalyzer -EnableExit -Recurse -Severity Error -Path ."
