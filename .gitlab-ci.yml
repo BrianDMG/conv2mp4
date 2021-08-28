@@ -11,7 +11,7 @@ stages:
   - release
 
 lint:
-  stage: Lint
+  stage: lint
   except:
     - tags
   image: ${LINT_IMAGE}
@@ -23,7 +23,7 @@ lint:
     - ${LINT_CMD}
 
 docker_build_push:
-  stage: Docker build & push
+  stage: docker_build_push
   except:
     - merge_requests
     - tags
@@ -44,7 +44,7 @@ docker_build_push:
     - lint
 
 release:
-  stage: Docker release
+  stage: release
   only:
     - tags
   image: ${DOCKER_IMAGE}
