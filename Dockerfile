@@ -1,6 +1,4 @@
-FROM mcr.microsoft.com/powershell
-
-ARG CONV2MP4_HOME='/app'
+FROM mcr.microsoft.com/powershell:ubuntu-focal
 
 ENV APP_HOME=/app
 ENV MEDIA_PATH=/media
@@ -12,12 +10,13 @@ RUN apt update && \
     apt install -y software-properties-common && \
     add-apt-repository ppa:stebbins/handbrake-releases && \
     apt update && \
-    apt install --no-install-recommends -y \
+    apt install \
+      --no-install-recommends -y \
       ffmpeg \
-      handbrake-cli \
-      nano &&\
+      handbrake-cli && \
     apt autoremove -y && \
-    apt clean
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY . /app
 
