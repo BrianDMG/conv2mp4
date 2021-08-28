@@ -5,33 +5,33 @@ services:
 - ${DOCKER_SERVICE}
 
 stages:
-  - ps_lint
-  - docker_lint
-  - docker_build_push
-  #- test
-  - release
+  - PWSH Lint
+  #- PWSH test
+  - Docker Lint
+  - Docker Build Push
+  - Tag Release
 
 ps_lint:
-  stage: ps_lint
+  stage: PWSH Lint
   except:
     - tags
   image: ${LINT_IMAGE}
   before_script:
-    # Show the PowerShell version
     - pwsh -Version
   script:
-    # Execute recursively the analyzer
     - ${LINT_CMD}
 
+#PWSH Test
+
 docker_lint:
-  stage: docker_lint
+  stage: Docker Lint
   image: ${DOCKER_LINT_IMAGE}
   script: ${DOCKER_LINT_CMD}
   dependencies:
     - ps_lint
 
 docker_build_push:
-  stage: docker_build_push
+  stage: Docker Build Push
   except:
     - merge_requests
     - tags
@@ -52,7 +52,7 @@ docker_build_push:
     - docker_lint
 
 release:
-  stage: release
+  stage: Tag Release
   only:
     - tags
   image: ${DOCKER_IMAGE}
