@@ -1,10 +1,14 @@
+include:
+  - '.gitlab-vars.yml' #Import env vars
+
 stages:
   - lint
-  #- build
+  - docker_build
+  - docker_push
   #- test
-  #- push
+  - release
 
-ps-script-analyzer:
+lint:
   stage: lint
   except:
     - tags
@@ -14,4 +18,46 @@ ps-script-analyzer:
   image: ${CI_REGISTRY_IMAGE}/lint:latest
   script:
     # Execute recursively the analyzer
-    - pwsh -Command "Invoke-ScriptAnalyzer -EnableExit -Recurse -Severity Error -Path ."
+    - ${LINT_CMD}
+
+docker_build:
+  stage: docker_build
+  except:
+    - merge_requests
+    - tags
+  before_script:
+    - echo -n ${CI_JOB_TOKEN} | docker login -u gitlab-ci-token --password-stdin ${CI_REGISTRY}
+  script:
+    - >
+      docker build
+      --pull
+      --cache-from ${LATEST_TAG}
+      --tag ${COMMIT_TAG}
+      .
+  dependencies:
+    - lint
+
+docker_push:
+  stage: docker_push
+  except:
+    - merge_requests
+    - tags
+  before_script:
+    - echo -n ${CI_JOB_TOKEN} | docker login -u gitlab-ci-token --password-stdin ${CI_REGISTRY}
+  script:
+    - docker push ${COMMIT_TAG}
+    - docker tag ${COMMIT_TAG} ${LATEST_TAG}
+    - docker push ${LATEST_TAG}
+  dependencies:
+    - docker_build
+
+release:
+  stage: release
+  only:
+    - tags
+  before_script:
+    - echo -n ${CI_JOB_TOKEN} | docker login -u gitlab-ci-token --password-stdin ${CI_REGISTRY}
+  script:
+    - docker pull ${LATEST_TAG}
+    - docker tag ${LATEST_TAG} ${RELEASE_TAG}
+    - docker push ${RELEASE_TAG}
