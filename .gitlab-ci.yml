@@ -15,7 +15,7 @@ lint:
   stage: lint
   except:
     - tags
-  image: {$LINT_IMAGE}
+  image: ${LINT_IMAGE}
   before_script:
     # Show the PowerShell version
     - pwsh -Version
