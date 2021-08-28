@@ -6,13 +6,12 @@ services:
 
 stages:
   - lint
-  - docker_build
-  - docker_push
+  - docker_build_push
   #- test
   - release
 
 lint:
-  stage: lint
+  stage: Lint
   except:
     - tags
   image: ${LINT_IMAGE}
@@ -23,8 +22,8 @@ lint:
     # Execute recursively the analyzer
     - ${LINT_CMD}
 
-docker_build:
-  stage: docker_build
+docker_build_push:
+  stage: Docker build & push
   except:
     - merge_requests
     - tags
@@ -38,26 +37,14 @@ docker_build:
       --cache-from ${LATEST_TAG}
       --tag ${COMMIT_TAG}
       .
-  dependencies:
-    - lint
-
-docker_push:
-  stage: docker_push
-  except:
-    - merge_requests
-    - tags
-  image: ${DOCKER_IMAGE}
-  before_script:
-    - echo -n ${CI_JOB_TOKEN} | docker login -u gitlab-ci-token --password-stdin ${CI_REGISTRY}
-  script:
     - docker push ${COMMIT_TAG}
     - docker tag ${COMMIT_TAG} ${LATEST_TAG}
     - docker push ${LATEST_TAG}
   dependencies:
-    - docker_build
+    - lint
 
 release:
-  stage: release
+  stage: Docker release
   only:
     - tags
   image: ${DOCKER_IMAGE}
