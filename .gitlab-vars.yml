@@ -3,8 +3,10 @@ variables:
   LINT_IMAGE: ${CI_REGISTRY_IMAGE}/lint:latest
   LINT_CMD: pwsh -Command "Invoke-ScriptAnalyzer -EnableExit -Recurse -Severity Error -Path ."
   #Docker
-  DOCKER_IMAGE: docker:20.10.8-dind-alpine3.13
   DOCKER_SERVICE: docker:20.10.8-dind
+  DOCKER_IMAGE: docker:20.10.8-dind-alpine3.13
+  DOCKER_LINT_IMAGE: hadolint/hadolint:latest-alpine
+  DOCKER_LINT_CMD: hadolint Dockerfile
   LATEST_TAG: ${CI_REGISTRY_IMAGE}:latest
   COMMIT_TAG: ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}
   RELEASE_TAG: ${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG}
