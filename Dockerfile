@@ -7,16 +7,16 @@ ENV HANDBRAKECLI_BIN_DIR=/usr/bin
 ENV OUTPATH=/outpath
 ENV TERM=xterm
 
-RUN apt update && \
-    apt install -y software-properties-common && \
+RUN apt-get update && \
+    apt-get install -y software-properties-common && \
     add-apt-repository ppa:stebbins/handbrake-releases && \
-    apt update && \
-    apt install \
+    apt-get update && \
+    apt-get install \
       --no-install-recommends -y \
       ffmpeg \
       handbrake-cli && \
-    apt autoremove -y && \
-    apt clean && \
+    apt-get autoremove -y && \
+    apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 COPY . /app
