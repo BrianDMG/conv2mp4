@@ -1,6 +1,9 @@
 include:
   - '.gitlab-vars.yml' #Import env vars
 
+services:
+- ${DOCKER_SERVICE}
+
 stages:
   - lint
   - docker_build
@@ -12,7 +15,7 @@ lint:
   stage: lint
   except:
     - tags
-  image: ${CI_REGISTRY_IMAGE}/lint:latest
+  image: {$LINT_IMAGE}
   before_script:
     # Show the PowerShell version
     - pwsh -Version
@@ -25,7 +28,7 @@ docker_build:
   except:
     - merge_requests
     - tags
-  image: docker:20.10.8-dind-alpine3.13
+  image: ${DOCKER_IMAGE}
   before_script:
     - echo -n ${CI_JOB_TOKEN} | docker login -u gitlab-ci-token --password-stdin ${CI_REGISTRY}
   script:
@@ -43,7 +46,7 @@ docker_push:
   except:
     - merge_requests
     - tags
-  image: docker:20.10.8-dind-alpine3.13
+  image: ${DOCKER_IMAGE}
   before_script:
     - echo -n ${CI_JOB_TOKEN} | docker login -u gitlab-ci-token --password-stdin ${CI_REGISTRY}
   script:
@@ -57,7 +60,7 @@ release:
   stage: release
   only:
     - tags
-  image: docker:20.10.8-dind-alpine3.13
+  image: ${DOCKER_IMAGE}
   before_script:
     - echo -n ${CI_JOB_TOKEN} | docker login -u gitlab-ci-token --password-stdin ${CI_REGISTRY}
   script:
