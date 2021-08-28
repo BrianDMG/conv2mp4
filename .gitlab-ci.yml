@@ -1,0 +1,17 @@
+stages:
+  - lint
+  #- build
+  #- test
+  #- push
+
+ps-script-analyzer:
+  stage: lint
+  except:
+    - tags
+  before_script:
+    # Show the PowerShell version
+    - pwsh -Version
+  image: ${CI_REGISTRY_IMAGE}/lint:latest
+  script:
+    # Execute recursively the analyzer
+    - pwsh -Command "Invoke-ScriptAnalyzer -EnableExit -Recurse -Path ."
