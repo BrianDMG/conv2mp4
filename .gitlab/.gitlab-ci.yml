@@ -26,7 +26,7 @@ Dockerfile Lint:
     changes:
       - ${DOCKERFILE_PATH}
   image: ${DOCKER_LINT_IMAGE}
-  script: ${DOCKER_LINT_CMD} ${DOCKERFILE_PATH}
+  script: ${DOCKER_LINT_CMD} ${DOCKERFILE_PATH}/Dockerfile
 
 Lint Dockerfile Lint:
   stage: Lint
@@ -34,7 +34,7 @@ Lint Dockerfile Lint:
     changes:
       - ${DOCKERFILE_LINT_PATH}
   image: ${DOCKER_LINT_IMAGE}
-  script: ${DOCKER_LINT_CMD} ${DOCKERFILE_LINT_PATH}
+  script: ${DOCKER_LINT_CMD} ${DOCKERFILE_LINT_PATH}/Dockerfile
 
 Unit Test:
   stage: Test
