@@ -10,7 +10,7 @@ RUN \
   Set-PSRepository \
     -ErrorAction Stop \
     -InstallationPolicy Trusted \
-    -Name PSGallery             <# Name of the repository #> \
+    -Name PSGallery \
     -Verbose;                   <# Write verbose output #> \
   # Install PSScriptAnalyzer module (https://github.com/PowerShell/PSScriptAnalyzer/tags)
   Install-Module \

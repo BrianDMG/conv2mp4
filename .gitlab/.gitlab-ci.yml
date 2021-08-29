@@ -36,7 +36,7 @@ Lint Dockerfile Lint:
   stage: Lint
   only:
     changes:
-      - ${DOCKERFILE_LINT_PATH}/Dockerfile
+      - "${DOCKERFILE_LINT_PATH}/Dockerfile"
   image: ${DOCKER_LINT_IMAGE}
   script: ${DOCKER_LINT_CMD} ${DOCKERFILE_LINT_PATH}/Dockerfile
 
