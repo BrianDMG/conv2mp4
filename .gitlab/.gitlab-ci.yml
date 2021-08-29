@@ -11,27 +11,32 @@ stages:
 
 Powershell Lint:
   stage: Lint
-  except:
-    - tags
   image: ${LINT_IMAGE}
   before_script:
     - pwsh -Version
   script:
     - ${LINT_CMD}
 
-Unit Test:
-  stage: Test
-  except:
-    - tags
-  script:
-    - echo "TODO - Add Pester tests"
-  dependencies:
-    - Powershell Lint
-
 Dockerfile Lint:
   stage: Lint
+  only:
+    changes:
+      - ${DOCKERFILE_PATH}
   image: ${DOCKER_LINT_IMAGE}
-  script: ${DOCKER_LINT_CMD}
+  script: ${DOCKER_LINT_CMD} ${DOCKERFILE_PATH}
+
+Lint Dockerfile Lint:
+  stage: Lint
+  only:
+    changes:
+      - ${DOCKERFILE_LINT_PATH}
+  image: ${DOCKER_LINT_IMAGE}
+  script: ${DOCKER_LINT_CMD} ${DOCKERFILE_LINT_PATH}
+
+Unit Test:
+  stage: Test
+  script:
+    - echo "TODO - Add Pester tests"
 
 Build:
   stage: Docker
@@ -47,23 +52,42 @@ Build:
       --pull
       --cache-from ${LATEST_TAG}
       --tag ${COMMIT_TAG}
-      .
+      ${DOCKERFILE_PATH}
     - docker push ${COMMIT_TAG}
-  dependencies:
-    - Powershell Lint
-    - Dockerfile Lint
-    - Unit Test
+
+Lint Build:
+  stage: Docker
+  only:
+    changes:
+      - ${DOCKERFILE_LINT_PATH}
+  except:
+    - merge_requests
+    - tags
+  image: ${DOCKER_IMAGE}
+  before_script:
+    - echo -n ${CI_JOB_TOKEN} | docker login -u gitlab-ci-token --password-stdin ${CI_REGISTRY}
+  script:
+    - >
+      docker build
+      --pull
+      --cache-from ${LINT_LATEST_TAG}
+      --tag ${LINT_COMMIT_TAG}
+      ${DOCKERFILE_LINT_PATH}
+    - docker push ${LINT_COMMIT_TAG}
 
 Smoke Test:
   stage: Docker
+  only:
+    changes:
+      - ${CI_PROJECT_DIR}/conv2mp4-ps.ps1
+      - ${CI_PROJECT_DIR}/files
+      - ${CI_PROJECT_DIR}/.docker
   except:
+    - merge_requests
     - tags
   script:
     - echo "TODO - Add container smoke tests"
-  dependencies:
-    - Powershell Lint
-    - Dockerfile Lint
-    - Build
+  needs: ["Build"]
 
 Push:
   stage: Docker
@@ -77,9 +101,7 @@ Push:
     - docker pull ${COMMIT_TAG}
     - docker tag ${COMMIT_TAG} ${LATEST_TAG}
     - docker push ${LATEST_TAG}
-  dependencies:
-    - Smoke Test
-    - Build
+  needs: ["Build"]
 
 Release:
   stage: Docker
