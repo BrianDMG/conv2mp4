@@ -58,7 +58,7 @@ Build:
       --pull
       --cache-from ${LATEST_TAG}
       --tag ${COMMIT_TAG}
-      .
+      ${DOCKERFILE_PATH}
     - docker push ${COMMIT_TAG}
   dependencies:
     - Powershell Lint
