@@ -6,7 +6,7 @@ variables:
   DOCKER_SERVICE: docker:20.10.8-dind
   DOCKER_IMAGE: docker:20.10.8-dind-alpine3.13
   DOCKER_LINT_IMAGE: hadolint/hadolint:latest-alpine
-  DOCKERFILE_PATH: ${CI_PROJECT_DIR}/.docker/app/
+  DOCKERFILE_PATH: ${CI_PROJECT_DIR}/.docker/app
   DOCKERFILE_LINT_PATH: ${CI_PROJECT_DIR}/.docker/lint
   DOCKER_LINT_CMD: hadolint
   LATEST_TAG: ${CI_REGISTRY_IMAGE}:latest

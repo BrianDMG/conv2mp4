@@ -28,7 +28,7 @@ Dockerfile Lint:
   stage: Lint
   only:
     changes:
-      - ${DOCKERFILE_PATH}
+      - ${DOCKERFILE_PATH}/
   image: ${DOCKER_LINT_IMAGE}
   script: ${DOCKER_LINT_CMD} ${DOCKERFILE_PATH}/Dockerfile
 
@@ -36,7 +36,7 @@ Lint Dockerfile Lint:
   stage: Lint
   only:
     changes:
-      - ${DOCKERFILE_LINT_PATH}
+      - ${DOCKERFILE_LINT_PATH}/
   image: ${DOCKER_LINT_IMAGE}
   script: ${DOCKER_LINT_CMD} ${DOCKERFILE_LINT_PATH}/Dockerfile
 
@@ -45,7 +45,7 @@ Unit Test:
   only:
     changes:
       - ${CI_REGISTRY_IMAGE}/conv2mp4-ps.ps1
-      - ${CI_REGISTRY_IMAGE}/files/*
+      - ${CI_REGISTRY_IMAGE}/files/
   script:
     - echo "TODO - Add Pester tests"
 
@@ -55,7 +55,7 @@ Docker Build:
     changes:
       - ${CI_REGISTRY_IMAGE}/conv2mp4-ps.ps1
       - ${CI_REGISTRY_IMAGE}/files
-      - ${DOCKERFILE_PATH}
+      - ${DOCKERFILE_PATH}/
   except:
     - merge_requests
     - tags
@@ -75,7 +75,7 @@ Lint Build:
   stage: Build
   only:
     changes:
-      - ${DOCKERFILE_LINT_PATH}
+      - ${DOCKERFILE_LINT_PATH}/
   except:
     - merge_requests
     - tags
@@ -121,6 +121,24 @@ Push:
     - docker pull ${COMMIT_TAG}
     - docker tag ${COMMIT_TAG} ${LATEST_TAG}
     - docker push ${LATEST_TAG}
+
+Push Lint:
+  stage: Publish
+  only:
+    changes:
+      - ${CI_REGISTRY_IMAGE}/conv2mp4-ps.ps1
+      - ${CI_REGISTRY_IMAGE}/files/
+      - ${DOCKERFILE_LINT_PATH}/
+  except:
+    - merge_requests
+    - tags
+  image: ${DOCKER_IMAGE}
+  before_script:
+    - echo -n ${CI_JOB_TOKEN} | docker login -u gitlab-ci-token --password-stdin ${CI_REGISTRY}
+  script:
+    - docker pull ${LINT_COMMIT_TAG}
+    - docker tag ${LINT_COMMIT_TAG} ${LATEST_TAG}
+    - docker push ${LINT_LATEST_TAG}
 
 Release:
   stage: Release

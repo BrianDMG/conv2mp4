@@ -8,7 +8,7 @@ SHELL [ "pwsh", "-Command" ]
 RUN \
   # Sets values for a registered module repository
   Set-PSRepository \
-    -ErrorAction Stop           <# Action to take if a command fails #> \
+    -ErrorAction Stop \
     -InstallationPolicy Trusted <# Installation policy (Trusted, Untrusted) #> \
     -Name PSGallery             <# Name of the repository #> \
     -Verbose;                   <# Write verbose output #> \
