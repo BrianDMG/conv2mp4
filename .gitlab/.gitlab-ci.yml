@@ -1,5 +1,5 @@
 include:
-  - '.gitlab-vars.yml' #Import env vars
+  - '.gitlab-vars.yml'
 
 services:
 - ${DOCKER_SERVICE}
