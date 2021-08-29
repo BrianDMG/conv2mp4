@@ -30,8 +30,19 @@ Unit Test:
 
 Dockerfile Lint:
   stage: Lint
+  only:
+    changes:
+      - ${DOCKERFILE_PATH}
   image: ${DOCKER_LINT_IMAGE}
-  script: ${DOCKER_LINT_CMD}
+  script: ${DOCKER_LINT_CMD} ${DOCKERFILE_PATH}
+
+Lint Runner Dockerfile Lint:
+  stage: Lint
+  only:
+    changes:
+      - ${DOCKERFILE_LINT_PATH}
+  image: ${DOCKER_LINT_IMAGE}
+  script: ${DOCKER_LINT_CMD} ${DOCKERFILE_LINT_PATH}
 
 Build:
   stage: Docker

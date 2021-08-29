@@ -21,6 +21,6 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-COPY . /app
+COPY ${CI_PROJECT_DIR} /app
 
-CMD [ "pwsh", "/c", "/app/files/docker/daemon.ps1" ]
+CMD [ "pwsh", "/c", "/app/files/init/daemon.ps1" ]
