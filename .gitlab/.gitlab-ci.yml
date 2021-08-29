@@ -1,5 +1,5 @@
 include:
-  - ${CI_PROJECT_DIR}/.gitlab/.gitlab-vars.yml
+  - .gitlab/**
 
 services:
 - ${DOCKER_SERVICE}
@@ -32,23 +32,6 @@ Dockerfile Lint:
   image: ${DOCKER_LINT_IMAGE}
   script: ${DOCKER_LINT_CMD} ${DOCKERFILE_PATH}/Dockerfile
 
-Lint Dockerfile Lint:
-  stage: Lint
-  only:
-    changes:
-      - .docker/lint/*
-  image: ${DOCKER_LINT_IMAGE}
-  script: ${DOCKER_LINT_CMD} ${DOCKERFILE_LINT_PATH}/Dockerfile
-
-Unit Test:
-  stage: Test
-  only:
-    changes:
-      - conv2mp4-ps.ps1
-      - ./files/**
-  script:
-    - echo "TODO - Add Pester tests"
-
 Docker Build:
   stage: Build
   only:
@@ -70,26 +53,6 @@ Docker Build:
       --tag ${COMMIT_TAG}
       ${DOCKERFILE_PATH}
     - docker push ${COMMIT_TAG}
-
-Lint Build:
-  stage: Build
-  only:
-    changes:
-      - .docker/lint/*
-  except:
-    - merge_requests
-    - tags
-  image: ${DOCKER_IMAGE}
-  before_script:
-    - echo -n ${CI_JOB_TOKEN} | docker login -u gitlab-ci-token --password-stdin ${CI_REGISTRY}
-  script:
-    - >
-      docker build
-      --pull
-      --cache-from ${LINT_LATEST_TAG}
-      --tag ${LINT_COMMIT_TAG}
-      ${DOCKERFILE_LINT_PATH}
-    - docker push ${LINT_COMMIT_TAG}
 
 Smoke Test:
   stage: Smoke Test
@@ -121,22 +84,6 @@ Push:
     - docker pull ${COMMIT_TAG}
     - docker tag ${COMMIT_TAG} ${LATEST_TAG}
     - docker push ${LATEST_TAG}
-
-Push Lint:
-  stage: Publish
-  only:
-    changes:
-      - .docker/lint/*
-  except:
-    - merge_requests
-    - tags
-  image: ${DOCKER_IMAGE}
-  before_script:
-    - echo -n ${CI_JOB_TOKEN} | docker login -u gitlab-ci-token --password-stdin ${CI_REGISTRY}
-  script:
-    - docker pull ${LINT_COMMIT_TAG}
-    - docker tag ${LINT_COMMIT_TAG} ${LINT_LATEST_TAG}
-    - docker push ${LINT_LATEST_TAG}
 
 Release:
   stage: Release

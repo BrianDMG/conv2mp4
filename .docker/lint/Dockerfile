@@ -7,7 +7,7 @@ SHELL [ "pwsh", "-Command" ]
 
 RUN \
   #Sets values for a registered module repository
-  Set-PSRepository \
+  Set-PSRepository\
     -ErrorAction Stop \
     -InstallationPolicy Trusted \
     -Name PSGallery \
