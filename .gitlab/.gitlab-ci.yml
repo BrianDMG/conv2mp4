@@ -7,7 +7,10 @@ services:
 stages:
   - Lint
   - Test
-  - Docker
+  - Build
+  - Smoke Test
+  - Publish
+  - Release
 
 Powershell Lint:
   stage: Lint
@@ -38,8 +41,8 @@ Unit Test:
   script:
     - echo "TODO - Add Pester tests"
 
-Build:
-  stage: Docker
+Docker Build:
+  stage: Build
   except:
     - merge_requests
     - tags
@@ -56,7 +59,7 @@ Build:
     - docker push ${COMMIT_TAG}
 
 Lint Build:
-  stage: Docker
+  stage: Build
   only:
     changes:
       - ${DOCKERFILE_LINT_PATH}
@@ -76,7 +79,7 @@ Lint Build:
     - docker push ${LINT_COMMIT_TAG}
 
 Smoke Test:
-  stage: Docker
+  stage: Smoke Test
   only:
     changes:
       - ${CI_PROJECT_DIR}/conv2mp4-ps.ps1
@@ -87,10 +90,9 @@ Smoke Test:
     - tags
   script:
     - echo "TODO - Add container smoke tests"
-  needs: ["Build"]
 
 Push:
-  stage: Docker
+  stage: Publish
   except:
     - merge_requests
     - tags
@@ -101,10 +103,9 @@ Push:
     - docker pull ${COMMIT_TAG}
     - docker tag ${COMMIT_TAG} ${LATEST_TAG}
     - docker push ${LATEST_TAG}
-  needs: ["Build"]
 
 Release:
-  stage: Docker
+  stage: Release
   only:
     - tags
   image: ${DOCKER_IMAGE}
