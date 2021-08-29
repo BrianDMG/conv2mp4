@@ -98,6 +98,10 @@ Smoke Test:
     changes:
       - ${CI_PROJECT_DIR}/conv2mp4-ps.ps1
       - ${CI_PROJECT_DIR}/files
+<<<<<<< HEAD
+=======
+      - ${CI_PROJECT_DIR}/.docker
+>>>>>>> 0182c9420664dc3bed83f4b976e33c9b802b4484
   except:
     - tags
   script:
