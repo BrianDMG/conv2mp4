@@ -19,7 +19,7 @@ $TriggerTimes = @(
   '2:00AM',
   '1:00AM'
 )
-
+ 
 # Sort in chronologic order
 #  assuming the times format are the same
 $TriggerTimes = $TriggerTimes | Sort-Object

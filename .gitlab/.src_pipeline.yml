@@ -4,7 +4,7 @@ Powershell Lint:
   only:
     changes:
       - conv2mp4-ps\.ps1
-      - files/**
+      - files/**/*
   before_script:
     - pwsh -Version
   script:
@@ -15,7 +15,7 @@ Unit Test:
   only:
     changes:
       - conv2mp4-ps\.ps1
-      - files/**
+      - files/**/*
   script:
     - echo "TODO - Add Pester tests"
 
@@ -24,7 +24,7 @@ Smoke Test:
   only:
     changes:
       - conv2mp4-ps\.ps1
-      - files/**
+      - files/**/*
   except:
     - merge_requests
     - tags
