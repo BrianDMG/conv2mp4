@@ -11,6 +11,10 @@ stages:
 
 Powershell Lint:
   stage: Lint
+  only:
+    changes:
+      - ${CI_PROJECT_DIR}/conv2mp4-ps.ps1
+      - ${CI_PROJECT_DIR}/files
   except:
     - tags
   image: ${LINT_IMAGE}
@@ -37,15 +41,22 @@ Lint Dockerfile Lint:
 
 Unit Test:
   stage: Test
+  only:
+    changes:
+      - ${CI_PROJECT_DIR}/conv2mp4-ps.ps1
+      - ${CI_PROJECT_DIR}/files
   except:
     - tags
   script:
     - echo "TODO - Add Pester tests"
-  dependencies:
-    - Powershell Lint
 
 Build:
   stage: Docker
+  only:
+    changes:
+      - ${CI_PROJECT_DIR}/conv2mp4-ps.ps1
+      - ${CI_PROJECT_DIR}/files
+      - ${CI_PROJECT_DIR}/.docker
   except:
     - merge_requests
     - tags
@@ -60,10 +71,6 @@ Build:
       --tag ${COMMIT_TAG}
       ${DOCKERFILE_PATH}
     - docker push ${COMMIT_TAG}
-  dependencies:
-    - Powershell Lint
-    - Dockerfile Lint
-    - Unit Test
 
 Lint Build:
   stage: Docker
@@ -84,8 +91,6 @@ Lint Build:
       --tag ${LINT_COMMIT_TAG}
       ${DOCKERFILE_LINT_PATH}
     - docker push ${LINT_COMMIT_TAG}
-  dependencies:
-    - Dockerfile Lint
 
 Smoke Test:
   stage: Docker
@@ -93,10 +98,7 @@ Smoke Test:
     - tags
   script:
     - echo "TODO - Add container smoke tests"
-  dependencies:
-    - Powershell Lint
-    - Dockerfile Lint
-    - Build
+  needs: ["Build"]
 
 Push:
   stage: Docker
@@ -110,10 +112,7 @@ Push:
     - docker pull ${COMMIT_TAG}
     - docker tag ${COMMIT_TAG} ${LATEST_TAG}
     - docker push ${LATEST_TAG}
-  dependencies:
-    - Build
-    - Smoke Test
-
+  needs: ["Build", "Smoke Test"]
 
 Release:
   stage: Docker
