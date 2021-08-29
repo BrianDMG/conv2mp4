@@ -111,8 +111,9 @@ Push:
     - docker tag ${COMMIT_TAG} ${LATEST_TAG}
     - docker push ${LATEST_TAG}
   dependencies:
-    - Smoke Test
     - Build
+    - Smoke Test
+
 
 Release:
   stage: Docker
