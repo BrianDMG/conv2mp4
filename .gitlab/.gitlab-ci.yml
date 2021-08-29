@@ -5,33 +5,36 @@ services:
 - ${DOCKER_SERVICE}
 
 stages:
-  - PWSH Lint
-  #- PWSH test
-  - Docker Lint
-  - Docker Build Push
-  - Tag Release
+  - Lint
+  - Test
+  - Docker
 
-ps_lint:
-  stage: PWSH Lint
+Powershell Lint:
+  stage: Lint
   except:
     - tags
   image: ${LINT_IMAGE}
   before_script:
-    - pwsh -Version
+    - PS -Version
   script:
     - ${LINT_CMD}
 
-#PWSH Test
+Unit Test:
+  stage: Test
+  except:
+    - tags
+  script:
+    - echo "TODO - Add Pester tests"
+  dependencies:
+    - Powershell Lint
 
-docker_lint:
-  stage: Docker Lint
+Dockerfile Lint:
+  stage: Lint
   image: ${DOCKER_LINT_IMAGE}
   script: ${DOCKER_LINT_CMD}
-  dependencies:
-    - ps_lint
 
-docker_build_push:
-  stage: Docker Build Push
+Build:
+  stage: Docker
   except:
     - merge_requests
     - tags
@@ -49,10 +52,38 @@ docker_build_push:
     - docker tag ${COMMIT_TAG} ${LATEST_TAG}
     - docker push ${LATEST_TAG}
   dependencies:
-    - docker_lint
+    - Powershell Lint
+    - Dockerfile Lint
+    - Unit Test
 
-release:
-  stage: Tag Release
+Smoke Test:
+  stage: Docker
+  except:
+    - tags
+  script:
+    - echo "TODO - Add container smoke tests"
+  dependencies:
+    - Powershell Lint
+    - Dockerfile Lint
+    - Build
+
+Push:
+  stage: Docker
+  except:
+    - merge_requests
+    - tags
+  image: ${DOCKER_IMAGE}
+  before_script:
+    - echo -n ${CI_JOB_TOKEN} | docker login -u gitlab-ci-token --password-stdin ${CI_REGISTRY}
+  script:
+    - docker tag ${COMMIT_TAG} ${LATEST_TAG}
+    - docker push ${LATEST_TAG}
+  dependencies:
+    - Smoke Test
+    - Build
+
+Release:
+  stage: Docker
   only:
     - tags
   image: ${DOCKER_IMAGE}
