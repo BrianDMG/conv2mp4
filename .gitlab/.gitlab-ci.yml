@@ -1,116 +1,16 @@
 include:
-  - ${CI_PROJECT_DIR}/.gitlab/.gitlab-vars.yml
+  - .gitlab/.gitlab-vars.yml
+  - .gitlab/.src_pipeline.yml
+  - .gitlab/.lint_img_pipeline.yml
+  - .gitlab/.app_img_pipeline.yml
 
 services:
 - ${DOCKER_SERVICE}
 
 stages:
   - Lint
-  - Test
-  - Docker
-
-Powershell Lint:
-  stage: Lint
-  image: ${LINT_IMAGE}
-  before_script:
-    - pwsh -Version
-  script:
-    - ${LINT_CMD}
-
-Dockerfile Lint:
-  stage: Lint
-  only:
-    changes:
-      - ${DOCKERFILE_PATH}
-  image: ${DOCKER_LINT_IMAGE}
-  script: ${DOCKER_LINT_CMD} ${DOCKERFILE_PATH}
-
-Lint Dockerfile Lint:
-  stage: Lint
-  only:
-    changes:
-      - ${DOCKERFILE_LINT_PATH}
-  image: ${DOCKER_LINT_IMAGE}
-  script: ${DOCKER_LINT_CMD} ${DOCKERFILE_LINT_PATH}
-
-Unit Test:
-  stage: Test
-  script:
-    - echo "TODO - Add Pester tests"
-
-Build:
-  stage: Docker
-  except:
-    - merge_requests
-    - tags
-  image: ${DOCKER_IMAGE}
-  before_script:
-    - echo -n ${CI_JOB_TOKEN} | docker login -u gitlab-ci-token --password-stdin ${CI_REGISTRY}
-  script:
-    - >
-      docker build
-      --pull
-      --cache-from ${LATEST_TAG}
-      --tag ${COMMIT_TAG}
-      ${DOCKERFILE_PATH}
-    - docker push ${COMMIT_TAG}
-
-Lint Build:
-  stage: Docker
-  only:
-    changes:
-      - ${DOCKERFILE_LINT_PATH}
-  except:
-    - merge_requests
-    - tags
-  image: ${DOCKER_IMAGE}
-  before_script:
-    - echo -n ${CI_JOB_TOKEN} | docker login -u gitlab-ci-token --password-stdin ${CI_REGISTRY}
-  script:
-    - >
-      docker build
-      --pull
-      --cache-from ${LINT_LATEST_TAG}
-      --tag ${LINT_COMMIT_TAG}
-      ${DOCKERFILE_LINT_PATH}
-    - docker push ${LINT_COMMIT_TAG}
-
-Smoke Test:
-  stage: Docker
-  only:
-    changes:
-      - ${CI_PROJECT_DIR}/conv2mp4-ps.ps1
-      - ${CI_PROJECT_DIR}/files
-      - ${CI_PROJECT_DIR}/.docker
-  except:
-    - merge_requests
-    - tags
-  script:
-    - echo "TODO - Add container smoke tests"
-  needs: ["Build"]
-
-Push:
-  stage: Docker
-  except:
-    - merge_requests
-    - tags
-  image: ${DOCKER_IMAGE}
-  before_script:
-    - echo -n ${CI_JOB_TOKEN} | docker login -u gitlab-ci-token --password-stdin ${CI_REGISTRY}
-  script:
-    - docker pull ${COMMIT_TAG}
-    - docker tag ${COMMIT_TAG} ${LATEST_TAG}
-    - docker push ${LATEST_TAG}
-  needs: ["Build"]
-
-Release:
-  stage: Docker
-  only:
-    - tags
-  image: ${DOCKER_IMAGE}
-  before_script:
-    - echo -n ${CI_JOB_TOKEN} | docker login -u gitlab-ci-token --password-stdin ${CI_REGISTRY}
-  script:
-    - docker pull ${LATEST_TAG}
-    - docker tag ${LATEST_TAG} ${RELEASE_TAG}
-    - docker push ${RELEASE_TAG}
+  #- Test
+  - Build
+  #- Smoke Test
+  - Publish
+  - Release

@@ -1,0 +1,32 @@
+Powershell Lint:
+  stage: Lint
+  image: ${LINT_IMAGE}
+  only:
+    changes:
+      - conv2mp4-ps\.ps1
+      - files/**/*
+  before_script:
+    - pwsh -Version
+  script:
+    - ${LINT_CMD}
+
+#Unit Test:
+#  stage: Test
+#  only:
+#    changes:
+#      - conv2mp4-ps\.ps1
+#      - files/**/*
+#  script:
+#    - echo "TODO - Add Pester tests"
+
+#Smoke Test:
+#  stage: Smoke Test
+#  only:
+#    changes:
+#      - conv2mp4-ps\.ps1
+#      - files/**/*
+#  except:
+#    - merge_requests
+#    - tags
+#  script:
+#    - echo "TODO - Add container smoke tests"
