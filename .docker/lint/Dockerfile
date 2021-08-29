@@ -11,7 +11,7 @@ RUN \
     -ErrorAction Stop \
     -InstallationPolicy Trusted \
     -Name PSGallery \
-    -Verbose;                   <# Write verbose output #> \
+    -Verbose; \
   # Install PSScriptAnalyzer module (https://github.com/PowerShell/PSScriptAnalyzer/tags)
   Install-Module \
     -ErrorAction Stop \
