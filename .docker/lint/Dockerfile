@@ -19,5 +19,5 @@ RUN \
     -RequiredVersion 1.19.1   <# Exact version of a single module to install #> \
     -Verbose;
 
-# Switch back to the default Linux shell as we are using a Linux Docker image for now
+# Switch back to the default Linux shell
 SHELL [ "/bin/sh" , "-c" ]
