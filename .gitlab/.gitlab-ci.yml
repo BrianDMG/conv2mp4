@@ -112,7 +112,7 @@ Push:
     - docker pull ${COMMIT_TAG}
     - docker tag ${COMMIT_TAG} ${LATEST_TAG}
     - docker push ${LATEST_TAG}
-  needs: ["Build", "Smoke Test"]
+  needs: ["Smoke Test"]
 
 Release:
   stage: Docker
