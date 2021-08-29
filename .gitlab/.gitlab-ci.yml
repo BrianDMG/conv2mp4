@@ -1,5 +1,6 @@
 include:
-  - .gitlab/**
+  - .gitlab/.gitlab-vars.yml
+  - .gitlab/.lint_img_pipeline.yml
 
 services:
 - ${DOCKER_SERVICE}
