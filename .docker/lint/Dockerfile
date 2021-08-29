@@ -12,7 +12,7 @@ RUN \
     -InstallationPolicy Trusted \
     -Name PSGallery \
     -Verbose; \
-  #Install PSScriptAnalyzer module (https://github.com/PowerShell/PSScriptAnalyzer/tags)
+  #Install PSScriptAnalyzer module
   Install-Module \
     -ErrorAction Stop \
     -Name PSScriptAnalyzer \

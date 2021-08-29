@@ -135,7 +135,7 @@ Push Lint:
     - echo -n ${CI_JOB_TOKEN} | docker login -u gitlab-ci-token --password-stdin ${CI_REGISTRY}
   script:
     - docker pull ${LINT_COMMIT_TAG}
-    - docker tag ${LINT_COMMIT_TAG} ${LATEST_TAG}
+    - docker tag ${LINT_COMMIT_TAG} ${LINT_LATEST_TAG}
     - docker push ${LINT_LATEST_TAG}
 
 Release:
