@@ -28,7 +28,7 @@ Docker Build:
       ${DOCKERFILE_PATH}
     - docker push ${COMMIT_TAG}
 
-Push:
+Docker Push:
   stage: Publish
   only:
     changes:

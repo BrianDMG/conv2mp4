@@ -9,8 +9,8 @@ services:
 
 stages:
   - Lint
-  - Test
+  #- Test
   - Build
-  - Smoke Test
+  #- Smoke Test
   - Publish
   - Release
