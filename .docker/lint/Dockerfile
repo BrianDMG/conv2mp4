@@ -9,7 +9,7 @@ RUN \
   # Sets values for a registered module repository
   Set-PSRepository \
     -ErrorAction Stop \
-    -InstallationPolicy Trusted <# Installation policy (Trusted, Untrusted) #> \
+    -InstallationPolicy Trusted \
     -Name PSGallery             <# Name of the repository #> \
     -Verbose;                   <# Write verbose output #> \
   # Install PSScriptAnalyzer module (https://github.com/PowerShell/PSScriptAnalyzer/tags)

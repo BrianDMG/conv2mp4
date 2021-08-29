@@ -28,7 +28,7 @@ Dockerfile Lint:
   stage: Lint
   only:
     changes:
-      - ${DOCKERFILE_PATH}/
+      - ${DOCKERFILE_PATH}/Dockerfile
   image: ${DOCKER_LINT_IMAGE}
   script: ${DOCKER_LINT_CMD} ${DOCKERFILE_PATH}/Dockerfile
 
@@ -36,7 +36,7 @@ Lint Dockerfile Lint:
   stage: Lint
   only:
     changes:
-      - ${DOCKERFILE_LINT_PATH}/
+      - ${DOCKERFILE_LINT_PATH}/Dockerfile
   image: ${DOCKER_LINT_IMAGE}
   script: ${DOCKER_LINT_CMD} ${DOCKERFILE_LINT_PATH}/Dockerfile
 
@@ -45,7 +45,7 @@ Unit Test:
   only:
     changes:
       - ${CI_REGISTRY_IMAGE}/conv2mp4-ps.ps1
-      - ${CI_REGISTRY_IMAGE}/files/
+      - ${CI_REGISTRY_IMAGE}/files/*
   script:
     - echo "TODO - Add Pester tests"
 
@@ -55,7 +55,7 @@ Docker Build:
     changes:
       - ${CI_REGISTRY_IMAGE}/conv2mp4-ps.ps1
       - ${CI_REGISTRY_IMAGE}/files
-      - ${DOCKERFILE_PATH}/
+      - ${DOCKERFILE_PATH}/Dockerfile
   except:
     - merge_requests
     - tags
@@ -75,7 +75,7 @@ Lint Build:
   stage: Build
   only:
     changes:
-      - ${DOCKERFILE_LINT_PATH}/
+      - ${DOCKERFILE_LINT_PATH}/Dockerfile
   except:
     - merge_requests
     - tags
@@ -96,8 +96,8 @@ Smoke Test:
   only:
     changes:
       - ${CI_PROJECT_DIR}/conv2mp4-ps.ps1
-      - ${CI_PROJECT_DIR}/files
-      - ${CI_PROJECT_DIR}/.docker
+      - ${CI_PROJECT_DIR}/files/*
+      - ${CI_PROJECT_DIR}/.docker/*
   except:
     - merge_requests
     - tags
@@ -110,7 +110,7 @@ Push:
     changes:
       - ${CI_REGISTRY_IMAGE}/conv2mp4-ps.ps1
       - ${CI_REGISTRY_IMAGE}/files/*
-      - ${DOCKERFILE_PATH}
+      - ${DOCKERFILE_PATH}/Dockerfile
   except:
     - merge_requests
     - tags
@@ -127,8 +127,8 @@ Push Lint:
   only:
     changes:
       - ${CI_REGISTRY_IMAGE}/conv2mp4-ps.ps1
-      - ${CI_REGISTRY_IMAGE}/files/
-      - ${DOCKERFILE_LINT_PATH}/
+      - ${CI_REGISTRY_IMAGE}/files/*
+      - ${DOCKERFILE_LINT_PATH}/Dockerfile
   except:
     - merge_requests
     - tags
