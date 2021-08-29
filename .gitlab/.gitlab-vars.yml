@@ -1,7 +1,7 @@
 variables:
   #Linter
   LINT_IMAGE: ${CI_REGISTRY_IMAGE}/lint:latest
-  LINT_CMD: pwsh -Command "Invoke-ScriptAnalyzer -EnableExit -Recurse -Severity Error -Path ."
+  LINT_CMD: 'pwsh -Command "Invoke-ScriptAnalyzer -EnableExit -Recurse -Severity Error -Path ."'
   #Docker
   DOCKER_SERVICE: docker:20.10.8-dind
   DOCKER_IMAGE: docker:20.10.8-dind-alpine3.13
