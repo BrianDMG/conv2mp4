@@ -11,12 +11,6 @@ stages:
 
 Powershell Lint:
   stage: Lint
-  only:
-    changes:
-      - ${CI_PROJECT_DIR}/conv2mp4-ps.ps1
-      - ${CI_PROJECT_DIR}/files
-  except:
-    - tags
   image: ${LINT_IMAGE}
   before_script:
     - pwsh -Version
@@ -41,22 +35,11 @@ Lint Dockerfile Lint:
 
 Unit Test:
   stage: Test
-  only:
-    changes:
-      - ${CI_PROJECT_DIR}/conv2mp4-ps.ps1
-      - ${CI_PROJECT_DIR}/files
-  except:
-    - tags
   script:
     - echo "TODO - Add Pester tests"
 
 Build:
   stage: Docker
-  only:
-    changes:
-      - ${CI_PROJECT_DIR}/conv2mp4-ps.ps1
-      - ${CI_PROJECT_DIR}/files
-      - ${CI_PROJECT_DIR}/.docker
   except:
     - merge_requests
     - tags
@@ -77,9 +60,6 @@ Lint Build:
   only:
     changes:
       - ${DOCKERFILE_LINT_PATH}
-  except:
-    - merge_requests
-    - tags
   image: ${DOCKER_IMAGE}
   before_script:
     - echo -n ${CI_JOB_TOKEN} | docker login -u gitlab-ci-token --password-stdin ${CI_REGISTRY}
@@ -99,8 +79,6 @@ Smoke Test:
       - ${CI_PROJECT_DIR}/conv2mp4-ps.ps1
       - ${CI_PROJECT_DIR}/files
       - ${CI_PROJECT_DIR}/.docker
-  except:
-    - tags
   script:
     - echo "TODO - Add container smoke tests"
   needs: ["Build"]
@@ -108,10 +86,6 @@ Smoke Test:
 Push:
   stage: Docker
   only:
-    changes:
-      - ${CI_PROJECT_DIR}/conv2mp4-ps.ps1
-      - ${CI_PROJECT_DIR}/files
-      - ${CI_PROJECT_DIR}/.docker
   except:
     - merge_requests
     - tags
