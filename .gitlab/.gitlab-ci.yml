@@ -52,11 +52,11 @@ Unit Test:
 
 Build:
   stage: Docker
-  only:
-    changes:
-      - ${CI_PROJECT_DIR}/conv2mp4-ps.ps1
-      - ${CI_PROJECT_DIR}/files
-      - ${CI_PROJECT_DIR}/.docker
+#  only:
+#    changes:
+#      - ${CI_PROJECT_DIR}/conv2mp4-ps.ps1
+#      - ${CI_PROJECT_DIR}/files
+#      - ${CI_PROJECT_DIR}/.docker
   except:
     - merge_requests
     - tags
@@ -94,6 +94,10 @@ Lint Build:
 
 Smoke Test:
   stage: Docker
+  only:
+    changes:
+      - ${CI_PROJECT_DIR}/conv2mp4-ps.ps1
+      - ${CI_PROJECT_DIR}/files
   except:
     - tags
   script:
@@ -102,6 +106,11 @@ Smoke Test:
 
 Push:
   stage: Docker
+  only:
+    changes:
+      - ${CI_PROJECT_DIR}/conv2mp4-ps.ps1
+      - ${CI_PROJECT_DIR}/files
+      - ${CI_PROJECT_DIR}/.docker
   except:
     - merge_requests
     - tags
@@ -112,7 +121,7 @@ Push:
     - docker pull ${COMMIT_TAG}
     - docker tag ${COMMIT_TAG} ${LATEST_TAG}
     - docker push ${LATEST_TAG}
-  needs: ["Build", "Smoke Test"]
+  needs: ["Smoke Test"]
 
 Release:
   stage: Docker
