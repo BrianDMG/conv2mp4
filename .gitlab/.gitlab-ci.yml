@@ -52,11 +52,11 @@ Unit Test:
 
 Build:
   stage: Docker
-#  only:
-#    changes:
-#      - ${CI_PROJECT_DIR}/conv2mp4-ps.ps1
-#      - ${CI_PROJECT_DIR}/files
-#      - ${CI_PROJECT_DIR}/.docker
+  only:
+    changes:
+      - ${CI_PROJECT_DIR}/conv2mp4-ps.ps1
+      - ${CI_PROJECT_DIR}/files
+      - ${CI_PROJECT_DIR}/.docker
   except:
     - merge_requests
     - tags
