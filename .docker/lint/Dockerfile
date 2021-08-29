@@ -16,7 +16,7 @@ RUN \
   Install-Module \
     -ErrorAction Stop \
     -Name PSScriptAnalyzer \
-    -RequiredVersion 1.19.1   <# Exact version of a single module to install #> \
+    -RequiredVersion 1.19.1  \
     -Verbose;
 
 # Switch back to the default Linux shell
