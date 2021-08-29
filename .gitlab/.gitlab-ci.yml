@@ -15,6 +15,10 @@ stages:
 Powershell Lint:
   stage: Lint
   image: ${LINT_IMAGE}
+  only:
+    changes:
+      - ${CI_REGISTRY_IMAGE}/conv2mp4-ps.ps1
+      - ${CI_REGISTRY_IMAGE}/files
   before_script:
     - pwsh -Version
   script:
@@ -38,11 +42,20 @@ Lint Dockerfile Lint:
 
 Unit Test:
   stage: Test
+  only:
+    changes:
+      - ${CI_REGISTRY_IMAGE}/conv2mp4-ps.ps1
+      - ${CI_REGISTRY_IMAGE}/files/*
   script:
     - echo "TODO - Add Pester tests"
 
 Docker Build:
   stage: Build
+  only:
+    changes:
+      - ${CI_REGISTRY_IMAGE}/conv2mp4-ps.ps1
+      - ${CI_REGISTRY_IMAGE}/files
+      - ${DOCKERFILE_PATH}
   except:
     - merge_requests
     - tags
@@ -93,6 +106,11 @@ Smoke Test:
 
 Push:
   stage: Publish
+  only:
+    changes:
+      - ${CI_REGISTRY_IMAGE}/conv2mp4-ps.ps1
+      - ${CI_REGISTRY_IMAGE}/files/*
+      - ${DOCKERFILE_PATH}
   except:
     - merge_requests
     - tags
