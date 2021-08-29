@@ -10,8 +10,8 @@ Docker Build:
   stage: Build
   only:
     changes:
-      - conv2mp4-ps.ps1
-      - ./files/**
+      - conv2mp4-ps\.ps1
+      - files/**/*
       - .docker/app/*
   except:
     - merge_requests
@@ -32,8 +32,8 @@ Push:
   stage: Publish
   only:
     changes:
-      - conv2mp4-ps.ps1
-      - ./files/**
+      - conv2mp4-ps\.ps1
+      - files/**/*
       - .docker/app/*
   except:
     - merge_requests
