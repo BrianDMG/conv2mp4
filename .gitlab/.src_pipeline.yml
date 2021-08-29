@@ -25,7 +25,6 @@ Smoke Test:
     changes:
       - conv2mp4-ps.ps1
       - ./files/**
-      - .docker/app/*
   except:
     - merge_requests
     - tags
