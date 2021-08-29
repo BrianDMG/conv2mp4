@@ -21,6 +21,6 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-COPY ${CI_PROJECT_DIR} /app
+COPY ${CI_PROJECT_DIR} /app 
 
 CMD [ "pwsh", "/c", "/app/files/init/daemon.ps1" ]

@@ -1,0 +1,59 @@
+Dockerfile Lint:
+  stage: Lint
+  only:
+    changes:
+      - .docker/app/*
+  image: ${DOCKER_LINT_IMAGE}
+  script: ${DOCKER_LINT_CMD} ${DOCKERFILE_PATH}/Dockerfile
+
+Docker Build:
+  stage: Build
+  only:
+    changes:
+      - conv2mp4-ps.ps1
+      - ./files/**
+      - .docker/app/*
+  except:
+    - merge_requests
+    - tags
+  image: ${DOCKER_IMAGE}
+  before_script:
+    - echo -n ${CI_JOB_TOKEN} | docker login -u gitlab-ci-token --password-stdin ${CI_REGISTRY}
+  script:
+    - >
+      docker build
+      --pull
+      --cache-from ${LATEST_TAG}
+      --tag ${COMMIT_TAG}
+      ${DOCKERFILE_PATH}
+    - docker push ${COMMIT_TAG}
+
+Push:
+  stage: Publish
+  only:
+    changes:
+      - conv2mp4-ps.ps1
+      - ./files/**
+      - .docker/app/*
+  except:
+    - merge_requests
+    - tags
+  image: ${DOCKER_IMAGE}
+  before_script:
+    - echo -n ${CI_JOB_TOKEN} | docker login -u gitlab-ci-token --password-stdin ${CI_REGISTRY}
+  script:
+    - docker pull ${COMMIT_TAG}
+    - docker tag ${COMMIT_TAG} ${LATEST_TAG}
+    - docker push ${LATEST_TAG}
+
+Release:
+  stage: Release
+  only:
+    - tags
+  image: ${DOCKER_IMAGE}
+  before_script:
+    - echo -n ${CI_JOB_TOKEN} | docker login -u gitlab-ci-token --password-stdin ${CI_REGISTRY}
+  script:
+    - docker pull ${LATEST_TAG}
+    - docker tag ${LATEST_TAG} ${RELEASE_TAG}
+    - docker push ${RELEASE_TAG}

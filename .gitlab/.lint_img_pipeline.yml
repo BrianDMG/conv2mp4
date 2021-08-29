@@ -6,15 +6,6 @@ Lint Dockerfile Lint:
   image: ${DOCKER_LINT_IMAGE}
   script: ${DOCKER_LINT_CMD} ${DOCKERFILE_LINT_PATH}/Dockerfile
 
-Unit Test:
-  stage: Test
-  only:
-    changes:
-      - conv2mp4-ps.ps1
-      - ./files/**
-  script:
-    - echo "TODO - Add Pester tests"
-
 Lint Build:
   stage: Build
   only:
