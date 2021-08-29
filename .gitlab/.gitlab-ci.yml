@@ -49,8 +49,6 @@ Build:
       --tag ${COMMIT_TAG}
       .
     - docker push ${COMMIT_TAG}
-    - docker tag ${COMMIT_TAG} ${LATEST_TAG}
-    - docker push ${LATEST_TAG}
   dependencies:
     - Powershell Lint
     - Dockerfile Lint
