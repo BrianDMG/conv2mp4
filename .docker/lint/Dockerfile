@@ -6,13 +6,13 @@ FROM mcr.microsoft.com/powershell:alpine-3.12
 SHELL [ "pwsh", "-Command" ]
 
 RUN \
-  # Sets values for a registered module repository
+  #Sets values for a registered module repository
   Set-PSRepository \
     -ErrorAction Stop \
     -InstallationPolicy Trusted \
     -Name PSGallery \
     -Verbose; \
-  # Install PSScriptAnalyzer module (https://github.com/PowerShell/PSScriptAnalyzer/tags)
+  #Install PSScriptAnalyzer module (https://github.com/PowerShell/PSScriptAnalyzer/tags)
   Install-Module \
     -ErrorAction Stop \
     -Name PSScriptAnalyzer \

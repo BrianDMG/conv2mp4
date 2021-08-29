@@ -17,8 +17,8 @@ Powershell Lint:
   image: ${LINT_IMAGE}
   only:
     changes:
-      - ${CI_REGISTRY_IMAGE}/conv2mp4-ps.ps1
-      - ${CI_REGISTRY_IMAGE}/files
+      - ./conv2mp4-ps.ps1
+      - ./files/**
   before_script:
     - pwsh -Version
   script:
@@ -28,15 +28,13 @@ Dockerfile Lint:
   stage: Lint
   only:
     changes:
-      - ${DOCKERFILE_PATH}/Dockerfile
+      - .docker/app/*
   image: ${DOCKER_LINT_IMAGE}
   script: ${DOCKER_LINT_CMD} ${DOCKERFILE_PATH}/Dockerfile
 
 Lint Dockerfile Lint:
   stage: Lint
   only:
-    refs:
-    - branches
     changes:
       - .docker/lint/*
   image: ${DOCKER_LINT_IMAGE}
@@ -46,8 +44,8 @@ Unit Test:
   stage: Test
   only:
     changes:
-      - ${CI_REGISTRY_IMAGE}/conv2mp4-ps.ps1
-      - ${CI_REGISTRY_IMAGE}/files/*
+      - conv2mp4-ps.ps1
+      - ./files/**
   script:
     - echo "TODO - Add Pester tests"
 
@@ -55,9 +53,9 @@ Docker Build:
   stage: Build
   only:
     changes:
-      - ${CI_REGISTRY_IMAGE}/conv2mp4-ps.ps1
-      - ${CI_REGISTRY_IMAGE}/files
-      - ${DOCKERFILE_PATH}/Dockerfile
+      - conv2mp4-ps.ps1
+      - ./files/**
+      - .docker/app/*
   except:
     - merge_requests
     - tags
@@ -77,7 +75,7 @@ Lint Build:
   stage: Build
   only:
     changes:
-      - ${DOCKERFILE_LINT_PATH}/Dockerfile
+      - .docker/lint/*
   except:
     - merge_requests
     - tags
@@ -97,9 +95,9 @@ Smoke Test:
   stage: Smoke Test
   only:
     changes:
-      - ${CI_PROJECT_DIR}/conv2mp4-ps.ps1
-      - ${CI_PROJECT_DIR}/files/*
-      - ${CI_PROJECT_DIR}/.docker/*
+      - conv2mp4-ps.ps1
+      - ./files/**
+      - .docker/app/*
   except:
     - merge_requests
     - tags
@@ -110,9 +108,9 @@ Push:
   stage: Publish
   only:
     changes:
-      - ${CI_REGISTRY_IMAGE}/conv2mp4-ps.ps1
-      - ${CI_REGISTRY_IMAGE}/files/*
-      - ${DOCKERFILE_PATH}/Dockerfile
+      - conv2mp4-ps.ps1
+      - ./files/**
+      - .docker/app/*
   except:
     - merge_requests
     - tags
@@ -128,9 +126,7 @@ Push Lint:
   stage: Publish
   only:
     changes:
-      - ${CI_REGISTRY_IMAGE}/conv2mp4-ps.ps1
-      - ${CI_REGISTRY_IMAGE}/files/*
-      - ${DOCKERFILE_LINT_PATH}/Dockerfile
+      - .docker/lint/*
   except:
     - merge_requests
     - tags
