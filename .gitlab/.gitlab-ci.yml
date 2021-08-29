@@ -15,7 +15,7 @@ Powershell Lint:
     - tags
   image: ${LINT_IMAGE}
   before_script:
-    - PS -Version
+    - pwsh -Version
   script:
     - ${LINT_CMD}
 
