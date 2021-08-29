@@ -19,15 +19,6 @@ Powershell Lint:
   script:
     - ${LINT_CMD}
 
-Unit Test:
-  stage: Test
-  except:
-    - tags
-  script:
-    - echo "TODO - Add Pester tests"
-  dependencies:
-    - Powershell Lint
-
 Dockerfile Lint:
   stage: Lint
   only:
@@ -36,13 +27,22 @@ Dockerfile Lint:
   image: ${DOCKER_LINT_IMAGE}
   script: ${DOCKER_LINT_CMD} ${DOCKERFILE_PATH}
 
-Lint Runner Dockerfile Lint:
+Lint Dockerfile Lint:
   stage: Lint
   only:
     changes:
       - ${DOCKERFILE_LINT_PATH}
   image: ${DOCKER_LINT_IMAGE}
   script: ${DOCKER_LINT_CMD} ${DOCKERFILE_LINT_PATH}
+
+Unit Test:
+  stage: Test
+  except:
+    - tags
+  script:
+    - echo "TODO - Add Pester tests"
+  dependencies:
+    - Powershell Lint
 
 Build:
   stage: Docker
@@ -64,6 +64,28 @@ Build:
     - Powershell Lint
     - Dockerfile Lint
     - Unit Test
+
+Lint Build:
+  stage: Docker
+  only:
+    changes:
+      - ${DOCKERFILE_LINT_PATH}
+  except:
+    - merge_requests
+    - tags
+  image: ${DOCKER_IMAGE}
+  before_script:
+    - echo -n ${CI_JOB_TOKEN} | docker login -u gitlab-ci-token --password-stdin ${CI_REGISTRY}
+  script:
+    - >
+      docker build
+      --pull
+      --cache-from ${LINT_LATEST_TAG}
+      --tag ${LINT_COMMIT_TAG}
+      ${DOCKERFILE_LINT_PATH}
+    - docker push ${LINT_COMMIT_TAG}
+  dependencies:
+    - Dockerfile Lint
 
 Smoke Test:
   stage: Docker
