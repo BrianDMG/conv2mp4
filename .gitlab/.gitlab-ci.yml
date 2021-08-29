@@ -35,6 +35,8 @@ Dockerfile Lint:
 Lint Dockerfile Lint:
   stage: Lint
   only:
+    refs:
+    - branches
     changes:
       - ${CI_PROJECT_DIR}/.docker/lint/Dockerfile
   image: ${DOCKER_LINT_IMAGE}

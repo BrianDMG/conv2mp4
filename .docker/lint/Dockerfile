@@ -15,7 +15,7 @@ RUN \
   # Install PSScriptAnalyzer module (https://github.com/PowerShell/PSScriptAnalyzer/tags)
   Install-Module \
     -ErrorAction Stop \
-    -Name PSScriptAnalyzer    <# Name of modules to install from the online gallery #> \
+    -Name PSScriptAnalyzer \
     -RequiredVersion 1.19.1   <# Exact version of a single module to install #> \
     -Verbose;
 
