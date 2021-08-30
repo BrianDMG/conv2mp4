@@ -30,3 +30,9 @@ tmp_2in=2in.aac
 standard_divider=------------------------------------------------------------------------------------
 standard_indent=>>>>>
 final_stat_divider=____________________________________________________________________________________
+
+#Smoke Testing
+st_expected_audio=1
+st_expected_viode=1
+st_expected_both=1
+st_expected_corrupt=0
