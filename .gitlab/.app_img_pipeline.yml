@@ -25,7 +25,7 @@ Docker Build:
       --pull
       --cache-from ${LATEST_TAG}
       --tag ${COMMIT_TAG}
-      ${DOCKERFILE_PATH}
+      --file ${DOCKERFILE_PATH}/Dockerfile ${CI_PROJECT_DIR}
     - docker push ${COMMIT_TAG}
 
 Docker Push:

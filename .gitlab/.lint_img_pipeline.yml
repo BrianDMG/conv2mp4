@@ -23,7 +23,7 @@ Lint Build:
       --pull
       --cache-from ${LINT_LATEST_TAG}
       --tag ${LINT_COMMIT_TAG}
-      ${DOCKERFILE_LINT_PATH}
+      --file ${DOCKERFILE_LINT_PATH}/Dockerfile ${CI_PROJECT_DIR}
     - docker push ${LINT_COMMIT_TAG}
 
 Lint Push:

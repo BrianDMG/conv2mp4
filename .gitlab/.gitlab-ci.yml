@@ -3,6 +3,7 @@ include:
   - .gitlab/.src_pipeline.yml
   - .gitlab/.lint_img_pipeline.yml
   - .gitlab/.app_img_pipeline.yml
+  #- .gitlab/.smoke_test_img_pipeline.yml
 
 services:
 - ${DOCKER_SERVICE}
@@ -11,6 +12,7 @@ stages:
   - Lint
   #- Test
   - Build
+  #- Smoke Test Build
   #- Smoke Test
   - Publish
   - Release
