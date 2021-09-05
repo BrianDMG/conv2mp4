@@ -30,9 +30,9 @@ Function ConvertFile {
     # Handbrake arguments
     $hbArgs = @()
     $hbArgs += "-i " #Flag to designate input file
-    $hbArgs += "`"$sourceFile`"" #Input file
+    $hbArgs += "`"$($sourceFile)`"" #Input file
     $hbArgs += "-o " #Flag to designate output file
-    $hbArgs += "`"$targetFile`"" #Output file
+    $hbArgs += "`"$($targetFile)`"" #Output file
     $hbArgs += "-f " #Format flag
     $hbArgs += "mp4 " #Format value
     $hbArgs += "-a " #Audio channel flag
@@ -61,7 +61,13 @@ Function ConvertFile {
     $hbArgs += "--modulus " #Flag to set storage width modulus
     $hbArgs += "2" #Storage width modulus value
 
-    $hbCMD = "$handbrake $hbArgs"
+    If ($IsWindows) {
+      $hbCMD = cmd.exe /c "`"$handbrake`" $hbArgs"
+    }
+    Else {
+      $hbCMD = Invoke-Expression -Command "$($handbrake) $($hbArgs)"
+    }
+
     # Begin Handbrake operation
     Try {
       $hbCMD
@@ -79,7 +85,7 @@ Function ConvertFile {
     $ffArgs += "-fflags " #Allows setting of formal flags
     $ffArgs += "+genpts " #Suppresses pointer warning messages
     $ffArgs += "-i " #Flag to designate input file
-    $ffArgs += "`"$sourceFile`" " #Input file
+    $ffArgs += "`'$($sourceFile)`' " #Input file
     $ffArgs += "-threads " #Flag to set maximum number of threads (CPU) to use
     $ffArgs += "6 " #Maximum number of threads (CPU) to use
     $ffArgs += "-movflags"
@@ -167,7 +173,7 @@ Function ConvertFile {
     }
 
     If ($KeepSubs) {
-      $info = Invoke-Expression "$($ffprobe) -i $($sourceFile) 2>&1"
+      $info = Invoke-Expression "$($ffprobe) -i `'$($sourceFile)`' 2>&1"
       #Detect if bitmap subs exist, and do not keep them if they do
       #Resolves error that causes ffmpeg to fail and launch failover
       If (!$($info -Match '(pgssub|dvd_subtitle)')) {
@@ -183,10 +189,10 @@ Function ConvertFile {
       $ffArgs += "-sn " #Option to remove any existing subtitles
     }
     $ffArgs+= "-f mp4 "
-    $ffArgs += "`"$targetFile`"" #Output file
+    $ffArgs += "`'$($targetFile)`'" #Output file
 
     If ($IsWindows) {
-      $ffCMD = "`"$ffmpeg`" $ffArgs"
+      $ffCMD = cmd.exe /c "`"$ffmpeg`" $ffArgs"
     }
     Else {
       $ffCMD = Invoke-Expression -Command "$($ffmpeg) $($ffArgs)"

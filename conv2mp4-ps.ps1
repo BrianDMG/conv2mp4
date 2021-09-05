@@ -44,7 +44,8 @@ ForEach ($file in $fileList) {
 
   $title = $file.BaseName
 
-  $sourceFile = Convert-Path "$($file.DirectoryName)\$($file.BaseName)$($file.Extension)"
+  $sourceFile = Join-Path "$($file.DirectoryName)" "$($file.BaseName)$($file.Extension)"
+  $sourceFile = Convert-Path "$($sourceFile)"
 
   $fileSubDirs = ($file.DirectoryName).Substring($cfg.media_path.Length, ($file.DirectoryName).Length - $cfg.media_path.Length)
 
@@ -56,11 +57,11 @@ ForEach ($file in $fileList) {
     }
 
     $targetFile = Convert-Path "$($targetPath)"
-    $targetFile = "$($targetFile)" + "$($file.BaseName).mp4.conv2mp4"
+    $targetFile = Join-Path "$($targetFile)" "$($file.BaseName).mp4.conv2mp4"
   }
   Else {
     $targetFile = Convert-Path "$($file.DirectoryName)\"
-    $targetFile = "$($targetFile)" + "$($file.BaseName).mp4.conv2mp4"
+    $targetFile = Join-Path "$($targetFile)" "$($file.BaseName).mp4.conv2mp4"
   }
 
   $progress = ($(@($fileList).indexOf($file)+1) / $fileList.Count) * 100
@@ -69,24 +70,24 @@ ForEach ($file in $fileList) {
   Write-Progress -Activity "$sourceFile" -PercentComplete $progress -CurrentOperation "$($progress)% Complete"
 
   Log "$($prop.standard_divider)"
-  Log "$($time.Invoke()) Processing - $sourceFile"
-  Log "$($time.Invoke()) File $(@($fileList).indexOf($file)+1) of $($fileList.Count) - Total queue $progress%"
+  Log "$($time.Invoke()) Processing - $($sourceFile)"
+  Log "$($time.Invoke()) File $(@($fileList).indexOf($file)+1) of $($fileList.Count) - Total queue $($progress)%"
 
   #Set targetFile final name
   If ($cfg.use_out_path) {
     $targetFileRenamed = Convert-Path "$($targetPath)\"
-    $targetFileRenamed = "$($targetFileRenamed)" + "$($file.BaseName).mp4"
+    $targetFileRenamed = Join-Path "$($targetFileRenamed)" "$($file.BaseName).mp4"
   }
   Else {
-    $targetFileRenamed = Convert-Path "$($file.DirectoryName)\"
-    $targetFileRenamed = "$($targetFileRenamed)" + "$($file.BaseName).mp4"
+    $targetFileRenamed = Convert-Path "$($file.DirectoryName)"
+    $targetFileRenamed = Join-Path "$($targetFileRenamed)" "$($file.BaseName).mp4"
   }
   <#Test if $targetFile (.mp4) already exists, if yes then delete $sourceFile (.mkv)
   This outputs a more specific log message acknowleding the file already existed.#>
-  If ((Test-Path $targetFileRenamed) -And $file.Extension -ne ".mp4") {
-    Remove-Item $sourceFile -Force
-    Log "$($time.Invoke()) Already exists: $targetFileRenamed"
-    Log "$($time.Invoke()) Deleted: $sourceFile."
+  If ((Test-Path "$($targetFileRenamed)") -And $file.Extension -ne ".mp4") {
+    Remove-Item "$($sourceFile)" -Force
+    Log "$($time.Invoke()) Already exists: $($targetFileRenamed)"
+    Log "$($time.Invoke()) Deleted: $($sourceFile)."
     $duplicatesDeleted += @($sourceFile)
   }
   Else {
@@ -147,8 +148,8 @@ ForEach ($file in $fileList) {
 
     #Begin file comparison between old file and new file to determine conversion success
     If (-Not ($skipFile)) {
-      $sourceFileCompare = Get-Item $sourceFile
-      $targetFileCompare = Get-Item $targetFile
+      $sourceFileCompare = Get-Item "$($sourceFile)"
+      $targetFileCompare = Get-Item "$($targetFile)"
 
       # If new file is the same size as old file, log status and delete old file
       If ($targetFileCompare.length -eq $sourceFileCompare.length) {
@@ -167,8 +168,8 @@ ForEach ($file in $fileList) {
         ConvertFile -ConvertType Handbrake -KeepSubs:$cfg.keep_subtitles
 
         # Load files for comparison
-        $sourceFileCompare = Get-Item $sourceFile
-        $targetFileCompare = Get-Item $targetFile
+        $sourceFileCompare = Get-Item "$($sourceFile)"
+        $targetFileCompare = Get-Item "$($targetFile)"
 
         # If new file still exceeds failover threshold, leave original file in place and log failure
         If ($targetFileCompare.length -lt ($sourceFileCompare.length * $cfg.failover_threshold)) {
@@ -198,8 +199,8 @@ ForEach ($file in $fileList) {
       }
 
       #If $sourceFile was an mp4, rename $targetFile to remove "-NEW"
-      $targetFileRenamed = "$targetFile" -replace ".conv2mp4",""
-      Move-Item $targetFile $targetFileRenamed
+      $targetFileRenamed = "$($targetFile)" -replace ".conv2mp4",""
+      Move-Item "$($targetFile)" "$($targetFileRenamed)"
 
       #If using out_path, delete empty source directories
       If ($cfg.use_out_path) {

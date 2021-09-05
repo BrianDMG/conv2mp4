@@ -3,9 +3,9 @@ Function CompareIfLarger {
     $deltaGT = [Math]::Round($targetFileCompare.length - $sourceFileCompare.length)/1MB
     $deltaGT = [Math]::Round($deltaGT, 2)
     Try {
-        Remove-Item -LiteralPath $sourceFile -Force -ErrorAction Stop
-        Log "$($time.Invoke()) $sourceFile deleted."
-        Log "$($time.Invoke()) $targetFileRenamed created."
+        Remove-Item -LiteralPath "$($sourceFile)" -Force -ErrorAction Stop
+        Log "$($time.Invoke()) $($sourceFile) deleted."
+        Log "$($time.Invoke()) $($targetFileRenamed) created."
 
         If ($deltaGT -lt 1) {
             $deltaGT_KB = ($deltaGT * 1024)
