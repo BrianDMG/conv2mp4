@@ -13,7 +13,7 @@ Function GetCodec {
         $bin = $bin + '.exe'
     }
 
-    $ffprobe = Convert-Path "$($cfg.ffmpeg_bin_dir)\$($bin)"
+    $ffprobe = Convert-Path $(Join-Path "$($cfg.ffmpeg_bin_dir)" "$($bin)")
 
     # Check codec with ffprobe
     $ffprobeArgs += "-v "
@@ -40,10 +40,10 @@ Function GetCodec {
 
     $ffprobeArgs += "-of "
     $ffprobeArgs += "default=noprint_wrappers=1:nokey=1 "
-    $ffprobeArgs += "`"$sourceFile`""
+    $ffprobeArgs += "`'$($sourceFile)`'"
 
     If ($IsWindows) {
-        $ffprobeCMD = "`"$ffprobe`" $ffprobeArgs"
+        $ffprobeCMD = cmd.exe /c "`"$ffprobe`" $ffprobeArgs"
     }
     Else {
         $ffprobeCMD = Invoke-Expression -Command "$($ffprobe) $($ffprobeArgs)"
