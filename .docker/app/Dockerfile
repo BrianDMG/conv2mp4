@@ -1,11 +1,15 @@
 FROM mcr.microsoft.com/powershell:ubuntu-focal
 
-ENV APP_HOME=/app
-ENV MEDIA_PATH=/media
-ENV FFMPEG_BIN_DIR=/usr/bin
-ENV HANDBRAKECLI_BIN_DIR=/usr/bin
-ENV OUTPATH=/outpath
-ENV TERM=xterm
+ARG REVISION='local'
+
+ENV APP_HOME=/app \
+    MEDIA_PATH=/media \
+    FFMPEG_BIN_DIR=/usr/bin \
+    HANDBRAKECLI_BIN_DIR=/usr/bin \
+    OUTPATH=/outpath \
+    LISTENER_PORT=8000 \
+    REVISION=${REVISION} \
+    TERM=xterm
 
 RUN apt-get update && \
     apt-get install -y \
@@ -19,8 +23,12 @@ RUN apt-get update && \
       handbrake-cli=1:1.3.3.1-zhb-1ppa1~focal1 && \
     apt-get autoremove -y && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* && \
+    pwsh /c "Install-Module Pode -Force"
 
 COPY . ${APP_HOME}
 
-CMD [ "pwsh", "/c", "/app/files/init/daemon.ps1" ]
+HEALTHCHECK CMD pwsh /c "(Invoke-WebRequest -Method Get \
+                -URI http://localhost:${LISTENER_PORT}/health).StatusCode"
+
+CMD [ "pwsh", "/c", "/app/files/listener/daemon.ps1" ]

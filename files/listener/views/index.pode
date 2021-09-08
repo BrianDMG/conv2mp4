@@ -1,0 +1,99 @@
+<html>
+
+<head>
+  <title>conv2mp4-$($env:PLATFORM)</title>
+  <link rel="stylesheet" type="text/css" href="/styles/main.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="Header">
+      <img src="logo.svg" alt="conv2mp4">
+      <div class="divTable unstyledTable">
+        <div class="divTableBody">
+          <div class="divTableRow">
+            <div class="divTableCellHF">Platform: $($env:PLATFORM)</div>
+            <div class="divTableCellHF">Version: <a href="https://gitlab.com/BrianDMG/conv2mp4-ps/-/tags/v$($env:VERSION)" target="_blank" rel="noopener noreferrer">v$($env:VERSION)</a></div>
+            <div class="divTableCellHF">Revision: <a href="https://gitlab.com/BrianDMG/conv2mp4-ps/-/commit/$($env:REVISION)" target="_blank" rel="noopener noreferrer">$($env:REVISION)</a></div>
+          </div>
+        </div>
+      </div>
+      <hr>
+    </div>
+    <div class="Box1">
+      <h2>Execute script</h2>
+      <a href="/run" target="_blank" rel="noopener noreferrer" class="button">Start</a>
+    </div>
+    <div class="Box2">
+      <h2>Schedule</h2>
+      <div class="divTable unstyledTable">
+        <div class="divTableBody">
+          <div class="divTableRow">
+            <div class="divTableCell">Current schedule</div>
+            <div class="divTableCell">$($env:CURRENT_SCHEDULE)</div>
+          </div>
+          <div class="divTableRow">
+            <div class="divTableCell">Next scheduled run</div>
+            <div class="divTableCell">someDateTime</div>
+          </div>
+          <div class="divTableRow">
+            <div class="divTableCell">Last scheduled run</div>
+            <div class="divTableCell">someDateTime</div>
+            <div class="divTableCell"><a href="/log-latest" target="_blank" rel="noopener noreferrer">View log</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="Box3">
+      <h2>Statistics</h2>
+      <div class="divTable unstyledTable">
+        <div class="divTableBody">
+          <div class="divTableRow">
+            <div class="divTableCell">Script runs</div>
+            <div class="divTableCell">int</div>
+          </div>
+          <div class="divTableRow">
+            <div class="divTableCell">Files converted</div>
+            <div class="divTableCell">int</div>
+          </div>
+          <div class="divTableRow">
+            <div class="divTableCell">Audio conversions</div>
+            <div class="divTableCell">int</div>
+          </div>
+          <div class="divTableRow">
+            <div class="divTableCell">Video conversions</div>
+            <div class="divTableCell">int</div>
+          </div>
+          <div class="divTableRow">
+            <div class="divTableCell">Storage delta</div>
+            <div class="divTableCell">double</div>
+          </div>
+          <div class="divTableRow">
+            <div class="divTableCell">Average conversions speed</div>
+            <div class="divTableCell">double</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="Box4">
+      <h2>Logs</h2>
+    </div>
+    <div class="Footer">
+      <hr>
+      <div class="divTable unstyledTable">
+        <div class="divTableBody">
+          <div class="divTableRow">
+            <div class="divTableCell"><a href="https://gitlab.com/BrianDMG/conv2mp4-ps/-/wikis/home" target="_blank" rel="noopener noreferrer">Docs</a></div>
+            <div class="divTableCell"><a href="https://gitlab.com/BrianDMG/conv2mp4-ps/-/issues/new" target="_blank" rel="noopener noreferrer">Report an issue</a></div>
+            <div class="divTableCell"><a href="https://gitlab.com/BrianDMG/conv2mp4-ps" target="_blank" rel="noopener noreferrer">Gitlab</a></div>
+            <div class="divTableCell"><a href="https://github.com/BrianDMG/conv2mp4-ps" target="_blank" rel="noopener noreferrer">Github</a></div>
+            <div class="divTableCell"><a href="https://hub.docker.com/repository/docker/bridmg/conv2mp4-ps" target="_blank" rel="noopener noreferrer">Dockerhub</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

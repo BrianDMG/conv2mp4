@@ -7,6 +7,7 @@ github_url=https://github.com/BrianDMG/conv2mp4-ps
 gitlab_url=https://gitlab.com/BrianDMG/conv2mp4-ps
 
 #File Paths
+main_script=conv2mp4-ps.ps1
 cfg_path=/cfg/config
 log_path=/log/conv2mp4-ps.log
 lock_path=/lock/conv2mp4-ps.lock
@@ -25,6 +26,11 @@ func_basepath=files/func
 tmp_dir=files/tmp/
 tmp_51out=51out.aac
 tmp_2in=2in.aac
+
+#Listener
+listener_protocol=HTTP
+listener_port=8082
+listener_bind_host=0.0.0.0
 
 #Formatting
 standard_divider=------------------------------------------------------------------------------------

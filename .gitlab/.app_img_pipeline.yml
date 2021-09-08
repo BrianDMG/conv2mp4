@@ -24,6 +24,7 @@ Docker Build:
       docker build
       --pull
       --cache-from ${LATEST_TAG}
+      --build-arg REVISION=${CI_COMMIT_SHA}
       --tag ${COMMIT_TAG}
       --file ${DOCKERFILE_PATH}/Dockerfile ${CI_PROJECT_DIR}
     - docker push ${COMMIT_TAG}
