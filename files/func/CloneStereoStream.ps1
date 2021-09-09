@@ -6,9 +6,9 @@ Function CloneStereoStream {
 
     #If no stereo channel exists, create one
     If ($copyStereo) {
-        mkdir $($prop.tmp_dir) -Force
+        mkdir $($prop.paths.temp.tmp_dir) -Force
 
-        $ffmpeg = Join-Path $cfg.ffmpeg_bin_dir "ffmpeg.exe"
+        $ffmpeg = Join-Path $cfg.paths.ffmpeg_bin_dir "ffmpeg.exe"
 
         #ffmpeg pull audio track from file
         $ffmpegArgs = "-i "
@@ -16,15 +16,15 @@ Function CloneStereoStream {
         $ffmpegArgs += "-vn "
         $ffmpegArgs += "-acodec "
         $ffmpegArgs += "copy "
-        $ffmpegArgs += "$($prop.tmp_dir)\$($prop.tmp_51out)"
+        $ffmpegArgs += "$($prop.paths.temp.tmp_dir)\$($prop.paths.temp.tmp_51out)"
         $ffmpegCMD = "`"$ffmpeg`" $ffmpegArgs"
 
         #ffmpeg convert audio track
         $ffmpegArgs = "-i "
-        $ffmpegArgs += "$($prop.tmp_dir)\$($prop.tmp_51out) "
+        $ffmpegArgs += "$($prop.paths.temp.tmp_dir)\$($prop.paths.temp.tmp_51out) "
         $ffmpegArgs += "-ac "
         $ffmpegArgs += "2 "
-        $ffmpegArgs += "$($prop.tmp_dir)\$($prop.tmp_2in)"
+        $ffmpegArgs += "$($prop.paths.temp.tmp_dir)\$($prop.paths.temp.tmp_2in)"
         $ffmpegCMD = "`"$ffmpeg`" $ffmpegArgs"
 
         #Rename original source file, necessary to avoid corrupting by using same file as input and output
@@ -35,7 +35,7 @@ Function CloneStereoStream {
         $ffmpegArgs += "-i "
         $ffmpegArgs += "$tempFileName "
         $ffmpegArgs += "-i "
-        $ffmpegArgs += "$($prop.tmp_dir)\$($prop.tmp_2in) "
+        $ffmpegArgs += "$($prop.paths.temp.tmp_dir)\$($prop.paths.temp.tmp_2in) "
         $ffmpegArgs += "-map "
         $ffmpegArgs += "0 "
         $ffmpegArgs += "-map "
@@ -48,7 +48,7 @@ Function CloneStereoStream {
         $ffmpegCMD = "`"$ffmpeg`" $ffmpegArgs"
 
         Remove-Item $tempFileName -Force
-        Remove-Item $prop.tmp_dir -Force -Recurse
+        Remove-Item $prop.paths.temp.tmp_dir -Force -Recurse
 
         $copyStereo = GetAudioStreams
         If ($copyStereo) {

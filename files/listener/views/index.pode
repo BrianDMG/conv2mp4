@@ -1,7 +1,7 @@
 <html>
 
 <head>
-  <title>conv2mp4-$($env:PLATFORM)</title>
+  <title>conv2mp4-$($data.prop.platform)</title>
   <link rel="stylesheet" type="text/css" href="/styles/main.css">
 </head>
 
@@ -12,8 +12,8 @@
       <div class="divTable unstyledTable">
         <div class="divTableBody">
           <div class="divTableRow">
-            <div class="divTableCellHF">Platform: $($env:PLATFORM)</div>
-            <div class="divTableCellHF">Version: <a href="https://gitlab.com/BrianDMG/conv2mp4-ps/-/tags/v$($env:VERSION)" target="_blank" rel="noopener noreferrer">v$($env:VERSION)</a></div>
+            <div class="divTableCellHF">Platform: $($data.prop.platform)</div>
+            <div class="divTableCellHF">Version: <a href="https://gitlab.com/BrianDMG/conv2mp4-ps/-/tags/v$($data.prop.version)" target="_blank" rel="noopener noreferrer">v$($data.prop.version)</a></div>
             <div class="divTableCellHF">Revision: <a href="https://gitlab.com/BrianDMG/conv2mp4-ps/-/commit/$($env:REVISION)" target="_blank" rel="noopener noreferrer">$($env:REVISION)</a></div>
           </div>
         </div>
@@ -30,11 +30,11 @@
         <div class="divTableBody">
           <div class="divTableRow">
             <div class="divTableCell">Current schedule</div>
-            <div class="divTableCell">$($env:CURRENT_SCHEDULE)</div>
+            <div class="divTableCell">$($data.cfg.schedule.run_schedule)</div>
           </div>
           <div class="divTableRow">
             <div class="divTableCell">Next scheduled run</div>
-            <div class="divTableCell">someDateTime</div>
+            <div class="divTableCell">$((Get-PodeSchedule -Name date).NextTriggerTime)</div>
           </div>
           <div class="divTableRow">
             <div class="divTableCell">Last scheduled run</div>
@@ -51,44 +51,47 @@
         <div class="divTableBody">
           <div class="divTableRow">
             <div class="divTableCell">Script runs</div>
-            <div class="divTableCell">int</div>
+            <div class="divTableCell">$($env:SCRIPT_RUNS)</div>
           </div>
           <div class="divTableRow">
             <div class="divTableCell">Files converted</div>
-            <div class="divTableCell">int</div>
+            <div class="divTableCell">$($env:FILES)</div>
           </div>
           <div class="divTableRow">
             <div class="divTableCell">Audio conversions</div>
-            <div class="divTableCell">int</div>
+            <div class="divTableCell">$($env:AUDIO_CONVERSIONS)</div>
           </div>
           <div class="divTableRow">
             <div class="divTableCell">Video conversions</div>
-            <div class="divTableCell">int</div>
+            <div class="divTableCell">$($env:VIDEO_CONVERSIONS)</div>
           </div>
           <div class="divTableRow">
             <div class="divTableCell">Storage delta</div>
-            <div class="divTableCell">double</div>
+            <div class="divTableCell">$($env:STORAGE_DELTA)</div>
           </div>
           <div class="divTableRow">
             <div class="divTableCell">Average conversions speed</div>
-            <div class="divTableCell">double</div>
+            <div class="divTableCell">$($env:AVG_CONVERSION_SPEED)</div>
           </div>
         </div>
       </div>
     </div>
     <div class="Box4">
       <h2>Logs</h2>
+        $(foreach ($item in $data.logs) {
+          "<div><a href='$($item.DirectoryName)/$($item.Name)'>$item</a></div>";
+        })
     </div>
     <div class="Footer">
       <hr>
       <div class="divTable unstyledTable">
         <div class="divTableBody">
           <div class="divTableRow">
-            <div class="divTableCell"><a href="https://gitlab.com/BrianDMG/conv2mp4-ps/-/wikis/home" target="_blank" rel="noopener noreferrer">Docs</a></div>
-            <div class="divTableCell"><a href="https://gitlab.com/BrianDMG/conv2mp4-ps/-/issues/new" target="_blank" rel="noopener noreferrer">Report an issue</a></div>
-            <div class="divTableCell"><a href="https://gitlab.com/BrianDMG/conv2mp4-ps" target="_blank" rel="noopener noreferrer">Gitlab</a></div>
-            <div class="divTableCell"><a href="https://github.com/BrianDMG/conv2mp4-ps" target="_blank" rel="noopener noreferrer">Github</a></div>
-            <div class="divTableCell"><a href="https://hub.docker.com/repository/docker/bridmg/conv2mp4-ps" target="_blank" rel="noopener noreferrer">Dockerhub</a></div>
+            <div class="divTableCell"><a href="$($data.prop.urls.gitlab_docs)" target="_blank" rel="noopener noreferrer">Docs</a></div>
+            <div class="divTableCell"><a href="$($data.prop.urls.gitlab_issues)" target="_blank" rel="noopener noreferrer">Report an issue</a></div>
+            <div class="divTableCell"><a href="$($data.prop.urls.gitlab)" target="_blank" rel="noopener noreferrer">Gitlab</a></div>
+            <div class="divTableCell"><a href="$($data.prop.urls.github)" target="_blank" rel="noopener noreferrer">Github</a></div>
+            <div class="divTableCell"><a href="$($data.prop.urls.dockerhub)" target="_blank" rel="noopener noreferrer">Dockerhub</a></div>
           </div>
         </div>
       </div>

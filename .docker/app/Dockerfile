@@ -7,7 +7,7 @@ ENV APP_HOME=/app \
     FFMPEG_BIN_DIR=/usr/bin \
     HANDBRAKECLI_BIN_DIR=/usr/bin \
     OUTPATH=/outpath \
-    LISTENER_PORT=8000 \
+    LISTENER_PORT=8082 \
     REVISION=${REVISION} \
     TERM=xterm
 
@@ -24,7 +24,8 @@ RUN apt-get update && \
     apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
-    pwsh /c "Install-Module Pode -Force"
+    pwsh /c "Install-Module Pode -Force" && \
+    pwsh /c "Install-Module powershell-yaml -Force"
 
 COPY . ${APP_HOME}
 

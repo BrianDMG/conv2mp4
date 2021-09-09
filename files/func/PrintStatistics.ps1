@@ -1,7 +1,7 @@
 # Log various session statistics
 Function PrintStatistics {
     If ($fileList.Count -ge 1 -AND $cumulativeVideoDuration -ne "00:00:00") {
-        Log "`n$($prop.final_stat_divider)`n"
+        Log "`n$($prop.formatting.final_stat_divider)`n"
         #Print total session disk usage changes
         If ($diskUsageDelta -gt -1 -AND $diskUsageDelta -lt 1) {
             $diskUsageDelta_KB = ($diskUsageDelta * 1024)
@@ -23,7 +23,7 @@ Function PrintStatistics {
         $scriptExecutionDuration = New-TimeSpan -Start $startScriptTime -End $stopScriptTime
         $scriptExecutionDurationFormat = $scriptExecutionDuration.ToString()
         $scriptExecutionDurationFormat = $scriptExecutionDurationFormat.Substring(0, $scriptExecutionDurationFormat.IndexOf('.'))
-        
+
         Log "`n$cumulativeVideoDuration of video processed in $scriptExecutionDurationFormat"
 
         #Do some math/rounding to get session average conversion speed
@@ -58,7 +58,7 @@ Function PrintStatistics {
         }
 
 
-        Log "`n$($prop.final_stat_divider)"
+        Log "`n$($prop.formatting.final_stat_divider)"
     }
     Else {
         Write-Output "`nNo video was encoded/converted."

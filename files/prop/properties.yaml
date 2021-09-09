@@ -1,48 +1,49 @@
-#NOT YET IMPLEMENTED, DO NOT USE
-properties:
-  #Version
-  version: 5.0.0
-  revision: ""
-  platform: docker
-  urls:
-    #URLs
-    github_url: https://github.com/BrianDMG/conv2mp4-ps
-    gitlab_url: https://gitlab.com/BrianDMG/conv2mp4-ps
-    dockerhub_url: ""
-  paths:
-    files:
-      #File Paths
-      cfg_path: /cfg/config
-      log_path: /log/conv2mp4-ps.log
-      lock_path: /lock/conv2mp4-ps.lock
-      ignore_path: /ignore/ignore.list
-    init:
-      #Init Paths
-      buildqueue: files/init/buildqueue.ps1
-      init: files/init/init.ps1
-      loadcfg: files/init/loadcfg.ps1
-      preflight: files/init/preflight.ps1
-    functions:
-      #Function Paths
-      func_basepath: files/func
-    temp:
-      #Temporary files
-      tmp_51out: 51out.aac
-      tmp_2in: 2in.aac
-    listener:
-      #Listener
-      listener_port: 8282
-      listener_bind_host: 0.0.0.0
-    formatting:
-      #Formatting
-      standard_divider: '------------------------------------------------------------------------------------'
-      standard_indent: '>>>>>'
-      final_stat_divider: '____________________________________________________________________________________'
-  testing:
-    unit: ""
-    smoke:
+#General
+version: 5.0.0
+revision: ""
+platform: docker
+urls:
+  #URLs
+  github: https://github.com/BrianDMG/conv2mp4-ps
+  gitlab: https://gitlab.com/BrianDMG/conv2mp4-ps
+  gitlab_docs: https://gitlab.com/BrianDMG/conv2mp4-ps/-/wikis/home
+  gitlab_issues: https://gitlab.com/BrianDMG/conv2mp4-ps/-/issues/new
+  dockerhub: https://hub.docker.com/repository/docker/bridmg/conv2mp4-ps
+paths:
+  files:
+    #File Paths
+    cfg: /cfg/config.yaml
+    log: /log/conv2mp4-ps.log
+    lock: /lock/conv2mp4-ps.lock
+    ignore: /ignore/ignore.list
+  init:
+    #Init Paths
+    buildqueue: files/init/buildqueue.ps1
+    init: files/init/init.ps1
+    loadcfg: files/init/loadcfg.ps1
+    preflight: files/init/preflight.ps1
+  functions:
+    #Function Paths
+    func_basepath: files/func
+  temp:
+    #Temporary files
+    tmp_51out: 51out.aac
+    tmp_2in: 2in.aac
+listener:
+  #Listener
+  protocol: HTTP
+  port: 8282
+  bind_host: 0.0.0.0
+formatting:
+  #Formatting
+  standard_divider: '------------------------------------------------------------------------------------'
+  standard_indent: '>>>>>'
+  final_stat_divider: '____________________________________________________________________________________'
+testing:
+  unit: ""
+  smoke:
     #Smoke Testing
-    st_expected_audio: 1
-    st_expected_viode: 1
-    st_expected_both: 1
-    st_expected_corrupt: 0
+    expected_audio: 1
+    expected_viode: 1
+    expected_both: 1
+    expected_corrupt: 0

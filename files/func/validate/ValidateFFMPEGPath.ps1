@@ -14,7 +14,7 @@ Function ValidateFFMPEGPath {
 
     If (-Not (Test-Path $ffmpeg)) {
         Log "`n$($bin) could not be found in $($Path)."
-        Log "Ensure the path specified for 'fmmpeg_bin_dir' in $($prop.cfg_path) is correct."
+        Log "Ensure the path specified for 'fmmpeg_bin_dir' in $($prop.paths.files.cfg) is correct."
         Log "Aborting script."
         DeleteLockFile
         Exit
@@ -30,7 +30,7 @@ Function ValidateFFMPEGPath {
 
     If (-Not (Test-Path $ffprobe)) {
         Log "`n$($bin) could not be found in $($Path)."
-        Log "Ensure the path specified for 'fmmpeg_bin_dir' in $($prop.cfg_path) is correct."
+        Log "Ensure the path specified for 'fmmpeg_bin_dir' in $($prop.paths.files.cfg) is correct."
         Log "Aborting script."
         DeleteLockFile
         Exit

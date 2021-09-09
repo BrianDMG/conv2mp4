@@ -10,17 +10,14 @@ The purpose of this script is to reduce the amount of transcoding CPU load on a 
 Set-Location -Path $PSScriptRoot
 
 #Load properties file
-$propFile = Convert-Path "files\prop\properties"
-$propRawString = Get-Content "$propFile" | Out-String
-$propStringToConvert = $propRawString -replace '\\', '\\'
-$prop = ConvertFrom-StringData $propStringToConvert
-Remove-Variable -Name propFile, propRawString, propSTringToConvert
+$propFile = Convert-Path "files\prop\properties.yaml"
+$prop = Get-Content "$propFile" | ConvertFrom-Yaml
+Remove-Variable -Name propFile
 
 #Load configuration
-$cfgRawString = Get-Content "$($prop.cfg_path)" | Out-String
-$cfgStringToConvert = $cfgRawString -replace '\\', '\\'
-$cfg = ConvertFrom-StringData $cfgStringToConvert
-Remove-Variable -Name cfgRawString, cfgStringToConvert
+$cfgFile = Convert-Path "$($prop.paths.files.cfg)"
+$cfg = Get-Content "$cfgFile" | ConvertFrom-Yaml
+Remove-Variable -Name cfgFile
 
 # Time and format used for timestamps in the log
 $time = {Get-Date -format "MM/dd/yy HH:mm:ss"}
@@ -32,11 +29,11 @@ $startScriptTime = (Get-Date)
 $cumulativeVideoDuration = [timespan]::fromseconds(0)
 
 #Execute preflight checks
-$preflightPath = Convert-Path "$($prop.preflight)"
+$preflightPath = Convert-Path "$($prop.paths.init.preflight)"
 . $preflightPath
 
 #Build processing queue and list its contents
-$buildQueuePath = Convert-Path "$($prop.buildqueue)"
+$buildQueuePath = Convert-Path "$($prop.paths.init.buildqueue)"
 . $buildQueuePath
 
 # Begin performing operations of files
@@ -47,10 +44,10 @@ ForEach ($file in $fileList) {
   $sourceFile = Join-Path "$($file.DirectoryName)" "$($file.BaseName)$($file.Extension)"
   $sourceFile = Convert-Path "$($sourceFile)"
 
-  $fileSubDirs = ($file.DirectoryName).Substring($cfg.media_path.Length, ($file.DirectoryName).Length - $cfg.media_path.Length)
+  $fileSubDirs = ($file.DirectoryName).Substring($cfg.paths.media_path.Length, ($file.DirectoryName).Length - $cfg.paths.media_path.Length)
 
-  If ($cfg.use_out_path) {
-    $targetPath = Convert-Path "$($cfg.out_path)$($fileSubDirs)\"
+  If ($cfg.paths.use_out_path) {
+    $targetPath = Convert-Path "$($cfg.paths.out_path)$($fileSubDirs)\"
 
     If (-Not (Test-Path $targetPath)) {
       mkdir $targetPath -Force
@@ -69,12 +66,12 @@ ForEach ($file in $fileList) {
 
   Write-Progress -Activity "$sourceFile" -PercentComplete $progress -CurrentOperation "$($progress)% Complete"
 
-  Log "$($prop.standard_divider)"
+  Log "$($prop.formatting.standard_divider)"
   Log "$($time.Invoke()) Processing - $($sourceFile)"
   Log "$($time.Invoke()) File $(@($fileList).indexOf($file)+1) of $($fileList.Count) - Total queue $($progress)%"
 
   #Set targetFile final name
-  If ($cfg.use_out_path) {
+  If ($cfg.paths.use_out_path) {
     $targetFileRenamed = Convert-Path "$($targetPath)\"
     $targetFileRenamed = Join-Path "$($targetFileRenamed)" "$($file.BaseName).mp4"
   }
@@ -105,7 +102,7 @@ ForEach ($file in $fileList) {
     Elseif ($getVideoCodec -eq 'h264' -AND $getAudioCodec -eq 'aac') {
       If ($file.Extension -ne ".mp4") {
         Log "$($time.Invoke()) Video: $($getVideoCodec.ToUpper()), Audio: $($getAudioCodec.ToUpper()). Performing simple container conversion to MP4."
-        ConvertFile -ConvertType Simple -KeepSubs:$cfg.keep_subtitles
+        ConvertFile -ConvertType Simple -KeepSubs:$cfg.subtitles.keep
         $simpleConversion += @($sourceFile)
         $skipFile = $False
       }
@@ -118,31 +115,31 @@ ForEach ($file in $fileList) {
     # Video is already H264, Audio is not AAC
     ElseIf ($getVideoCodec -eq 'h264' -AND $getAudioCodec -ne 'aac') {
       Log "$($time.Invoke()) Video: $($getVideoCodec.ToUpper()), Audio: $($getAudioCodec.ToUpper()). Encoding audio to AAC"
-      ConvertFile -ConvertType Audio -KeepSubs:$cfg.keep_subtitles
+      ConvertFile -ConvertType Audio -KeepSubs:$cfg.subtitles.keep
       $audioConversion += @($sourceFile)
       $skipFile = $False
     }
     # Video is not H264, Audio is already AAC
     ElseIf ($getVideoCodec -ne 'h264' -AND $getAudioCodec -eq 'aac') {
       Log "$($time.Invoke()) Video: $($getVideoCodec.ToUpper()), Audio: $($getAudioCodec.ToUpper()). Encoding video to H264."
-      ConvertFile -ConvertType Video -KeepSubs:$cfg.keep_subtitles
+      ConvertFile -ConvertType Video -KeepSubs:$cfg.subtitles.keep
       $videoConversion += @($sourceFile)
       $skipFile = $False
     }
     # Video is not H264, Audio is not AAC
     ElseIf ($getVideoCodec -ne 'h264' -AND $getAudioCodec -ne 'aac') {
       Log "$($time.Invoke()) Video: $($getVideoCodec.ToUpper()), Audio: $($getAudioCodec.ToUpper()). Encoding video to H264 and audio to AAC."
-      ConvertFile -ConvertType Both -KeepSubs:$cfg.keep_subtitles
+      ConvertFile -ConvertType Both -KeepSubs:$cfg.subtitles.keep
       $bothConversion += @($sourceFile)
       $skipFile = $False
     }
 
-    If ($cfg.force_stereo_clone) {
+    If ($cfg.audio.force_stereo_clone) {
       CloneStereoStream
     }
 
     # Refresh Plex libraries
-    If ($cfg.use_plex -AND (-Not($skipFile))) {
+    If ($cfg.plex.enable -AND (-Not($skipFile))) {
       PlexRefresh
     }
 
@@ -161,18 +158,18 @@ ForEach ($file in $fileList) {
         CompareIfLarger
       }
       # If new file is much smaller than old file (indicating a failed conversion), log status, delete new file, and re-encode with HandbrakeCLI
-      Elseif ($targetFileCompare.length -lt ($sourceFileCompare.length * $cfg.failover_threshold)) {
+      Elseif ($targetFileCompare.length -lt ($sourceFileCompare.length * $cfg.conversion.failover_threshold)) {
         PrintEncodeError
 
         #Begin Handbrake encode (lossy)
-        ConvertFile -ConvertType Handbrake -KeepSubs:$cfg.keep_subtitles
+        ConvertFile -ConvertType Handbrake -KeepSubs:$cfg.subtitles.keep
 
         # Load files for comparison
         $sourceFileCompare = Get-Item "$($sourceFile)"
         $targetFileCompare = Get-Item "$($targetFile)"
 
         # If new file still exceeds failover threshold, leave original file in place and log failure
-        If ($targetFileCompare.length -lt ($sourceFileCompare.length * $cfg.failover_threshold)) {
+        If ($targetFileCompare.length -lt ($sourceFileCompare.length * $cfg.conversion.failover_threshold)) {
           $failureCause = 'encodeFailure'
           PrintEncodeFailure
         }
@@ -203,15 +200,15 @@ ForEach ($file in $fileList) {
       Move-Item "$($targetFile)" "$($targetFileRenamed)"
 
       #If using out_path, delete empty source directories
-      If ($cfg.use_out_path) {
-        If ($Null -eq (Get-ChildItem -Force $file.DirectoryName) -AND $file.DirectoryName -ne $cfg.media_path) {
+      If ($cfg.paths.use_out_path) {
+        If ($Null -eq (Get-ChildItem -Force $file.DirectoryName) -AND $file.DirectoryName -ne $cfg.paths.media_path) {
           Remove-Item $file.DirectoryName
         }
       }
     }
     Else {
       Log "$($time.Invoke()) MP4 already compliant."
-      If ($cfg.use_ignore_list) {
+      If ($cfg.logging.use_ignore_list) {
         Log "$($time.Invoke()) Added file to ignore list."
         $fileToIgnore = $file.BaseName + $file.Extension
         AddToIgnoreList "$($fileToIgnore)"
@@ -226,7 +223,7 @@ ForEach ($file in $fileList) {
 #Wrap-up
 PrintStatistics
 PrintFailures
-If ($cfg.collect_garbage) {
+If ($cfg.cleanup.enable) {
   CollectGarbage
 }
 
