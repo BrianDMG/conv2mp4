@@ -1,29 +1,24 @@
 #Load properties file
-$propFile = Convert-Path "$($env:APP_HOME)\files\prop\properties"
-$propRawString = Get-Content "$propFile" | Out-String
-$propStringToConvert = $propRawString -replace '\\', '\\'
-$prop = ConvertFrom-StringData $propStringToConvert
-Remove-Variable -Name propFile, propRawString, propSTringToConvert
+$propFile = Convert-Path "$($env:APP_HOME)/files/prop/properties.yaml"
+$prop = Get-Content "$propFile" | ConvertFrom-Yaml
+Remove-Variable -Name propFile
 
 #Load configuration
-$cfgRawString = Get-Content "$($prop.cfg_path)" | Out-String
-$cfgStringToConvert = $cfgRawString -replace '\\', '\\'
-$cfg = ConvertFrom-StringData $cfgStringToConvert
-Remove-Variable -Name cfgRawString, cfgStringToConvert
-
-$env:VERSION=$prop.version
-$env:PLATFORM=$prop.platform
-$env:CURRENT_SCHEDULE=$cfg.run_schedule
+$cfgFile = Convert-Path "$($prop.paths.files.cfg)"
+$cfg = Get-Content "$cfgFile" | ConvertFrom-Yaml
+Remove-Variable -Name cfgFile
 
 #Start Pode Server
 Start-PodeServer {
 
     #Define Pode endpoint
-    Add-PodeEndpoint -Address $prop.listener_bind_host -Port $prop.listener_port -Protocol $prop.listener_protocol
+    Add-PodeEndpoint -Address $prop.listener.bind_host -Port $prop.listener.port -Protocol $prop.listener.protocol
 
     Set-PodeViewEngine -Type Pode
+
     Add-PodeRoute -Method Get -Path '/' -ScriptBlock {
-        Write-PodeViewResponse -Path 'index' -Data @{ prop = "$($prop)"; cfg = "$($cfg)"; }
+        $logs = $(Get-ChildItem /log | Sort-Object -Descending -Property LastWriteTime -Top 10)
+        Write-PodeViewResponse -Path 'index' -Data @{ prop = $using:prop; cfg = $using:cfg; logs = $logs; }
     }
 
     #Listener health check
@@ -39,15 +34,15 @@ Start-PodeServer {
     }
 
     #Scheduled script execution
-    Add-PodeSchedule -Name 'date' -Cron "$($cfg.run_schedule)" -ScriptBlock {
+    Add-PodeSchedule -Name 'date' -Cron "$($cfg.schedule.run_schedule)" -ScriptBlock {
         Write-Host "$([DateTime]::Now)"
-        Write-PodeJsonResponse -Value @{ 'value' = "Executing scheduled conv2mp4" }
         . "$($env:APP_HOME)/conv2mp4-ps.ps1"
     }
 
     #View logs
-    #Add-PodeRoute -Method Get -Path '/logs' -ScriptBlock {
-    #    Get-Content /log/conv2mp4-ps.log –Wait
-    #}
+    Add-PodeRoute -Method Get -Path '/logs' -ScriptBlock {
+        $logs = Get-Content /log/conv2mp4-ps.log
+        Write-PodeViewResponse -Path 'logs' -Data @{ logs = $logs; }
+    }
 
 }

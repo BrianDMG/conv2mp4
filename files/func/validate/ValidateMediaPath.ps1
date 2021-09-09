@@ -7,7 +7,7 @@ Function ValidateMediaPath {
 
     If (-Not (Test-Path $Path)) {
         Log "`nPath not found: $Path"
-        Log "Ensure the path specified for 'media_path' in $($prop.cfg_path) exists and is accessible."
+        Log "Ensure the path specified for 'media_path' in $($prop.paths.files.cfg) exists and is accessible."
         Log "Aborting script."
         DeleteLockFile
         Exit

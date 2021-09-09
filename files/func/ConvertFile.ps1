@@ -11,13 +11,13 @@ Function ConvertFile {
   If ($IsWindows) {
     $bin = "$($bin).exe"
   }
-  $ffmpeg = Convert-Path "$($cfg.ffmpeg_bin_dir)\$($bin)"
+  $ffmpeg = Convert-Path "$($cfg.paths.ffmpeg_bin_dir)\$($bin)"
 
   $bin = 'ffprobe'
   If ($IsWindows) {
     $bin = "$($bin).exe"
   }
-  $ffprobe = Convert-Path "$($cfg.ffmpeg_bin_dir)\$($bin)"
+  $ffprobe = Convert-Path "$($cfg.paths.ffmpeg_bin_dir)\$($bin)"
 
   $bin = 'HandBrakeCLI'
   If ($IsWindows) {
@@ -91,7 +91,7 @@ Function ConvertFile {
     $ffArgs += "-movflags"
     $ffArgs += "+faststart"
 
-    If ($cfg.use_set_metadata_title){
+    If ($cfg.conversion.use_set_metadata_title){
 
       #Check if it's a TV episode
       If ($title -match 's\d+') {
@@ -140,7 +140,7 @@ Function ConvertFile {
         $ffArgs += "date=`"$year`" " #Use $year variable as metadata 'date'
       }
 
-      $encodeInformation = "Encoded by conv2mp4-$($prop.platform) v$($prop.version) ($($prop.github_url)) on $($time.Invoke())"
+      $encodeInformation = "Encoded by conv2mp4-$($prop.platform) v$($prop.version) ($($prop.urls.github)) on $($time.Invoke())"
       $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
       $ffArgs += "comment=`"$encodeInformation`" " #Use $encodingTool variable as metadata 'encoding_tool'
     }

@@ -1,17 +1,17 @@
-#Validate and act on $cfg.append_log
+#Validate and act on $cfg.logging.append
 Function ValidateAppendLog {
 
   #Check whether log file is empty
-  $logEmpty = Get-Content $prop.log_path
+  $logEmpty = Get-Content  $prop.paths.files.log
 
   #Should the log append or clear
-  If ($cfg.append_log -eq $False) {
-    Clear-Content $prop.log_path
+  If ($cfg.logging.append -eq $False) {
+    Clear-Content $prop.paths.files.log
     PrintVersion
   }
-  Elseif ($cfg.append_log -eq $True -AND $Null -eq $logEmpty) {
+  Elseif ($cfg.logging.append -eq $True -AND $Null -eq $logEmpty) {
     PrintVersion
   }
-  Log "$($prop.standard_divider)"
-  Log "$($prop.standard_indent) New Session (started $($time.Invoke()))"
+  Log "$($prop.formatting.standard_divider)"
+  Log "$($prop.formatting.standard_indent) New Session (started $($time.Invoke()))"
 }

@@ -13,7 +13,7 @@ Function GetCodec {
         $bin = $bin + '.exe'
     }
 
-    $ffprobe = Convert-Path $(Join-Path "$($cfg.ffmpeg_bin_dir)" "$($bin)")
+    $ffprobe = Convert-Path $(Join-Path "$($cfg.paths.ffmpeg_bin_dir)" "$($bin)")
 
     # Check codec with ffprobe
     $ffprobeArgs += "-v "

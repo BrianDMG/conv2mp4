@@ -1,48 +1,49 @@
 Write-Output 'Running preflight checks...'
 
 #Import functions
-Get-ChildItem -Path $prop.func_basepath -Include "*.ps1" -Recurse |
+Get-ChildItem -Path $prop.paths.functions.func_basepath -Include "*.ps1" -Recurse |
   ForEach-Object {
     . $_
   }
 
 #Validate and create or wait on lock file
-ValidateLockFilePath -Path $prop.lock_path
+ValidateLockFilePath -Path $prop.paths.files.lock
 
 #Validate log path
-ValidateLogPath -Path $prop.log_path
+ValidateLogPath -Path  $prop.paths.files.log
 
 #Validate ignore path
-ValidateIgnorePath -Path $prop.ignore_path
+ValidateIgnorePath -Path $prop.paths.files.ignore
 
 #Validate ffmpeg.exe path
 If ([Environment]::GetEnvironmentVariable('FFMPEG_BIN_DIR')) {
-  $cfg.ffmpeg_bin_dir = $([Environment]::GetEnvironmentVariable('FFMPEG_BIN_DIR'))
+  $cfg.paths.ffmpeg_bin_dir = $([Environment]::GetEnvironmentVariable('FFMPEG_BIN_DIR'))
 }
-ValidateFFMPEGPath -Path $cfg.ffmpeg_bin_dir
+ValidateFFMPEGPath -Path $cfg.paths.ffmpeg_bin_dir
 
 #Validate HandbrakeCLI path
 If ([Environment]::GetEnvironmentVariable('HANDBRAKECLI_BIN_DIR')) {
-  $cfg.handbrakecli_bin_dir = $([Environment]::GetEnvironmentVariable('HANDBRAKECLI_BIN_DIR'))
+  $cfg.paths.handbrakecli_bin_dir = $([Environment]::GetEnvironmentVariable('HANDBRAKECLI_BIN_DIR'))
 }
-ValidateHandbrakeCLIPath -Path $cfg.handbrakecli_bin_dir
+ValidateHandbrakeCLIPath -Path $cfg.paths.handbrakecli_bin_dir
 
 #Validate media_path
 If ([Environment]::GetEnvironmentVariable('MEDIA_PATH')) {
-  $cfg.media_path = $([Environment]::GetEnvironmentVariable('MEDIA_PATH'))
+  $cfg.paths.media_path = $([Environment]::GetEnvironmentVariable('MEDIA_PATH'))
 }
-ValidateMediaPath -Path $cfg.media_path
+ValidateMediaPath -Path $cfg.paths.media_path
 
 #Validate OutPath
-If ($cfg.use_out_path -eq 'true') {
+If ($cfg.paths.use_out_path -eq 'true') {
   If ([Environment]::GetEnvironmentVariable('OUTPATH')) {
-    $cfg.out_path = $([Environment]::GetEnvironmentVariable('OUTPATH'))
+    $cfg.paths.out_path = $([Environment]::GetEnvironmentVariable('OUTPATH'))
   }
-  ValidateOutPath -Path $cfg.out_path
+  ValidateOutPath -Path $cfg.paths.out_path
 }
 
 #Validate config booleans
-ValidateConfigBooleans
+#TODO: REWORK for non-flat path
+#ValidateConfigBooleans
 
-#Validate append_log
+#Validate append
 ValidateAppendLog

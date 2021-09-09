@@ -3,15 +3,15 @@ version=5.0.0
 platform=docker
 
 #URLs
-github_url=https://github.com/BrianDMG/conv2mp4-ps
-gitlab_url=https://gitlab.com/BrianDMG/conv2mp4-ps
+github=https://github.com/BrianDMG/conv2mp4-ps
+gitlab=https://gitlab.com/BrianDMG/conv2mp4-ps
 
 #File Paths
 main_script=conv2mp4-ps.ps1
-cfg_path=/cfg/config
-log_path=/log/conv2mp4-ps.log
-lock_path=/lock/conv2mp4-ps.lock
-ignore_path=/ignore/ignore.list
+cfg=/cfg/config
+log=/log/conv2mp4-ps.log
+lock=/lock/conv2mp4-ps.lock
+ignore=/ignore/ignore.list
 
 #Init Paths
 buildqueue=files/init/buildqueue.ps1

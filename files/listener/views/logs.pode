@@ -1,0 +1,11 @@
+
+<html>
+
+<head>
+  <title>conv2mp4-$($data.prop.platform) Logs</title>
+  <link rel="stylesheet" type="text/css" href="/styles/main.css">
+</head>
+<body>
+  $($data.logs | out-string)
+</body>
+</html>
