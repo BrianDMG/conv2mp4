@@ -1,6 +1,6 @@
 #Validate boolean settings from the config file
 Function ValidateConfigBooleans {
-  $boolArray = 'use_out_path', 'use_set_metadata_title', 'force_stereo_clone', 'keep', 'append', 'use_ignore_list', 'enable', 'enable'
+  $boolArray = 'use_out_path', 'use_set_metadata_title', 'force_stereo_clone', 'keep', 'use_ignore_list', 'enable', 'enable'
 
   ForEach ($value in $boolArray) {
     $curVal = $cfg.$value

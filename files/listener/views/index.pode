@@ -1,102 +1,116 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-  <title>conv2mp4-$($data.prop.platform)</title>
-  <link rel="stylesheet" type="text/css" href="/styles/main.css">
-</head>
+	<title>conv2mp4-$($data.prop.platform)</title>
+	<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+	<link rel="manifest" href="icons/site.webmanifest">
+	<link rel="mask-icon" href="icons/safari-pinned-tab.svg" color="#5bbad5">
+	<meta name="msapplication-TileColor" content="#da532c">
+	<meta name="theme-color" content="#ffffff">
+	<link rel="stylesheet" type="text/css" href="styles/main.css"> </head>
 
 <body>
-  <div class="container">
-    <div class="Header">
-      <img src="logo.svg" alt="conv2mp4">
-      <div class="divTable unstyledTable">
-        <div class="divTableBody">
-          <div class="divTableRow">
-            <div class="divTableCellHF">Platform: $($data.prop.platform)</div>
-            <div class="divTableCellHF">Version: <a href="https://gitlab.com/BrianDMG/conv2mp4-ps/-/tags/v$($data.prop.version)" target="_blank" rel="noopener noreferrer">v$($data.prop.version)</a></div>
-            <div class="divTableCellHF">Revision: <a href="https://gitlab.com/BrianDMG/conv2mp4-ps/-/commit/$($env:REVISION)" target="_blank" rel="noopener noreferrer">$($env:REVISION)</a></div>
-          </div>
-        </div>
-      </div>
-      <hr>
-    </div>
-    <div class="Box1">
-      <h2>Execute script</h2>
-      <a href="/run" target="_blank" rel="noopener noreferrer" class="button">Start</a>
-    </div>
-    <div class="Box2">
-      <h2>Schedule</h2>
-      <div class="divTable unstyledTable">
-        <div class="divTableBody">
-          <div class="divTableRow">
-            <div class="divTableCell">Current schedule</div>
-            <div class="divTableCell">$($data.cfg.schedule.run_schedule)</div>
-          </div>
-          <div class="divTableRow">
-            <div class="divTableCell">Next scheduled run</div>
-            <div class="divTableCell">$((Get-PodeSchedule -Name date).NextTriggerTime)</div>
-          </div>
-          <div class="divTableRow">
-            <div class="divTableCell">Last scheduled run</div>
-            <div class="divTableCell">someDateTime</div>
-            <div class="divTableCell"><a href="/log-latest" target="_blank" rel="noopener noreferrer">View log</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="Box3">
-      <h2>Statistics</h2>
-      <div class="divTable unstyledTable">
-        <div class="divTableBody">
-          <div class="divTableRow">
-            <div class="divTableCell">Script runs</div>
-            <div class="divTableCell">$($env:SCRIPT_RUNS)</div>
-          </div>
-          <div class="divTableRow">
-            <div class="divTableCell">Files converted</div>
-            <div class="divTableCell">$($env:FILES)</div>
-          </div>
-          <div class="divTableRow">
-            <div class="divTableCell">Audio conversions</div>
-            <div class="divTableCell">$($env:AUDIO_CONVERSIONS)</div>
-          </div>
-          <div class="divTableRow">
-            <div class="divTableCell">Video conversions</div>
-            <div class="divTableCell">$($env:VIDEO_CONVERSIONS)</div>
-          </div>
-          <div class="divTableRow">
-            <div class="divTableCell">Storage delta</div>
-            <div class="divTableCell">$($env:STORAGE_DELTA)</div>
-          </div>
-          <div class="divTableRow">
-            <div class="divTableCell">Average conversions speed</div>
-            <div class="divTableCell">$($env:AVG_CONVERSION_SPEED)</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="Box4">
-      <h2>Logs</h2>
-        $(foreach ($item in $data.logs) {
-          "<div><a href='$($item.DirectoryName)/$($item.Name)'>$item</a></div>";
-        })
-    </div>
-    <div class="Footer">
-      <hr>
-      <div class="divTable unstyledTable">
-        <div class="divTableBody">
-          <div class="divTableRow">
-            <div class="divTableCell"><a href="$($data.prop.urls.gitlab_docs)" target="_blank" rel="noopener noreferrer">Docs</a></div>
-            <div class="divTableCell"><a href="$($data.prop.urls.gitlab_issues)" target="_blank" rel="noopener noreferrer">Report an issue</a></div>
-            <div class="divTableCell"><a href="$($data.prop.urls.gitlab)" target="_blank" rel="noopener noreferrer">Gitlab</a></div>
-            <div class="divTableCell"><a href="$($data.prop.urls.github)" target="_blank" rel="noopener noreferrer">Github</a></div>
-            <div class="divTableCell"><a href="$($data.prop.urls.dockerhub)" target="_blank" rel="noopener noreferrer">Dockerhub</a></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+	<div class="container">
+		<div class="Header">
+		<img src="logo.svg" alt="conv2mp4">
+			<div class="divTable unstyledTable">
+				<div class="divTableBody">
+					<div class="divTableRow">
+						<div class="divTableCell">Platform: $($data.prop.platform)</div>
+						<div class="divTableCell">Version: <a href="https://gitlab.com/BrianDMG/conv2mp4-ps/-/tags/v$($data.prop.version)" target="_blank" rel="noopener noreferrer">v$($data.prop.version)</a></div>
+						<div class="divTableCell">Revision: <a href="https://gitlab.com/BrianDMG/conv2mp4-ps/-/commit/$($env:REVISION)" target="_blank" rel="noopener noreferrer">$($env:REVISION)</a></div>
+					</div>
+				</div>
+			</div>
+			<hr> </div>
+		<div class="Box1">
+			<h2>Execute script</h2>
+			<a href="/run" target="_blank" rel="noopener noreferrer" class="button">Start</a> </div>
+		<div class="Box2">
+			<h2>Schedule</h2>
+			<div class="divTable unstyledTable">
+				<div class="divTableBody">
+					<div class="divTableRow">
+						<div class="divTableCell">Current schedule</div>
+						<div class="divTableCellBold">$($data.cfg.schedule.run_schedule)</div>
+					</div>
+					<div class="divTableRow">
+						<div class="divTableCell">Next scheduled run</div>
+						<div class="divTableCellBold">$((Get-PodeSchedule -Name date).NextTriggerTime)</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="Box3">
+			<h2>Statistics</h2>
+			<div class="divTable unstyledTable">
+				<div class="divTableBody">
+					<div class="divTableRow">
+						<div class="divTableCell">Script runs</div>
+						<div class="divTableCellBold">$($data.stats.runs)</div>
+					</div>
+					<div class="divTableRow">
+						<div class="divTableCell">Files converted</div>
+						<div class="divTableCellBold">$($data.stats.files)</div>
+					</div>
+					<div class="divTableRow">
+						<div class="divTableCell">Audio conversions</div>
+						<div class="divTableCellBold">$($data.stats.audio)</div>
+					</div>
+					<div class="divTableRow">
+						<div class="divTableCell">Video conversions</div>
+						<div class="divTableCellBold">$($data.stats.video)</div>
+					</div>
+					<div class="divTableRow">
+						<div class="divTableCell">Container conversions</div>
+						<div class="divTableCellBold">$($data.stats.container)</div>
+					</div>
+					<div class="divTableRow">
+						<div class="divTableCell">Duplicates deleted: </div>
+						<div class="divTableCellBold">$($data.stats.duplicates)</div>
+					</div>
+					<div class="divTableRow">
+						<div class="divTableCell">Storage delta</div>
+						<div class="divTableCellBold">$($data.stats.storage) GB</div>
+					</div>
+					<div class="divTableRow">
+						<div class="divTableCell">Average conversions speed</div>
+						<div class="divTableCellBold">$($data.stats.speed)x</div>
+					</div>
+					<div class="divTableRow">
+						<div class="divTableCell">Ignore list entries: </div>
+						<div class="divTableCellBold">$($data.stats.ignore)</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="Box4">
+			<h2>Recent Logs</h2>
+      $(foreach ($item in $data.logs) { "
+			  <div><a href='$($item.DirectoryName)/$($item.Name)' target='_blank' rel='noopener noreferrer'>$item</a></div>";
+      })
+			<p><a href="/logs" class="small">See all logs</a></p>
+		</div>
+		<div class="Footer">
+			<hr>
+			<div class="divTable unstyledTable">
+				<div class="divTableBody">
+					<div class="divTableRow">
+						<div class="divTableCell"><a href="$($data.prop.urls.gitlab_docs)" target="_blank" rel="noopener noreferrer">Docs</a></div>
+						<div class="divTableCell"><a href="$($data.prop.urls.gitlab_issues)" target="_blank" rel="noopener noreferrer">Report an issue</a></div>
+						<div class="divTableCell"><a href="$($data.prop.urls.gitlab)" target="_blank" rel="noopener noreferrer">Gitlab</a></div>
+						<div class="divTableCell"><a href="$($data.prop.urls.github)" target="_blank" rel="noopener noreferrer">Github</a></div>
+						<div class="divTableCell"><a href="$($data.prop.urls.dockerhub)" target="_blank" rel="noopener noreferrer">Dockerhub</a></div>
+					</div>
+				</div>
+			</div>
+			<br>
+			<div class="divTableCell">Site built using <a href="https://github.com/Badgerati/Pode" target="_blank" target="_blank" rel="noopener noreferrer" class="small">Pode</a></div>
+		</div>
+	</div>
 </body>
 
 </html>

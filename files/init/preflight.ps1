@@ -9,6 +9,9 @@ Get-ChildItem -Path $prop.paths.functions.func_basepath -Include "*.ps1" -Recurs
 #Validate and create or wait on lock file
 ValidateLockFilePath -Path $prop.paths.files.lock
 
+#Generate log file
+LogGenerate -LogPath $prop.paths.files.log -DateFormat $prop.formatting.date
+
 #Validate log path
 ValidateLogPath -Path  $prop.paths.files.log
 
@@ -45,5 +48,7 @@ If ($cfg.paths.use_out_path -eq 'true') {
 #TODO: REWORK for non-flat path
 #ValidateConfigBooleans
 
-#Validate append
-ValidateAppendLog
+#Rotate logs
+If ($cfg.logging.rotate) {
+  LogRotate -LogPath $prop.paths.files.log  -LogRotatePeriod $cfg.logging.rotate
+}

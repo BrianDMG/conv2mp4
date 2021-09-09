@@ -21,8 +21,8 @@ subtitles:
   #'true' will keep existing subtitles, 'false' will discard them
   keep: true
 logging:
-  #'true' will add consecutive script run logs to a single file, 'false' will rewrite the log on each run
-  append: true
+  #How often to rotate logs in days
+  rotate: 7
   #'true' will use ignore list to ignore compliant files, 'false' will scan every file every time
   use_ignore_list: true
 plex:
