@@ -63,4 +63,7 @@ Function PrintStatistics {
     Else {
         Write-Output "`nNo video was encoded/converted."
     }
+
+    UpdateUsageStatistics -Duplicates $duplicatesDeleted.Count -Simple $simpleConversion.Count -Video $videoConversion.Count -Audio $audioConversion.Count -Both $bothConversion.Count -Compliant $fileCompliant.Count -Speed $averageConversionRate -Storage $diskUsageDelta
+
 }

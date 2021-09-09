@@ -23,7 +23,7 @@ Function ConvertFile {
   If ($IsWindows) {
     $bin = "HandBrakeCLI.exe"
   }
-  $handbrake = Convert-Path "$($cfg.handbrakecli_bin_dir)\$($bin)"
+  $handbrake = Convert-Path "$($cfg.paths.handbrakecli_bin_dir)\$($bin)"
 
   If ($ConvertType -eq "Handbrake") {
     # Handbrake CLI: https://trac.handbrake.fr/wiki/CLIGuide#presets

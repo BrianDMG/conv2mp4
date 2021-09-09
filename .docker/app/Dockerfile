@@ -7,9 +7,11 @@ ENV APP_HOME=/app \
     FFMPEG_BIN_DIR=/usr/bin \
     HANDBRAKECLI_BIN_DIR=/usr/bin \
     OUTPATH=/outpath \
-    LISTENER_PORT=8082 \
+    LISTENER_PORT=8282 \
     REVISION=${REVISION} \
     TERM=xterm
+
+COPY . ${APP_HOME}
 
 RUN apt-get update && \
     apt-get install -y \
@@ -25,9 +27,8 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     pwsh /c "Install-Module Pode -Force" && \
-    pwsh /c "Install-Module powershell-yaml -Force"
-
-COPY . ${APP_HOME}
+    pwsh /c "Install-Module powershell-yaml -Force" && \
+    ln -s /log ${APP_HOME}/files/listener/public/log
 
 HEALTHCHECK CMD pwsh /c "(Invoke-WebRequest -Method Get \
                 -URI http://localhost:${LISTENER_PORT}/health).StatusCode"

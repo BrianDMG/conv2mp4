@@ -10,7 +10,7 @@ Function ValidateLogPath {
             New-Item $Path -Force
         }
         Catch {
-            
+            #TODO Finish catch condition
         }
     }
 }

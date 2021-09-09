@@ -8,6 +8,9 @@ $cfgFile = Convert-Path "$($prop.paths.files.cfg)"
 $cfg = Get-Content "$cfgFile" | ConvertFrom-Yaml
 Remove-Variable -Name cfgFile
 
+$env:USAGE_STATISTICS = $prop.paths.files.stats
+$env:LOG_PATH = $prop.paths.files.logDir
+
 #Start Pode Server
 Start-PodeServer {
 
@@ -17,8 +20,9 @@ Start-PodeServer {
     Set-PodeViewEngine -Type Pode
 
     Add-PodeRoute -Method Get -Path '/' -ScriptBlock {
-        $logs = $(Get-ChildItem /log | Sort-Object -Descending -Property LastWriteTime -Top 10)
-        Write-PodeViewResponse -Path 'index' -Data @{ prop = $using:prop; cfg = $using:cfg; logs = $logs; }
+        $logs = $(Get-ChildItem -Path $env:LOG_PATH -Recurse -Include *.log | Sort-Object -Descending -Property LastWriteTime -Top 10)
+        $stats = $(Get-Content $env:USAGE_STATISTICS | ConvertFrom-Yaml)
+        Write-PodeViewResponse -Path 'index' -Data @{ prop = $using:prop; cfg = $using:cfg; logs = $logs; stats = $stats; }
     }
 
     #Listener health check
@@ -41,8 +45,8 @@ Start-PodeServer {
 
     #View logs
     Add-PodeRoute -Method Get -Path '/logs' -ScriptBlock {
-        $logs = Get-Content /log/conv2mp4-ps.log
-        Write-PodeViewResponse -Path 'logs' -Data @{ logs = $logs; }
+        $logs = $(Get-ChildItem -Path $env:LOG_PATH -Recurse -Include *.log | Sort-Object -Descending -Property LastWriteTime)
+        Write-PodeViewResponse -Path 'logs' -Data @{ prop = $using:prop; logs = $logs; }
     }
 
 }

@@ -13,9 +13,11 @@ paths:
   files:
     #File Paths
     cfg: /cfg/config.yaml
-    log: /log/conv2mp4-ps.log
-    lock: /lock/conv2mp4-ps.lock
+    logDir: /log
+    log: /log/conv2mp4
+    lock: /lock/conv2mp4.lock
     ignore: /ignore/ignore.list
+    stats: /log/usageStatistics.yaml
   init:
     #Init Paths
     buildqueue: files/init/buildqueue.ps1
@@ -39,6 +41,7 @@ formatting:
   standard_divider: '------------------------------------------------------------------------------------'
   standard_indent: '>>>>>'
   final_stat_divider: '____________________________________________________________________________________'
+  date: "yyyyMMdd-HHmmss"
 testing:
   unit: ""
   smoke:

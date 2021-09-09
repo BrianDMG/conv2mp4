@@ -50,15 +50,21 @@ a.button {
   cursor: pointer;
 }
 
+a.small {
+  font-size: 75%;
+  font-weight: bold;
+}
+
 div.unstyledTable {
   font-family: sans-serif;
   border: none;
   border-collapse: collapse;
 }
 
-.divTable.unstyledTableHF .divTableCellHF,
-.divTable.unstyledTableHF .divTableHeadHF {
+.divTableCellBold {
   padding: 3px 10px;
+  font-weight: bold;
+  color:rgb(255, 255, 255);
 }
 
 .divTable.unstyledTable .divTableCell,
