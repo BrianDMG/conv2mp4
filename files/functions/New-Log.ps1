@@ -13,6 +13,6 @@ Function New-Log {
 
   Write-Version
   Add-Log "$($prop.formatting.standard_divider)"
-  Add-Log "$($prop.formatting.standard_indent) New Session (started $($time.Invoke()))"
+  Add-Log "$($prop.formatting.standard_indent) New Session (started $($time.Invoke()))`n"
 
 }

@@ -224,7 +224,7 @@ ForEach ($file in $fileList) {
 Write-Statistics
 Write-Failures
 If ($cfg.cleanup.enable) {
-  Clear-Garbage
+  Remove-Garbage
 }
 
 Write-Output "`nFinished"

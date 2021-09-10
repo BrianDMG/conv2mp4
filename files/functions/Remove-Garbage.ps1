@@ -1,5 +1,5 @@
 # Delete garbage files
-Function Clear-Garbage {
+Function Remove-Garbage {
 
   $garbageList = Get-ChildItem "$((Get-Item -Path $cfg.paths.media_path).FullName)" -Include ( $cfg.cleanup.include_file_types -split ',' ).trim() -Recurse
 
