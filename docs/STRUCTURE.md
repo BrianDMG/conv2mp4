@@ -14,6 +14,6 @@
     - **ignore**: Contains the ignore list
     - **init**: Contains helper scripts
     - **lock**: Contains lock file while script is executing
-    - **log**: Contains the log file
-        - `conv2mp4-ps.log`
-    - **prop**: Contains the properties file (static variables)
+    - **log**: Contains the log files
+        - `conv2mp4-$DATE-$TIME.log`
+    - **prop**: Contains the properties file (static script variables)
