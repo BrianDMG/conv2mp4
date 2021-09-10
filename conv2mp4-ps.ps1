@@ -50,7 +50,7 @@ ForEach ($file in $fileList) {
     $targetPath = Convert-Path "$($cfg.paths.out_path)$($fileSubDirs)\"
 
     If (-Not (Test-Path $targetPath)) {
-      mkdir $targetPath -Force
+      New-Item -Path $targetPath -Force
     }
 
     $targetFile = Convert-Path "$($targetPath)"
@@ -66,9 +66,9 @@ ForEach ($file in $fileList) {
 
   Write-Progress -Activity "$sourceFile" -PercentComplete $progress -CurrentOperation "$($progress)% Complete"
 
-  Log "$($prop.formatting.standard_divider)"
-  Log "$($time.Invoke()) Processing - $($sourceFile)"
-  Log "$($time.Invoke()) File $(@($fileList).indexOf($file)+1) of $($fileList.Count) - Total queue $($progress)%"
+  Add-Log "$($prop.formatting.standard_divider)"
+  Add-Log "$($time.Invoke()) Processing - $($sourceFile)"
+  Add-Log "$($time.Invoke()) File $(@($fileList).indexOf($file)+1) of $($fileList.Count) - Total queue $($progress)%"
 
   #Set targetFile final name
   If ($cfg.paths.use_out_path) {
@@ -83,26 +83,26 @@ ForEach ($file in $fileList) {
   This outputs a more specific log message acknowleding the file already existed.#>
   If ((Test-Path "$($targetFileRenamed)") -And $file.Extension -ne ".mp4") {
     Remove-Item "$($sourceFile)" -Force
-    Log "$($time.Invoke()) Already exists: $($targetFileRenamed)"
-    Log "$($time.Invoke()) Deleted: $($sourceFile)."
+    Add-Log "$($time.Invoke()) Already exists: $($targetFileRenamed)"
+    Add-Log "$($time.Invoke()) Deleted: $($sourceFile)."
     $duplicatesDeleted += @($sourceFile)
   }
   Else {
     #Codec discovery to determine whether video, audio, or both needs to be encoded
-    $getAudioCodec = GetCodec -DiscoverType Audio
-    $getVideoCodec = GetCodec -DiscoverType Video
-    $getVideoDuration = GetCodec -DiscoverType Duration
+    $getAudioCodec = Get-Codec -DiscoverType Audio
+    $getVideoCodec = Get-Codec -DiscoverType Video
+    $getVideoDuration = Get-Codec -DiscoverType Duration
 
     # Video is already H264, Audio is already AAC
     If (!$getAudioCodec -OR !$getVideoCodec) {
       $failureCause = 'corruptCodec'
-      PrintEncodeFailure
+      Write-EncodeFailure
       Continue
     }
     Elseif ($getVideoCodec -eq 'h264' -AND $getAudioCodec -eq 'aac') {
       If ($file.Extension -ne ".mp4") {
-        Log "$($time.Invoke()) Video: $($getVideoCodec.ToUpper()), Audio: $($getAudioCodec.ToUpper()). Performing simple container conversion to MP4."
-        ConvertFile -ConvertType Simple -KeepSubs:$cfg.subtitles.keep
+        Add-Log "$($time.Invoke()) Video: $($getVideoCodec.ToUpper()), Audio: $($getAudioCodec.ToUpper()). Performing simple container conversion to MP4."
+        Convert-File -ConvertType Simple -KeepSubs:$cfg.subtitles.keep
         $simpleConversion += @($sourceFile)
         $skipFile = $False
       }
@@ -114,33 +114,33 @@ ForEach ($file in $fileList) {
     }
     # Video is already H264, Audio is not AAC
     ElseIf ($getVideoCodec -eq 'h264' -AND $getAudioCodec -ne 'aac') {
-      Log "$($time.Invoke()) Video: $($getVideoCodec.ToUpper()), Audio: $($getAudioCodec.ToUpper()). Encoding audio to AAC"
-      ConvertFile -ConvertType Audio -KeepSubs:$cfg.subtitles.keep
+      Add-Log "$($time.Invoke()) Video: $($getVideoCodec.ToUpper()), Audio: $($getAudioCodec.ToUpper()). Encoding audio to AAC"
+      Convert-File -ConvertType Audio -KeepSubs:$cfg.subtitles.keep
       $audioConversion += @($sourceFile)
       $skipFile = $False
     }
     # Video is not H264, Audio is already AAC
     ElseIf ($getVideoCodec -ne 'h264' -AND $getAudioCodec -eq 'aac') {
-      Log "$($time.Invoke()) Video: $($getVideoCodec.ToUpper()), Audio: $($getAudioCodec.ToUpper()). Encoding video to H264."
-      ConvertFile -ConvertType Video -KeepSubs:$cfg.subtitles.keep
+      Add-Log "$($time.Invoke()) Video: $($getVideoCodec.ToUpper()), Audio: $($getAudioCodec.ToUpper()). Encoding video to H264."
+      Convert-File -ConvertType Video -KeepSubs:$cfg.subtitles.keep
       $videoConversion += @($sourceFile)
       $skipFile = $False
     }
     # Video is not H264, Audio is not AAC
     ElseIf ($getVideoCodec -ne 'h264' -AND $getAudioCodec -ne 'aac') {
-      Log "$($time.Invoke()) Video: $($getVideoCodec.ToUpper()), Audio: $($getAudioCodec.ToUpper()). Encoding video to H264 and audio to AAC."
-      ConvertFile -ConvertType Both -KeepSubs:$cfg.subtitles.keep
+      Add-Log "$($time.Invoke()) Video: $($getVideoCodec.ToUpper()), Audio: $($getAudioCodec.ToUpper()). Encoding video to H264 and audio to AAC."
+      Convert-File -ConvertType Both -KeepSubs:$cfg.subtitles.keep
       $bothConversion += @($sourceFile)
       $skipFile = $False
     }
 
     If ($cfg.audio.force_stereo_clone) {
-      CloneStereoStream
+      Copy-StereoStream
     }
 
     # Refresh Plex libraries
     If ($cfg.plex.enable -AND (-Not($skipFile))) {
-      PlexRefresh
+      Update-Plex
     }
 
     #Begin file comparison between old file and new file to determine conversion success
@@ -150,19 +150,19 @@ ForEach ($file in $fileList) {
 
       # If new file is the same size as old file, log status and delete old file
       If ($targetFileCompare.length -eq $sourceFileCompare.length) {
-        CompareIfSame
+        Compare-IfSame
       }
 
       # If new file is larger than old file, log status and delete old file
       Elseif ($targetFileCompare.length -gt $sourceFileCompare.length) {
-        CompareIfLarger
+        Compare-IfLarger
       }
       # If new file is much smaller than old file (indicating a failed conversion), log status, delete new file, and re-encode with HandbrakeCLI
       Elseif ($targetFileCompare.length -lt ($sourceFileCompare.length * $cfg.conversion.failover_threshold)) {
-        PrintEncodeError
+        Write-EncodeError
 
         #Begin Handbrake encode (lossy)
-        ConvertFile -ConvertType Handbrake -KeepSubs:$cfg.subtitles.keep
+        Convert-File -ConvertType Handbrake -KeepSubs:$cfg.subtitles.keep
 
         # Load files for comparison
         $sourceFileCompare = Get-Item "$($sourceFile)"
@@ -171,28 +171,28 @@ ForEach ($file in $fileList) {
         # If new file still exceeds failover threshold, leave original file in place and log failure
         If ($targetFileCompare.length -lt ($sourceFileCompare.length * $cfg.conversion.failover_threshold)) {
           $failureCause = 'encodeFailure'
-          PrintEncodeFailure
+          Write-EncodeFailure
         }
 
         # If new file is the same size as old file, log status and delete old file
         Elseif ($targetFileCompare.length -eq $sourceFileCompare.length) {
-          CompareIfSame
+          Compare-IfSame
         }
 
         # If new file is larger than old file, log status and delete old file
         Elseif ($targetFileCompare.length -gt $sourceFileCompare.length) {
-          CompareIfLarger
+          Compare-IfLarger
         }
 
         # If new file is smaller than old file, log status and delete old file
         Elseif ($targetFileCompare.length -lt $sourceFileCompare.length) {
-          CompareIfSmaller
+          Compare-IfSmaller
         }
       }
 
       # If new file is smaller than old file, log status and delete old file
       Elseif ($targetFileCompare.length -lt $sourceFileCompare.length) {
-        CompareIfSmaller
+        Compare-IfSmaller
       }
 
       #If $sourceFile was an mp4, rename $targetFile to remove "-NEW"
@@ -207,11 +207,11 @@ ForEach ($file in $fileList) {
       }
     }
     Else {
-      Log "$($time.Invoke()) MP4 already compliant."
+      Add-Log "$($time.Invoke()) MP4 already compliant."
       If ($cfg.logging.use_ignore_list) {
-        Log "$($time.Invoke()) Added file to ignore list."
+        Add-Log "$($time.Invoke()) Added file to ignore list."
         $fileToIgnore = $file.BaseName + $file.Extension
-        AddToIgnoreList "$($fileToIgnore)"
+        Add-IgnoreList "$($fileToIgnore)"
       }
     }
 
@@ -221,14 +221,14 @@ ForEach ($file in $fileList) {
 } # End foreach loop
 
 #Wrap-up
-PrintStatistics
-PrintFailures
+Write-Statistics
+Write-Failures
 If ($cfg.cleanup.enable) {
-  CollectGarbage
+  Remove-Garbage
 }
 
 Write-Output "`nFinished"
 
-DeleteLockFile
+Remove-LockFile
 
 Exit
