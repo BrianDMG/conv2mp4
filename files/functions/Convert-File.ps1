@@ -144,7 +144,7 @@ Function Convert-File {
         $ffArgs += "date=`"$year`" " #Use $year variable as metadata 'date'
       }
 
-      $encodeInformation = "Encoded by conv2mp4-$($prop.platform) v$($prop.version) ($($prop.urls.github)) on $($time.Invoke())"
+      $encodeInformation = "Encoded by conv2mp4-$($prop.platform) v$($prop.version) ($($prop.urls.gitlab)) on $($time.Invoke())"
       $ffArgs += "-metadata " #Flag to specify key/value pairs for encoding metadata
       $ffArgs += "comment=`"$encodeInformation`" " #Use $encodingTool variable as metadata 'encoding_tool'
     }
