@@ -9,7 +9,7 @@ Function Remove-ExpiredLogs {
     Where-Object {!$_.PsIsContainer -and $_.LastWriteTime -lt (Get-Date).AddDays(-$($ExpiredLogInterval))} |
 
     ForEach-Object {
-      Add-Log "Add-Log rotation: deleting $($_.FullName)"
+      Add-Log "Log rotation: deleting $($_.FullName)"
       Remove-Item $_ -Force
     }
 

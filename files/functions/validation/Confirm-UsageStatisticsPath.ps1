@@ -1,5 +1,5 @@
 # Validate or create log path
-Function Confirm-LogPath {
+Function Confirm-UsageStatisticsPath {
 
   Param (
     [String]$Path
@@ -7,8 +7,8 @@ Function Confirm-LogPath {
 
   If (-Not (Test-Path $Path)) {
     Try {
-      Write-Output "Log not found at $Path - creating..."
-      New-Item $Path -Force
+      Write-Output "Usage stastics not found at $Path - creating..."
+      Copy-Item -Path $prop.paths.files.stats_template -Destination $Path -Force
     }
     Catch {
       Add-Log "Could not create $Path. Aborting script."

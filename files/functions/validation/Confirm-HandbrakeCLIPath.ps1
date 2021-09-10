@@ -20,4 +20,5 @@ Function Confirm-HandbrakeCLIPath {
     Remove-LockFile
     Exit
   }
+
 }
