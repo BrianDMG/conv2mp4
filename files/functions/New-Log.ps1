@@ -1,9 +1,5 @@
-<<<<<<< HEAD:files/functions/GenerateLog.ps1
-Function GenerateLog {
-=======
 Function New-Log {
 
->>>>>>> feature-rename-methods:files/functions/New-Log.ps1
   Param (
     [String]$LogPath,
     [String]$DateFormat
