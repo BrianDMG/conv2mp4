@@ -14,5 +14,5 @@ Powershell script that recursively searches through a user-defined file path and
 
 [Usage](/docs/USAGE.md) • [Configuration](/docs/CONFIGURATION.md)
 
-<sub><sup>Want to [contribute](https://github.com/BrianDMG/conv2mp4-ps/blob/master/docs/guidelines/CONTRIBUTING.md)? [Pull requests](https://github.com/BrianDMG/conv2mp4-ps/blob/master/docs/guidelines/PULL_REQUEST_TEMPLATE.md) welcome!<br>
+<sub><sup>Want to [contribute](/docs/guidelines/CONTRIBUTING.md)? [Pull requests](/docs/guidelines/PULL_REQUEST_TEMPLATE.md) welcome!<br>
 [GitLab](https://gitlab.com/BrianDMG/conv2mp4-ps) | [Github](https://github.com/BrianDMG/conv2mp4-ps) | [Dockerhub](https://hub.docker.com/repository/docker/bridmg/conv2mp4)</sub></sup>

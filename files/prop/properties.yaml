@@ -26,7 +26,7 @@ paths:
     preflight: files/init/preflight.ps1
   functions:
     #Function Paths
-    func_basepath: files/func
+    func_basepath: files/functions
   temp:
     #Temporary files
     tmp_51out: 51out.aac

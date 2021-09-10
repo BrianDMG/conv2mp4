@@ -29,7 +29,7 @@ All files paths must be specified in the following formats, and are case-sensiti
 ### Subtitle options
 - **keep**: `false` will discard subtitles from converted files. `true` will keep existing subtitle tracks.
 
-### Log settings
+### Add-Log settings
 - **rotate**: number of days to keep logs. Logs older than this integer will be deleted.
 - **use_ignore_list**: `true` will use the ignore list feature to reduce script execution times. `false` will disable the ignore list and scan every file in media_path for every execution.
 

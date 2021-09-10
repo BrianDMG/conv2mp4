@@ -20,7 +20,7 @@ loadcfg=files/init/loadcfg.ps1
 preflight=files/init/preflight.ps1
 
 #Function Paths
-func_basepath=files/func
+func_basepath=files/functions
 
 #Temporary files
 tmp_dir=files/tmp/

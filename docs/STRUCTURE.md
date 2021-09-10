@@ -9,8 +9,8 @@
         - `config.template`
         - `config`
         - `config.bk`
-    - **func**: Contains script functions
-        - **validate**: Contains properties and configuration validation functions
+    - **functions**: Contains script functions
+        - **validation**: Contains properties and configuration validation functions
     - **ignore**: Contains the ignore list
     - **init**: Contains helper scripts
     - **lock**: Contains lock file while script is executing
