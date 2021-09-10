@@ -18,6 +18,7 @@ paths:
     lock: /lock/conv2mp4.lock
     ignore: /ignore/ignore.list
     stats: /log/usageStatistics.yaml
+    stats_template: files/prop/usageStatistics.yaml.template
   init:
     #Init Paths
     buildqueue: files/init/buildqueue.ps1

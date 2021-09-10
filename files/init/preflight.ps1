@@ -18,6 +18,9 @@ Confirm-LogPath -Path  $prop.paths.files.log
 #Validate ignore path
 Confirm-IgnorePath -Path $prop.paths.files.ignore
 
+#Validate usage statistics exists
+Confirm-UsageStatisticsPath -Path $prop.paths.files.stats
+
 #Validate ffmpeg.exe path
 If ([Environment]::GetEnvironmentVariable('FFMPEG_BIN_DIR')) {
   $cfg.paths.ffmpeg_bin_dir = $([Environment]::GetEnvironmentVariable('FFMPEG_BIN_DIR'))

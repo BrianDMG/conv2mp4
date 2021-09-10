@@ -6,8 +6,15 @@ Function Confirm-IgnorePath {
   )
 
   If (-Not (Test-Path $Path)) {
-    Write-Output "Didn't find ignore list at $Path - creating..."
-    New-Item $Path -Force
+    Try {
+      Write-Output "Didn't find ignore list at $Path - creating..."
+      New-Item $Path -Force
+    }
+    Catch {
+      Add-Log "Could not create $Path. Aborting script."
+      Remove-LockFile
+      Exit
+    }
   }
 
 }
