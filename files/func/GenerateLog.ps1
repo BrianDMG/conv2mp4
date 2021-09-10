@@ -1,4 +1,4 @@
-Function LogGenerate {
+Function GenerateLog {
   Param (
     [String]$LogPath,
     [String]$DateFormat
