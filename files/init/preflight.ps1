@@ -10,7 +10,7 @@ Get-ChildItem -Path $prop.paths.functions.func_basepath -Include "*.ps1" -Recurs
 ValidateLockFilePath -Path $prop.paths.files.lock
 
 #Generate log file
-LogGenerate -LogPath $prop.paths.files.log -DateFormat $prop.formatting.date
+GenerateLog -LogPath $prop.paths.files.log -DateFormat $prop.formatting.date
 
 #Validate log path
 ValidateLogPath -Path  $prop.paths.files.log
@@ -49,6 +49,6 @@ If ($cfg.paths.use_out_path -eq 'true') {
 #ValidateConfigBooleans
 
 #Rotate logs
-If ($cfg.logging.rotate) {
-  LogRotate -LogPath $prop.paths.files.log  -LogRotatePeriod $cfg.logging.rotate
+If ($cfg.logging.rotate -gt 0) {
+  RotateLog -LogPath $prop.paths.files.logDir  -RotateLogInterval $cfg.logging.rotate
 }
