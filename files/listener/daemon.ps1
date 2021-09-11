@@ -32,9 +32,7 @@ Start-PodeServer {
 
     #Manual script execution
     Add-PodeRoute -Method Get -Path '/run' -ScriptBlock {
-        Write-Host "$([DateTime]::Now)"
-        Write-PodeJsonResponse -Value @{ 'value' = "Executing manual conv2mp4" }
-        . "$($env:APP_HOME)/conv2mp4.ps1"
+        Use-PodeScript -Path ./wrapper.ps1
     }
 
     #Scheduled script execution
