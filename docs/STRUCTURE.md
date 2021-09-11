@@ -1,7 +1,7 @@
 # Folder structure
 
 - **.gitignore**: list of files and directories to be ignored by git
-- **conv2mp4-ps.ps1**: Main executable script
+- **conv2mp4.ps1**: Main executable script
 - **README.md**: Main readme documentation
 - **docs**: Contains script documentation, code contribution guidelines, and templates
 - **files**: Contains all other script-related files

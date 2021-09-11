@@ -10,7 +10,7 @@ Docker Build:
   stage: Build
   only:
     changes:
-      - conv2mp4-ps\.ps1
+      - conv2mp4\.ps1
       - files/**/*
       - .docker/app/*
   except:
@@ -33,7 +33,7 @@ Docker Push:
   stage: Publish
   only:
     changes:
-      - conv2mp4-ps\.ps1
+      - conv2mp4\.ps1
       - files/**/*
       - .docker/app/*
   except:

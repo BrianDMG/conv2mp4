@@ -4,11 +4,11 @@ revision: ""
 platform: docker
 urls:
   #URLs
-  github: https://github.com/BrianDMG/conv2mp4-ps
-  gitlab: https://gitlab.com/BrianDMG/conv2mp4-ps
-  gitlab_docs: https://gitlab.com/BrianDMG/conv2mp4-ps/-/wikis/home
-  gitlab_issues: https://gitlab.com/BrianDMG/conv2mp4-ps/-/issues/new
-  dockerhub: https://hub.docker.com/repository/docker/bridmg/conv2mp4-ps
+  github: https://github.com/BrianDMG/conv2mp4
+  gitlab: https://gitlab.com/BrianDMG/conv2mp4
+  gitlab_docs: https://gitlab.com/BrianDMG/conv2mp4/-/wikis/home
+  gitlab_issues: https://gitlab.com/BrianDMG/conv2mp4/-/issues/new
+  dockerhub: https://hub.docker.com/repository/docker/bridmg/conv2mp4
 paths:
   files:
     #File Paths

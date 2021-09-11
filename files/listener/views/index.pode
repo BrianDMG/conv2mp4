@@ -20,8 +20,8 @@
 				<div class="divTableBody">
 					<div class="divTableRow">
 						<div class="divTableCell">Platform: $($data.prop.platform)</div>
-						<div class="divTableCell">Version: <a href="https://gitlab.com/BrianDMG/conv2mp4-ps/-/tags/v$($data.prop.version)" target="_blank" rel="noopener noreferrer">v$($data.prop.version)</a></div>
-						<div class="divTableCell">Revision: <a href="https://gitlab.com/BrianDMG/conv2mp4-ps/-/commit/$($env:REVISION)" target="_blank" rel="noopener noreferrer">$($env:REVISION)</a></div>
+						<div class="divTableCell">Version: <a href="https://gitlab.com/BrianDMG/conv2mp4/-/tags/v$($data.prop.version)" target="_blank" rel="noopener noreferrer">v$($data.prop.version)</a></div>
+						<div class="divTableCell">Revision: <a href="https://gitlab.com/BrianDMG/conv2mp4/-/commit/$($env:REVISION)" target="_blank" rel="noopener noreferrer">$($env:REVISION)</a></div>
 					</div>
 				</div>
 			</div>
