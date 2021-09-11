@@ -1,6 +1,6 @@
 ARG COMMIT=latest
 
-FROM registry.gitlab.com/briandmg/conv2mp4-ps:${COMMIT} AS base
+FROM registry.gitlab.com/briandmg/conv2mp4:${COMMIT} AS base
 
 FROM base AS test
 

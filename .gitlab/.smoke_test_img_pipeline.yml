@@ -10,7 +10,7 @@ Smoke Test Build:
   stage: Smoke Test Build
   only:
     changes:
-      - conv2mp4-ps.ps1
+      - conv2mp4.ps1
       - files/**/*
       - .docker/smoketest/*
   except:

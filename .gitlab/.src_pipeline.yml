@@ -3,7 +3,7 @@ Powershell Lint:
   image: ${LINT_IMAGE}
   only:
     changes:
-      - conv2mp4-ps\.ps1
+      - conv2mp4\.ps1
       - files/**/*
   before_script:
     - pwsh -Version
@@ -14,7 +14,7 @@ Powershell Lint:
 #  stage: Test
 #  only:
 #    changes:
-#      - conv2mp4-ps\.ps1
+#      - conv2mp4\.ps1
 #      - files/**/*
 #  script:
 #    - echo "TODO - Add Pester tests"
@@ -24,7 +24,7 @@ Powershell Lint:
 #  image: ${DOCKER_IMAGE}
 #  only:
 #    changes:
-#      - conv2mp4-ps.ps1
+#      - conv2mp4.ps1
 #      - files/**/*
 #  except:
 #    - merge_requests
@@ -34,4 +34,4 @@ Powershell Lint:
 #  script:
 #    - mkdir -p ${MOUNT_POINT}
 #    - docker run  --name 'smoke-test' -v "${MOUNT_POINT}:/smoke-test-results" ${SMOKE_TEST_COMMIT_TAG}
-#    - docker exec -i smoke-test pwsh /c /app/conv2mp4-ps.ps1
+#    - docker exec -i smoke-test pwsh /c /app/conv2mp4.ps1
