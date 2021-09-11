@@ -37,8 +37,7 @@ Start-PodeServer {
 
     #Scheduled script execution
     Add-PodeSchedule -Name 'date' -Cron "$($cfg.schedule.run_schedule)" -ScriptBlock {
-        Write-Host "$([DateTime]::Now)"
-        . "$($env:APP_HOME)/conv2mp4.ps1"
+        Use-PodeScript -Path ./wrapper.ps1
     }
 
     #View logs
