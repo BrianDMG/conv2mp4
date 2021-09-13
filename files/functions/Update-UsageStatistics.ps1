@@ -17,26 +17,14 @@ Function Update-UsageStatistics {
   #Process average speed
   If ($Speed -gt 0) {
     $stats.speed = ($stats.speed + $Speed) / 2
+    $stats.speed = [Math]::Round($stats.speed, 2)
   }
 
   #Process storage delta
   If ($Storage -ne 0) {
-    If ($Storage -gt -1 -AND $Storage -lt 1) {
-      $Storage_KB = ($Storage * 1024)
-      $Storage_KB = [Math]::Round($Storage_KB, 2)
-      $Storage_MB = ($Storage_KB * 1024)
-      $Storage = ($Storage_MB * 1024)
-    }
-    Elseif ($Storage -lt -1024 -OR $Storage -gt 1024) {
-        $Storage_GB = ($Storage / 1024)
-        $Storage = [Math]::Round($Storage_GB, 2)
-    }
-    Else {
-        $Storage_MB = [Math]::Round($Storage, 2)
-        $Storage = ($Storage_MB * 1024)
-    }
-
-    $stats.storage = ($stats.storage + $Storage)
+    $Storage_GB = ($Storage / 1024)
+    $stats.storage = ($stats.storage + $Storage_GB)
+    $stats.storage = [Math]::Round($stats.storage, 2)
   }
 
   #Update stats
@@ -45,7 +33,9 @@ Function Update-UsageStatistics {
   $stats.audio = $stats.audio + $Audio + $Both
   $stats.video = $stats.video + $Video + $Both
   $stats.container = $stats.container + $Simple
-  $stats.ignore = $(Get-Content $prop.paths.files.ignore).Length
+  If ($cfg.logging.use_ignore_list) {
+    $stats.ignore = $(Get-Content $prop.paths.files.ignore).Length
+  }
   $stats.compliant = $stats.compliant + $Compliant
   $stats.duplicates = $stats.duplicates + $Duplicates
 

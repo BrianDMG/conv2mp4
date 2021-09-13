@@ -80,17 +80,23 @@
 						<div class="divTableCell">Average conversions speed</div>
 						<div class="divTableCellBold">$($data.stats.speed)x</div>
 					</div>
-					<div class="divTableRow">
-						<div class="divTableCell">Ignore list entries: </div>
-						<div class="divTableCellBold">$($data.stats.ignore)</div>
-					</div>
+					$(If ($data.cfg.logging.use_ignore_list) {
+						echo "
+							<div class="divTableRow">
+								<div class="divTableCell">Ignore list entries: </div>
+								<div class="divTableCellBold">$($data.stats.ignore)</div>
+							</div>
+						"
+					})
 				</div>
 			</div>
 		</div>
 		<div class="Box4">
 			<h2>Recent Logs</h2>
-      $(foreach ($item in $data.logs) { "
-			  <div><a href='$($item.DirectoryName)/$($item.Name)' target='_blank' rel='noopener noreferrer'>$item</a></div>";
+      $(ForEach ($item in $data.logs) {
+				echo "
+			  	<div><a href='$($item.DirectoryName)/$($item.Name)' target='_blank' rel='noopener noreferrer'>$item</a></div>
+				"
       })
 			<p><a href="/logs" class="small">See all logs</a></p>
 		</div>
