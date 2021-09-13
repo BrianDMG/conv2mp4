@@ -1,7 +1,7 @@
 ![conv2mp4](/files/listener/public/logo.svg "conv2mp4")
 
 [![Main pipeline](https://img.shields.io/gitlab/pipeline/BrianDMG/conv2mp4/main?label=main%20pipeline&style=flat-square)](https://gitlab.com/%{project_path}/-/commits/main)
-[![Dev pipeline](https://img.shields.io/gitlab/pipeline/BrianDMG/conv2mp4/development?label=development%20pipeline&style=flat-square)](https://gitlab.com/%{project_path}/-/commits/development)
+[![Dev pipeline](https://img.shields.io/gitlab/pipeline/BrianDMG/conv2mp4/development?label=development%20pipeline&style=flat-square)](https://gitlab.com/BrianDMG/conv2mp4/-/commits/development)
 [![Latest git release](https://img.shields.io/github/v/release/briandmg/conv2mp4?label=Latest%20git%20release&style=flat-square)](https://gitlab.com/BrianDMG/conv2mp4/-/releases#latest)
 [![Latest Dockerhub release](https://img.shields.io/docker/v/bridmg/conv2mp4?label=Latest%20Dockerhub%20release&sort=semver&style=flat-square)](https://hub.docker.com/repository/docker/bridmg/conv2mp4/tags?page=1&ordering=last_updated)
 [![Commits since last release](https://img.shields.io/github/commits-since/briandmg/conv2mp4/latest/development?style=flat-square)](https://gitlab.com/BrianDMG/conv2mp4/-/commits/development)
