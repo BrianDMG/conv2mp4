@@ -1,0 +1,43 @@
+Lint Dockerfile Lint:
+  stage: Lint
+  only:
+    changes:
+      - .docker/lint/*
+  image: ${DOCKER_LINT_IMAGE}
+  script: ${DOCKER_LINT_CMD} ${DOCKERFILE_LINT_PATH}/Dockerfile
+
+Lint Build:
+  stage: Build
+  only:
+    changes:
+      - .docker/lint/*
+  except:
+    - merge_requests
+    - tags
+  image: ${DOCKER_IMAGE}
+  before_script:
+    - echo -n ${CI_JOB_TOKEN} | docker login -u gitlab-ci-token --password-stdin ${CI_REGISTRY}
+  script:
+    - >
+      docker build
+      --pull
+      --cache-from ${LINT_LATEST_TAG}
+      --tag ${LINT_COMMIT_TAG}
+      --file ${DOCKERFILE_LINT_PATH}/Dockerfile ${CI_PROJECT_DIR}
+    - docker push ${LINT_COMMIT_TAG}
+
+Lint Push:
+  stage: Publish
+  only:
+    changes:
+      - .docker/lint/*
+  except:
+    - merge_requests
+    - tags
+  image: ${DOCKER_IMAGE}
+  before_script:
+    - echo -n ${CI_JOB_TOKEN} | docker login -u gitlab-ci-token --password-stdin ${CI_REGISTRY}
+  script:
+    - docker pull ${LINT_COMMIT_TAG}
+    - docker tag ${LINT_COMMIT_TAG} ${LINT_LATEST_TAG}
+    - docker push ${LINT_LATEST_TAG}

@@ -1,0 +1,39 @@
+#Copy this file and rename to 'config.yaml"
+
+#conv2mp4 configuration
+schedule:
+  #Docker only: cron-format schedule to execute the script
+  run_schedule: "0 4,8,12,16 * * *"
+paths:
+  #'true' to output converted files to a different path, 'false' to convert in-place
+  use_out_path: false
+conversion:
+  #File types to scan for and convert
+  include_file_types: '*.mkv, *.avi, *.mp4'
+  #Set file metadata based on file name
+  use_set_metadata_title: true
+  #Threshold (in decimal) for file size delta to trigger a failover event
+  failover_threshold: .60
+audio:
+  #Create a clone stereo audio channel for *.1 audio tracks
+  force_stereo_clone: false
+subtitles:
+  #'true' will keep existing subtitles, 'false' will discard them
+  keep: true
+logging:
+  #How often to rotate logs in days
+  rotate: 7
+  #'true' will use ignore list to ignore compliant files, 'false' will scan every file every time
+  use_ignore_list: true
+plex:
+  #'true' will trigger a plex library refresh on each successful conversion, 'false' disables this feature
+  enable: false
+  #Your Plex server's IP address and port
+  ip: plexip:32400
+  #Your Plex server token
+  token: plextoken
+cleanup:
+  #'true' enables garbage collection feature, 'false' disabled it
+  enable: true
+  #File types to delete on each run
+  include_file_types: "*.nfo"

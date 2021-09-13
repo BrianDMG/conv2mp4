@@ -27,18 +27,18 @@ All files paths must be specified in the following formats, and are case-sensiti
 - **force_stereo_clone**: false
 
 ### Subtitle options
-- **keep_subtitles**: `false` will discard subtitles from converted files. `true` will keep existing subtitle tracks.
+- **keep**: `false` will discard subtitles from converted files. `true` will keep existing subtitle tracks.
 
 ### Log settings
-- **append_log**: `false` will clear the log at the beginning of every session, `true` will append new session log to old session log.
+- **rotate**: number of days to keep logs. Logs older than this integer will be deleted.
 - **use_ignore_list**: `true` will use the ignore list feature to reduce script execution times. `false` will disable the ignore list and scan every file in media_path for every execution.
 
 ### Plex configuration
-- **use_plex**: if set to `true`, Plex settings will be used. Set to `false` if Plex feature is not needed.
-- **plex_ip**: the IP address and port (generally `32400`) of your Plex server (*for the purpose of refreshing its libraries*).
-- **plex_token**: your Plex server's token (*for the purpose of refreshing its libraries*).
+- **enable**: if set to `true`, Plex settings will be used. Set to `false` if Plex feature is not needed.
+- **ip**: the IP address and port (generally `32400`) of your Plex server (*for the purpose of refreshing its libraries*).
+- **token**: your Plex server's token (*for the purpose of refreshing its libraries*).
     - NOTE: *Plex server token - See https://support.plex.tv/hc/en-us/articles/204059436-Finding-your-account-token-X-Plex-Token. Plex server token is also easy to retrieve with Tautulli or Ombi*
 
 ### Garbage collection
-- **collect_garbage**: `true` enables garbage collection. `false` disables garbage collection.
-- **garbage_include_file_types**: the extensions of the files you want garbage collection to delete in the format `"*.ext1", "*.ext2"`.
+- **enable**: `true` enables garbage collection. `false` disables garbage collection.
+- **include_file_types**: the extensions of the files you want garbage collection to delete in the format `"*.ext1", "*.ext2"`.
