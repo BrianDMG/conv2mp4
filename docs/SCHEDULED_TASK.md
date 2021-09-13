@@ -19,7 +19,7 @@ To fully automate this script on a Windows system, you will need to set it as a 
     - Click the **New action** button.
     - Change the **Action** dropdown to **Start a program**.
     - Under **Program/script**, type **Powershell.exe**
-    - In the **Add arguments** field, enter **-ExecutionPolicy Bypass -File c:\path\to\script\conv2mp4.ps1**
+    - In the **Add arguments** field, enter **-ExecutionPolicy Bypass -File c:\path\to\script\conv2mp4-ps.ps1**
     - <img src="http://teague.io/wp-content/uploads/2017/04/3.png">
     - (*Optional*) Tailor settings under the **Conditions** and **Settings** tabs to your liking
 

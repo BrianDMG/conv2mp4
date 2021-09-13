@@ -13,7 +13,7 @@
 
 - Use 4 spaces for indentation
 - Use camelCase for any new variables that are created
-- New functions should follow the `New-Function` naming format, follow PowerShell's [approved verbs guidance]https://docs.microsoft.com/en-us/powershell/scripting/developer/cmdlet/approved-verbs-for-windows-powershell-commands?view=powershell-7.1), and be located in `files/functions`
+- New functions should follow the `NewFunction` naming format, and be located in `files/func`
 - If a new feature is being proposed, update `files/cfg/config.template` to reflect the change
 - Update the `README.md` file to reflect any changes made in `files/cfg/config.template`.
 - Increase the version number in any examples files to the new version that this Pull Request would represent. The versioning scheme we use is [SemVer](http://semver.org/).
