@@ -1,0 +1,53 @@
+#General
+version: 5.0.0
+revision: ""
+platform: docker
+urls:
+  #URLs
+  github: https://github.com/BrianDMG/conv2mp4
+  gitlab: https://gitlab.com/BrianDMG/conv2mp4
+  gitlab_docs: https://gitlab.com/BrianDMG/conv2mp4/-/wikis/home
+  gitlab_issues: https://gitlab.com/BrianDMG/conv2mp4/-/issues/new
+  dockerhub: https://hub.docker.com/repository/docker/bridmg/conv2mp4
+paths:
+  files:
+    #File Paths
+    cfg: /cfg/config.yaml
+    logDir: /log
+    log: /log/conv2mp4
+    lock: /lock/conv2mp4.lock
+    ignore: /ignore/ignore.list
+    stats: /log/usageStatistics.yaml
+    stats_template: files/prop/usageStatistics.yaml.template
+  init:
+    #Init Paths
+    buildqueue: files/init/buildqueue.ps1
+    init: files/init/init.ps1
+    loadcfg: files/init/loadcfg.ps1
+    preflight: files/init/preflight.ps1
+  functions:
+    #Function Paths
+    func_basepath: files/functions
+  temp:
+    #Temporary files
+    tmp_51out: 51out.aac
+    tmp_2in: 2in.aac
+listener:
+  #Listener
+  protocol: HTTP
+  port: 8282
+  bind_host: 0.0.0.0
+formatting:
+  #Formatting
+  standard_divider: '------------------------------------------------------------------------------------'
+  standard_indent: '>>>>>'
+  final_stat_divider: '____________________________________________________________________________________'
+  date: "yyyyMMdd-HHmmss"
+testing:
+  unit: ""
+  smoke:
+    #Smoke Testing
+    expected_audio: 1
+    expected_viode: 1
+    expected_both: 1
+    expected_corrupt: 0

@@ -1,0 +1,143 @@
+
+
+body {
+  background-color: rgb(2, 158, 179);
+  font-family: sans-serif;
+  color: rgb(205, 219, 224);
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+h2 {
+  font-family: sans-serif;
+  color: #000000;
+}
+
+hr {
+  border: none;
+  background: linear-gradient(to right, rgb(205, 219, 224), rgb(2, 158, 179, 0)75%);
+  height: 5px;
+}
+
+a:link {
+  color: rgb(63, 78, 112);
+}
+
+a:visited {
+  color: rgb(42, 51, 73);
+}
+
+a:hover {
+  color: rgb(105, 129, 184);
+}
+
+a.button {
+  border: none;
+  background-color: rgb(63, 78, 112);
+  color: rgb(205, 219, 224);
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+a.small {
+  font-size: 75%;
+  font-weight: bold;
+}
+
+div.unstyledTable {
+  font-family: sans-serif;
+  border: none;
+  border-collapse: collapse;
+}
+
+.divTableCellBold {
+  padding: 3px 10px;
+  font-weight: bold;
+  color:rgb(255, 255, 255);
+}
+
+.divTable.unstyledTable .divTableCell,
+.divTable.unstyledTable .divTableHead {
+  padding: 3px 3px;
+}
+
+.divTable.unstyledTable .divTableRow:nth-child(even) {
+  background: rgb(63, 78, 112, 0);
+}
+
+.divTable {
+  display: table;
+}
+
+.divTableRow {
+  display: table-row;
+}
+
+.divTableHeading {
+  display: table-header-group;
+}
+
+.divTableCell,
+.divTableHead {
+  display: table-cell;
+}
+
+.divTableHeading {
+  display: table-header-group;
+}
+
+.divTableFoot {
+  display: table-footer-group;
+}
+
+.divTableBody {
+  display: table-row-group;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 25% 25%;
+  grid-template-rows: auto auto auto auto;
+  gap: 10px 10px;
+  grid-auto-flow: row;
+  grid-template-areas: "Header Header" "Box1 Box2" "Box3 Box4" "Footer Footer";
+}
+
+.Header {
+  grid-area: Header;
+  font-size: 75%;
+  font-weight: bold;
+}
+
+.Footer {
+  grid-area: Footer;
+  font-size: 75%;
+  font-weight: bold;
+}
+
+.Box1 {
+  grid-area: Box1;
+}
+
+.Box2 {
+  grid-area: Box2;
+}
+
+.Box3 {
+  grid-area: Box3;
+}
+
+.Box4 {
+  grid-area: Box4;
+}
