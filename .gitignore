@@ -8,4 +8,3 @@ tmp/
 config
 config.bk
 ignore.list
-.docker/smoketest/smoke_test_suite.tar.gz
