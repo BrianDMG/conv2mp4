@@ -3,6 +3,8 @@ Lint Dockerfile Lint:
   only:
     changes:
       - /.docker/lint/*
+  except:
+    - tags
   image: ${DOCKER_LINT_IMAGE}
   script: ${DOCKER_LINT_CMD} ${DOCKERFILE_LINT_PATH}/Dockerfile
 
