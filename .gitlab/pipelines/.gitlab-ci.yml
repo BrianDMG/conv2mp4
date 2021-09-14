@@ -1,9 +1,11 @@
 include:
+  - template: Security/Secret-Detection.gitlab-ci.yml
   - /.gitlab/pipelines/.gitlab-vars.yml
   - /.gitlab/pipelines/.src_pipeline.yml
   - /.gitlab/pipelines/.lint_img_pipeline.yml
   - /.gitlab/pipelines/.app_img_pipeline.yml
   #-/.gitlab/pipelines/.smoke_test_img_pipeline.yml
+  - /.gitlab/pipelines/.secret_detection_pipeline.yaml
 
 services:
 - ${DOCKER_SERVICE}
@@ -16,3 +18,4 @@ stages:
   #- Smoke Test
   - Publish
   - Release
+  - Secret Detection
