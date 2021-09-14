@@ -7,7 +7,7 @@ Get-ChildItem -Path $prop.paths.functions.func_basepath -Include "*.ps1" -Recurs
   }
 
 #Validate and create or wait on lock file
-Confirm-LockFilePath -Path $prop.paths.files.lock
+Confirm-LockFilePath -Path $prop.paths.files.lock -DateFormat $prop.formatting.date
 
 #Generate log file
 New-Log -LogPath $prop.paths.files.log -DateFormat $prop.formatting.date
@@ -23,21 +23,21 @@ Confirm-UsageStatisticsPath -Path $prop.paths.files.stats
 
 #Validate ffmpeg.exe path
 If ([Environment]::GetEnvironmentVariable('FFMPEG_BIN_DIR')) {
-  $cfg.paths.ffmpeg_bin_dir = $([Environment]::GetEnvironmentVariable('FFMPEG_BIN_DIR'))
+  $cfg.paths.ffmpeg = $([Environment]::GetEnvironmentVariable('FFMPEG_BIN_DIR'))
 }
-Confirm-FFMPEGPath -Path $cfg.paths.ffmpeg_bin_dir
+Confirm-FFMPEGPath -Path $cfg.paths.ffmpeg
 
 #Validate HandbrakeCLI path
 If ([Environment]::GetEnvironmentVariable('HANDBRAKECLI_BIN_DIR')) {
-  $cfg.paths.handbrakecli_bin_dir = $([Environment]::GetEnvironmentVariable('HANDBRAKECLI_BIN_DIR'))
+  $cfg.paths.handbrake = $([Environment]::GetEnvironmentVariable('HANDBRAKECLI_BIN_DIR'))
 }
-Confirm-HandbrakeCLIPath -Path $cfg.paths.handbrakecli_bin_dir
+Confirm-HandbrakeCLIPath -Path $cfg.paths.handbrake
 
-#Validate media_path
+#Validate media
 If ([Environment]::GetEnvironmentVariable('MEDIA_PATH')) {
-  $cfg.paths.media_path = $([Environment]::GetEnvironmentVariable('MEDIA_PATH'))
+  $cfg.paths.media = $([Environment]::GetEnvironmentVariable('MEDIA_PATH'))
 }
-Confirm-MediaPath -Path $cfg.paths.media_path
+Confirm-MediaPath -Path $cfg.paths.media
 
 #Validate OutPath
 If ($cfg.paths.use_out_path -eq 'true') {

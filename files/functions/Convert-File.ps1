@@ -13,21 +13,21 @@ Function Convert-File {
     $bin = "$($bin).exe"
   }
 
-  $ffmpeg = Convert-Path "$($cfg.paths.ffmpeg_bin_dir)\$($bin)"
+  $ffmpeg = Convert-Path "$($cfg.paths.ffmpeg)\$($bin)"
 
   $bin = 'ffprobe'
   If ($IsWindows) {
     $bin = "$($bin).exe"
   }
 
-  $ffprobe = Convert-Path "$($cfg.paths.ffmpeg_bin_dir)\$($bin)"
+  $ffprobe = Convert-Path "$($cfg.paths.ffmpeg)\$($bin)"
 
   $bin = 'HandBrakeCLI'
   If ($IsWindows) {
     $bin = "HandBrakeCLI.exe"
   }
 
-  $handbrake = Convert-Path "$($cfg.paths.handbrakecli_bin_dir)\$($bin)"
+  $handbrake = Convert-Path "$($cfg.paths.handbrake)\$($bin)"
 
   If ($ConvertType -eq "Handbrake") {
     # Handbrake CLI: https://trac.handbrake.fr/wiki/CLIGuide#presets

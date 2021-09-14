@@ -2,7 +2,7 @@ Lint Dockerfile Lint:
   stage: Lint
   only:
     changes:
-      - /.docker/lint/*
+      - .docker/lint/*
   except:
     - tags
   image: ${DOCKER_LINT_IMAGE}
@@ -12,7 +12,7 @@ Lint Build:
   stage: Build
   only:
     changes:
-      - /.docker/lint/*
+      - .docker/lint/*
   except:
     - merge_requests
     - tags
@@ -32,7 +32,7 @@ Lint Push:
   stage: Publish
   only:
     changes:
-      - /.docker/lint/*
+      - .docker/lint/*
   except:
     - merge_requests
     - tags

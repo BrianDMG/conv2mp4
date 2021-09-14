@@ -44,7 +44,7 @@ ForEach ($file in $fileList) {
   $sourceFile = Join-Path "$($file.DirectoryName)" "$($file.BaseName)$($file.Extension)"
   $sourceFile = Convert-Path "$($sourceFile)"
 
-  $fileSubDirs = ($file.DirectoryName).Substring($cfg.paths.media_path.Length, ($file.DirectoryName).Length - $cfg.paths.media_path.Length)
+  $fileSubDirs = ($file.DirectoryName).Substring($cfg.paths.media.Length, ($file.DirectoryName).Length - $cfg.paths.media.Length)
 
   If ($cfg.paths.use_out_path) {
     $targetPath = Convert-Path "$($cfg.paths.out_path)$($fileSubDirs)\"
@@ -201,7 +201,7 @@ ForEach ($file in $fileList) {
 
       #If using out_path, delete empty source directories
       If ($cfg.paths.use_out_path) {
-        If ($Null -eq (Get-ChildItem -Force $file.DirectoryName) -AND $file.DirectoryName -ne $cfg.paths.media_path) {
+        If ($Null -eq (Get-ChildItem -Force $file.DirectoryName) -AND $file.DirectoryName -ne $cfg.paths.media) {
           Remove-Item $file.DirectoryName
         }
       }

@@ -5,7 +5,7 @@ Function Write-FileQueue {
     Add-Log "`nThere are $($fileList.Count) file(s) in the queue:`n"
   }
   Else {
-    Write-Output "`nThere are no files to be converted in $($cfg.media_path)."
+    Add-Log "`nNo files to be converted in $($cfg.paths.media)."
   }
 
   ForEach ($file in $fileList) {
