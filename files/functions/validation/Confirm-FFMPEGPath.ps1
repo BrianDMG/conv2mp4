@@ -15,7 +15,7 @@ Function Confirm-FFMPEGPath {
 
   If (-Not (Test-Path $ffmpeg)) {
     Add-Log "`n$($bin) could not be found in $($Path)."
-    Add-Log "Ensure the path specified for 'fmmpeg_bin_dir' in $($prop.paths.files.cfg) is correct."
+    Add-Log "Ensure the path specified for 'cfg.paths.ffmpeg' in $($prop.paths.files.cfg) is correct."
     Add-Log "Aborting script."
     Remove-LockFile
     Exit
@@ -31,7 +31,7 @@ Function Confirm-FFMPEGPath {
 
   If (-Not (Test-Path $ffprobe)) {
     Add-Log "`n$($bin) could not be found in $($Path)."
-    Add-Log "Ensure the path specified for 'fmmpeg_bin_dir' in $($prop.paths.files.cfg) is correct."
+    Add-Log "Ensure the path specified for 'cfg.paths.ffmpeg' in $($prop.paths.files.cfg) is correct."
     Add-Log "Aborting script."
     Remove-LockFile
     Exit

@@ -1,6 +1,6 @@
 Function Get-AudioStreams {
 
-  $ffprobe = Join-Path $cfg.paths.ffmpeg_bin_dir "ffprobe.exe"
+  $ffprobe = Join-Path $cfg.paths.ffmpeg "ffprobe.exe"
 
   $ffprobeArgs += "-v "
   $ffprobeArgs += "error "
