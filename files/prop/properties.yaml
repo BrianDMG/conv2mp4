@@ -49,5 +49,5 @@ testing:
     #Smoke Testing
     expected_audio: 1
     expected_viode: 1
-    expected_both: 1
+    expected_both: 0
     expected_corrupt: 0
