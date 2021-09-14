@@ -5,6 +5,8 @@ Powershell Lint:
     changes:
       - /conv2mp4\.ps1
       - /files/**/*
+  except:
+    - tags
   before_script:
     - pwsh -Version
   script:
