@@ -2,7 +2,7 @@
 
 #### **Review this checklist before filing an issue:**
 
-- [ ] Is this something you can **debug and fix**? Send a [pull request](/docs/PULL_REQUEST_TEMPLATE.md)! Bug fixes and documentation fixes are always welcome.
+- [ ] Is this something you can **debug and fix**? Create a [merge request](https://gitlab.com/BrianDMG/conv2mp4/-/merge_requests)! Bug fixes, feature additions, code efficiency changes, and documentation fixes are always welcome.
 - [ ] Have a usage question? Please label your issue as "question".
 - [ ] Have an idea for a feature? Please label your issue as "enhancement". 
 
@@ -12,6 +12,6 @@
 
 - [ ] Provide a **minimal code snippet** / example that reproduces the bug.
 - [ ] Provide **screenshots** where appropriate
-- [ ] What's the **version** of the script you're using?
-- [ ] Any configuration settings relevant to your issue (do you keep subtitles, use out path, networked or local media path, etc.)?
+- [ ] What **version** of the script you're using?
+- [ ] Any configuration settings relevant to your issue (do you keep subtitles, use out path, etc.)?
 - [ ] Please label the issue as "bug"
