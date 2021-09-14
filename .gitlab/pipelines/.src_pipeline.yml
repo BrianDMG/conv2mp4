@@ -3,8 +3,8 @@ Powershell Lint:
   image: ${LINT_IMAGE}
   only:
     changes:
-      - conv2mp4\.ps1
-      - files/**/*
+      - /conv2mp4\.ps1
+      - /files/**/*
   before_script:
     - pwsh -Version
   script:

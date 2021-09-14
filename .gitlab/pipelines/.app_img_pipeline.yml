@@ -59,4 +59,5 @@ Release:
     - docker pull ${LATEST_TAG}
     - docker tag ${LATEST_TAG} ${RELEASE_TAG}
     - docker push ${RELEASE_TAG}
+    - docker tag ${RELEASE_TAG} ${DOCKERHUB_RELEASE_TAG}
     - docker push ${DOCKERHUB_RELEASE_TAG}
