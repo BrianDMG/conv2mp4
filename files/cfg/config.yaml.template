@@ -3,7 +3,7 @@
 #conv2mp4 configuration
 schedule:
   #Docker only: cron-format schedule to execute the script
-  run_schedule: "0 4,8,12,16 * * *"
+  run_schedule: "0 4,8,12,16,20 * * *"
 paths:
   #'true' to output converted files to a different path, 'false' to convert in-place
   use_out_path: false

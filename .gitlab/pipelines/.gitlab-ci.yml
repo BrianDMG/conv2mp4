@@ -1,0 +1,18 @@
+include:
+  - /.gitlab/pipelines/.gitlab-vars.yml
+  - /.gitlab/pipelines/.src_pipeline.yml
+  - /.gitlab/pipelines/.lint_img_pipeline.yml
+  - /.gitlab/pipelines/.app_img_pipeline.yml
+  #-/.gitlab/pipelines/.smoke_test_img_pipeline.yml
+
+services:
+- ${DOCKER_SERVICE}
+
+stages:
+  - Lint
+  #- Test
+  - Build
+  #- Smoke Test Build
+  #- Smoke Test
+  - Publish
+  - Release
