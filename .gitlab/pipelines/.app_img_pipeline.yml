@@ -54,7 +54,7 @@ Release:
   image: ${DOCKER_IMAGE}
   before_script:
     - echo -n ${CI_JOB_TOKEN} | docker login -u gitlab-ci-token --password-stdin ${CI_REGISTRY}
-    - docker login -u ${DOCKERHUB_REGISTRY_USER} --password-stdin ${DOCKERHUB_REGISTRY_PASSWORD} ${DOCKERHUB_REGISTRY}
+    - docker login -u ${DOCKERHUB_REGISTRY_USER} -p ${DOCKERHUB_REGISTRY_PASSWORD} ${DOCKERHUB_REGISTRY}
   script:
     - docker pull ${LATEST_TAG}
     - docker tag ${LATEST_TAG} ${RELEASE_TAG}
