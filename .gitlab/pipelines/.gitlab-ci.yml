@@ -1,21 +1,22 @@
 include:
   - template: Security/Secret-Detection.gitlab-ci.yml
+  - template: Security/Container-Scanning.gitlab-ci.yml
   - /.gitlab/pipelines/.gitlab-vars.yml
   - /.gitlab/pipelines/.src_pipeline.yml
   - /.gitlab/pipelines/.lint_img_pipeline.yml
   - /.gitlab/pipelines/.app_img_pipeline.yml
   #-/.gitlab/pipelines/.smoke_test_img_pipeline.yml
-  - /.gitlab/pipelines/.secret_detection_pipeline.yaml
+  - /.gitlab/pipelines/.secret_detection_pipeline.yml
 
 services:
 - ${DOCKER_SERVICE}
 
 stages:
   - Lint
-  #- Test
+  - Test
   - Build
   #- Smoke Test Build
   #- Smoke Test
+  - Scan
   - Publish
   - Release
-  - Secret Detection
