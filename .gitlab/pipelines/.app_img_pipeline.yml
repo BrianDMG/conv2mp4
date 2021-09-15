@@ -29,6 +29,23 @@ Docker Build:
       --file ${DOCKERFILE_PATH}/Dockerfile ${CI_PROJECT_DIR}
     - docker push ${COMMIT_TAG}
 
+container_scanning:
+  image: registry.gitlab.com/security-products/container-scanning:4
+  stage: Scan
+  variables:
+    CS_SEVERITY_THRESHOLD: CRITICAL
+    DOCKER_IMAGE: ${COMMIT_TAG}
+    DOCKERFILE_PATH: .docker/app/Dockerfile
+    GIT_STRATEGY: fetch
+  allow_failure: true
+  artifacts:
+    reports:
+      container_scanning: gl-container-scanning-report.json
+    paths: [gl-container-scanning-report.json]
+  dependencies: []
+  script:
+    - gtcs scan
+
 Docker Push:
   stage: Publish
   only:
