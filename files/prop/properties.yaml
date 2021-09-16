@@ -30,7 +30,7 @@ paths:
     func_basepath: files/functions
   temp:
     #Temporary files
-    dir: /tmp
+    dir: /app/tmp
     tmp_51out: 51out.aac
     tmp_2in: 2in.aac
 listener:

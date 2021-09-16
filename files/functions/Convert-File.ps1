@@ -34,9 +34,19 @@ Function Convert-File {
     # Handbrake arguments
     $hbArgs = @()
     $hbArgs += "-i " #Flag to designate input file
-    $hbArgs += "`"$($sourceFile)`"" #Input file
+    If ( $sourceFile.Contains("'") ) {
+      $hbArgs += "`"$($sourceFile)`"" #Input file
+    }
+    Else {
+      $hbArgs += "`'$($sourceFile)`'" #Input file
+    }
     $hbArgs += "-o " #Flag to designate output file
-    $hbArgs += "`"$($targetFile)`"" #Output file
+    If ( $targetFile.Contains("'") ) {
+      $hbArgs += "`"$($targetFile)`"" #Output file
+    }
+    Else {
+      $hbArgs += "`'$($targetFile)`'" #Output file
+    }
     $hbArgs += "-f " #Format flag
     $hbArgs += "mp4 " #Format value
     $hbArgs += "-a " #Audio channel flag
@@ -89,13 +99,20 @@ Function Convert-File {
     $ffArgs += "-fflags " #Allows setting of formal flags
     $ffArgs += "+genpts " #Suppresses pointer warning messages
     $ffArgs += "-i " #Flag to designate input file
-    $ffArgs += "`'$($sourceFile)`' " #Input file
+    If ( $sourceFile.Contains("'") ) {
+      $ffArgs += "`"$($sourceFile)`""
+    }
+    Else {
+      $ffArgs += "`'$($sourceFile)`'"
+    }
     $ffArgs += "-threads " #Flag to set maximum number of threads (CPU) to use
     $ffArgs += "6 " #Maximum number of threads (CPU) to use
     $ffArgs += "-movflags"
     $ffArgs += "+faststart"
 
     If ($cfg.conversion.use_set_metadata_title){
+
+      $title = $file.BaseName
 
       #Check if it's a TV episode
       If ($title -match 's\d+') {
@@ -177,7 +194,12 @@ Function Convert-File {
     }
 
     If ($KeepSubs) {
-      $info = Invoke-Expression "$($ffprobe) -i `'$($sourceFile)`' 2>&1"
+      If ( $sourceFile.Contains("'") ) {
+        $info = Invoke-Expression "$($ffprobe) -i `"$($sourceFile)`" 2>&1"
+      }
+      Else {
+        $info = Invoke-Expression "$($ffprobe) -i `'$($sourceFile)`' 2>&1"
+      }
       #Detect if bitmap subs exist, and do not keep them if they do
       #Resolves error that causes ffmpeg to fail and launch failover
       If (!$($info -Match '(pgssub|dvd_subtitle)')) {
@@ -193,7 +215,12 @@ Function Convert-File {
       $ffArgs += "-sn " #Option to remove any existing subtitles
     }
     $ffArgs+= "-f mp4 "
-    $ffArgs += "`'$($targetFile)`'" #Output file
+    If ( $targetFile.Contains("'") ) {
+      $ffArgs += "`"$($targetFile)`"" #Output file
+    }
+    Else {
+      $ffArgs += "`'$($targetFile)`'" #Output file
+    }
 
     If ($IsWindows) {
       $ffCMD = cmd.exe /c "`"$ffmpeg`" $ffArgs"
