@@ -2,40 +2,50 @@ Function Copy-StereoStream {
 
   $copyStereo = Get-AudioStreams
 
-  $tempFileName=$file.DirectoryName + "\" + $file.BaseName + "_TEMP" + ".mp4"
-
   #If no stereo channel exists, create one
   If ($copyStereo) {
-    New-Item -Path $($prop.paths.temp.dir) -Force
+    New-Item -Path $($prop.paths.temp.dir) -ItemType 'directory' -Force
 
-    $ffmpeg = Join-Path $cfg.paths.ffmpeg "ffmpeg.exe"
+    $ffmpeg = Join-Path $cfg.paths.ffmpeg 'ffmpeg'
+
+    $audioCloneFileBaseName = $file.BaseName + '.mp4.conv2mp4.stere_clone'
+    $audioCloneFileRenamed = Join-Path $file.DirectoryName $audioCloneFileBaseName
+
+    $surroundChannelAudioFilePath = Join-Path $prop.paths.temp.dir $prop.paths.temp.tmp_51out
+    $stereoChannelAudioFilePath = Join-Path $prop.paths.temp.dir $prop.paths.temp.tmp_2in
 
     #ffmpeg pull audio track from file
     $ffmpegArgs = "-i "
-    $ffmpegArgs += "$targetFile "
+    If ( $targetFile.Contains("'") ) {
+      $ffmpegArgs += "`"$($targetFile)`" " #Output file
+    }
+    Else {
+      $ffmpegArgs += "`'$($targetFile)`' " #Output file
+    }
     $ffmpegArgs += "-vn "
     $ffmpegArgs += "-acodec "
     $ffmpegArgs += "copy "
-    $ffmpegArgs += "$($prop.paths.temp.dir)\$($prop.paths.temp.tmp_51out)"
-    $ffmpegCMD = "`"$ffmpeg`" $ffmpegArgs"
+    $ffmpegArgs += "$($surroundChannelAudioFilePath)"
+    $ffmpegCMD = Invoke-Expression -Command "$($ffmpeg) $($ffmpegArgs)"
 
     #ffmpeg convert audio track
     $ffmpegArgs = "-i "
-    $ffmpegArgs += "$($prop.paths.temp.dir)\$($prop.paths.temp.tmp_51out) "
+    $ffmpegArgs += "$($surroundChannelAudioFilePath) "
     $ffmpegArgs += "-ac "
     $ffmpegArgs += "2 "
-    $ffmpegArgs += "$($prop.paths.temp.dir)\$($prop.paths.temp.tmp_2in)"
-    $ffmpegCMD = "`"$ffmpeg`" $ffmpegArgs"
+    $ffmpegArgs += "$($stereoChannelAudioFilePath)"
+    $ffmpegCMD = Invoke-Expression -Command "$($ffmpeg) $($ffmpegArgs)"
+
 
     #Rename original source file, necessary to avoid corrupting by using same file as input and output
-    Move-Item $targetFile $tempFileName -Force
+    Rename-Item $targetFile $audioCloneFileRenamed -Force
 
     #ffmpeg inject stereo audio track back into file
     $ffmpegArgs = "-y "
     $ffmpegArgs += "-i "
-    $ffmpegArgs += "$tempFileName "
+    $ffmpegArgs += "$($audioCloneFileRenamed) "
     $ffmpegArgs += "-i "
-    $ffmpegArgs += "$($prop.paths.temp.dir)\$($prop.paths.temp.tmp_2in) "
+    $ffmpegArgs += "$($stereoChannelAudioFilePath) "
     $ffmpegArgs += "-map "
     $ffmpegArgs += "0 "
     $ffmpegArgs += "-map "
@@ -44,10 +54,17 @@ Function Copy-StereoStream {
     $ffmpegArgs += "copy "
     $ffmpegArgs += "-metadata:s:a "
     $ffmpegArgs += "handler=Stereo "
-    $ffmpegArgs += "$targetFile"
-    $ffmpegCMD = "`"$ffmpeg`" $ffmpegArgs"
+    $ffmpegArgs += "-f "
+    $ffmpegArgs += "mp4 "
+    If ( $targetFile.Contains("'") ) {
+      $ffmpegArgs += "`"$($targetFile)`"" #Output file
+    }
+    Else {
+      $ffmpegArgs += "`'$($targetFile)`'" #Output file
+    }
+    $ffmpegCMD = Invoke-Expression -Command "$($ffmpeg) $($ffmpegArgs)"
 
-    Remove-Item $tempFileName -Force
+    Remove-Item "$($audioCloneFileRenamed)" -Force
     Remove-Item $prop.paths.temp.dir -Force -Recurse
 
     $copyStereo = Get-AudioStreams

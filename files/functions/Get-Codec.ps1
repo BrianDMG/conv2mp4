@@ -40,7 +40,12 @@ Function Get-Codec {
 
   $ffprobeArgs += "-of "
   $ffprobeArgs += "default=noprint_wrappers=1:nokey=1 "
-  $ffprobeArgs += "`'$($sourceFile)`'"
+  If ( $sourceFile.Contains("'") ) {
+    $ffprobeArgs += "`"$($sourceFile)`""
+  }
+  Else {
+    $ffprobeArgs += "`'$($sourceFile)`'"
+  }
 
   If ($IsWindows) {
     $ffprobeCMD = cmd.exe /c "`"$ffprobe`" $ffprobeArgs"

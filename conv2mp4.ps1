@@ -39,8 +39,6 @@ $buildQueuePath = Convert-Path "$($prop.paths.init.buildqueue)"
 # Begin performing operations of files
 ForEach ($file in $fileList) {
 
-  $title = $file.BaseName
-
   $sourceFile = Join-Path "$($file.DirectoryName)" "$($file.BaseName)$($file.Extension)"
   $sourceFile = Convert-Path "$($sourceFile)"
 
