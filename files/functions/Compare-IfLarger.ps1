@@ -44,4 +44,5 @@ Function Compare-IfLarger {
     Add-Log "$($time.Invoke()) ERROR: $sourceFile could not be deleted. Full error below."
     Add-Log $_
   }
+
 }

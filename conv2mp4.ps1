@@ -1,5 +1,5 @@
 <#======================================================================================================================
-conv2mp4-docker v5.0.0 - https://gitlab.com/BrianDMG/conv2mp4-docker
+conv2mp4-docker v5.0.0 - https://gitlab.com/BrianDMG/conv2mp4-docker / https://hub.docker.com/r/bridmg/conv2mp4
 
 This Powershell script will recursively search through a user-defined file path and convert all videos of user-specified
 include_file_types to MP4 with H264 video and AAC audio using ffmpeg. If a conversion failure is detected, the script re-encodes
@@ -42,15 +42,16 @@ ForEach ($file in $fileList) {
   $sourceFile = Join-Path "$($file.DirectoryName)" "$($file.BaseName)$($file.Extension)"
   $sourceFile = Convert-Path "$($sourceFile)"
 
-  $fileSubDirs = ($file.DirectoryName).Substring($cfg.paths.media.Length, ($file.DirectoryName).Length - $cfg.paths.media.Length)
-
   If ($cfg.paths.use_out_path) {
-    $targetPath = Convert-Path "$($cfg.paths.out_path)$($fileSubDirs)\"
+    $fileSubDirs = $file.DirectoryName.Substring( $cfg.paths.media.Length, ($file.DirectoryName.Length - $cfg.paths.media.Length) )
+
+    $targetPath = "$($cfg.paths.out_path)$($fileSubDirs)"
 
     If (-Not (Test-Path $targetPath)) {
-      New-Item -Path $targetPath -Force
+      New-Item -Path $targetPath -ItemType 'directory' -Force
     }
 
+    $targetPath = Convert-Path "$($cfg.paths.out_path)$($fileSubDirs)"
     $targetFile = Convert-Path "$($targetPath)"
     $targetFile = Join-Path "$($targetFile)" "$($file.BaseName).mp4.conv2mp4"
   }
@@ -216,6 +217,7 @@ ForEach ($file in $fileList) {
     #Running tally of session container duration (cumulative length of video processed)
     $script:cumulativeVideoDuration = $cumulativeVideoDuration + $getVideoDuration
   }
+
 } # End foreach loop
 
 #Wrap-up

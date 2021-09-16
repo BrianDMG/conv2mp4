@@ -18,7 +18,7 @@ paths:
     lock: /lock/conv2mp4.lock
     ignore: /ignore/ignore.list
     stats: /log/usageStatistics.yaml
-    stats_template: files/prop/usageStatistics.yaml.template
+    templates: files/templates
   init:
     #Init Paths
     buildqueue: files/init/buildqueue.ps1
@@ -44,6 +44,11 @@ formatting:
   standard_indent: '>>>>>'
   final_stat_divider: '____________________________________________________________________________________'
   date: "yyyyMMdd-HHmmss"
+templates:
+  smoke_testing_cfg_std: smoke_testing_cfg_std.yaml.template
+  smoke_testing_cfg_outpath: smoke_testing_cfg_outpath.yaml.template
+  smoke_testing_cfg_stereo_clone: smoke_testing_cfg_stereo_clone.yaml.template
+  stats: usageStatistics.yaml.template
 testing:
   unit: ""
   smoke:

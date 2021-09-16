@@ -26,4 +26,5 @@ Function Write-EncodeFailure {
     Add-Log "$($time.Invoke()) ERROR: $($targetFile) could not be deleted. Full error below."
     Add-Log $_
   }
+
 }

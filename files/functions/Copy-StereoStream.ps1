@@ -9,7 +9,7 @@ Function Copy-StereoStream {
     $ffmpeg = Join-Path $cfg.paths.ffmpeg 'ffmpeg'
 
     $audioCloneFileBaseName = $file.BaseName + '.mp4.conv2mp4.stere_clone'
-    $audioCloneFileRenamed = Join-Path $file.DirectoryName $audioCloneFileBaseName
+    $audioCloneFileRenamed = $targetFile + '.stereo_clone'
 
     $surroundChannelAudioFilePath = Join-Path $prop.paths.temp.dir $prop.paths.temp.tmp_51out
     $stereoChannelAudioFilePath = Join-Path $prop.paths.temp.dir $prop.paths.temp.tmp_2in
@@ -77,4 +77,5 @@ Function Copy-StereoStream {
       Add-Log "$($time.Invoke()) Appended a stereo audio stream."
     }
   }
+
 }
