@@ -11,7 +11,7 @@
 
 Powershell script that recursively searches through a user-defined file path and convert all videos of user-specified file types to MP4 with H264 video and AAC audio as needed using ffmpeg. If a conversion failure is detected, the script re-encodes the file with HandbrakeCLI. Upon successful encoding, Plex libraries are refreshed and source file is deleted.  The purpose of this script is to reduce the amount of transcoding CPU load on a Plex server and increase video compatibility across platforms.
 
-**Get the latest contanier at [Dockerhub](https://hub.docker.com/repository/docker/bridmg/conv2mp4)**
+**Get the latest image at [Dockerhub](https://hub.docker.com/repository/docker/bridmg/conv2mp4)**
 
 **Features**
 - **Full automation**: Set a cron-formatted schedule, and convert/encode your files while you do something more interesting.
