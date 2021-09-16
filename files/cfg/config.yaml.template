@@ -1,4 +1,5 @@
 #Copy this file and rename to 'config.yaml"
+#See https://gitlab.com/BrianDMG/conv2mp4/-/wikis/Configuration for configration setup
 
 #conv2mp4 configuration
 schedule:

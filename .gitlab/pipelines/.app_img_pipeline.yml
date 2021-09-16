@@ -62,7 +62,7 @@ Docker Push:
   script:
     - docker pull ${COMMIT_TAG}
     - >
-      if [ "${branch}" == 'main' ]; then
+      if [ "${CI_COMMIT_BRANCH}" == 'main' ]; then
         LATEST_TAG=${MAIN_LATEST_TAG}
       fi
     - docker tag ${COMMIT_TAG} ${LATEST_TAG}
