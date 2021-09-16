@@ -7,8 +7,7 @@ Function Compare-IfSame {
     Add-Log "$($time.Invoke()) $($sourceFile) deleted."
     Add-Log "$($time.Invoke()) $($targetFileRenamed) created."
   }
-  Catch
-  {
+  Catch {
     Add-Log "$($time.Invoke()) ERROR: $($sourceFile) could not be deleted. Full error below."
     Add-Log $_
   }

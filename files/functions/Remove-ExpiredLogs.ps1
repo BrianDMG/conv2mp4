@@ -1,4 +1,5 @@
 Function Remove-ExpiredLogs {
+
   Param (
     [String]$ExpiredLogInterval,
     [String]$LogPath

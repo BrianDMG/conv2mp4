@@ -69,4 +69,5 @@ Function Get-Codec {
     #Returns video and audio codec information
     return $ffprobeCMD
   }
+
 }

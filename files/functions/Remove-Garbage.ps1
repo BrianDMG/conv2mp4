@@ -4,14 +4,20 @@ Function Remove-Garbage {
   $garbageList = Get-ChildItem "$((Get-Item -Path $cfg.paths.media).FullName)" -Include ( $cfg.cleanup.include_file_types -split ',' ).trim() -Recurse
 
   If ($garbageList.Count -ge 1) {
-    Add-Log "`nGarbage Collection: The following $($garbageList.Count) file(s) were deleted:"
+    Add-Log "`nGarbage Collection: Deleted the following $($garbageList.Count) file(s):"
   }
   Else {
     Write-Output "Garbage Collection: No garbage found in $($cfg.paths.media)."
   }
 
   ForEach ($turd in $garbageList) {
-    Add-Log "`t$($garbageList.indexOf($turd)+1). $turd"
+
+    If ($garbageList.Count -gt 1) {
+      Add-Log "`t$($garbageList.indexOf($turd)+1). $turd"
+    }
+    Else {
+      Add-Log "`t1. $turd"
+    }
 
     Try {
       Remove-Item $turd -Force -ErrorAction Stop

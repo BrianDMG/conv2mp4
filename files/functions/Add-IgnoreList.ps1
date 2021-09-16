@@ -1,5 +1,4 @@
-Function Add-IgnoreList
-{
+Function Add-IgnoreList {
 
   Param (
     [String]$ignoreString

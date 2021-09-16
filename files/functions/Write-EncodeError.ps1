@@ -14,4 +14,5 @@ Function Write-EncodeError {
     Add-Log "$($time.Invoke()) ERROR: $($targetFileRenamed) could not be deleted. Full error below."
     Add-Log $_
   }
+
 }
