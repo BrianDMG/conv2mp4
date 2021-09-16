@@ -1,0 +1,39 @@
+Powershell Lint:
+  stage: Lint
+  image: ${LINT_IMAGE}
+  only:
+    changes:
+      - conv2mp4\.ps1
+      - files/**/*
+  except:
+    - tags
+  before_script:
+    - pwsh -Version
+  script:
+    - ${LINT_CMD}
+
+#Unit Test:
+#  stage: Test
+#  only:
+#    changes:
+#      - conv2mp4\.ps1
+#      - files/**/*
+#  script:
+#    - echo "TODO - Add Pester tests"
+
+#Smoke Test:
+#  stage: Smoke Test
+#  image: ${DOCKER_IMAGE}
+#  only:
+#    changes:
+#      - conv2mp4.ps1
+#      - files/**/*
+#  except:
+#    - merge_requests
+#    - tags
+#  variables:
+#    MOUNT_POINT: ${CI_PROJECT_DIR}/smoke-test-results
+#  script:
+#    - mkdir -p ${MOUNT_POINT}
+#    - docker run  --name 'smoke-test' -v "${MOUNT_POINT}:/smoke-test-results" ${SMOKE_TEST_COMMIT_TAG}
+#    - docker exec -i smoke-test pwsh /c /app/conv2mp4.ps1

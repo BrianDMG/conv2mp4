@@ -1,36 +1,57 @@
 Write-Output 'Running preflight checks...'
 
 #Import functions
-Get-ChildItem -Path $prop.func_basepath -Include "*.ps1" -Recurse |
-    ForEach-Object {
-        . $_
-    }
+Get-ChildItem -Path $prop.paths.functions.func_basepath -Include "*.ps1" -Recurse |
+  ForEach-Object {
+    . $_
+  }
 
 #Validate and create or wait on lock file
-ValidateLockFilePath -Path $prop.lock_path
+Confirm-LockFilePath -Path $prop.paths.files.lock -DateFormat $prop.formatting.date
+
+#Generate log file
+New-Log -LogPath $prop.paths.files.log -DateFormat $prop.formatting.date
 
 #Validate log path
-ValidateLogPath -Path $prop.log_path
+Confirm-LogPath -Path  $prop.paths.files.log
 
 #Validate ignore path
-ValidateIgnorePath -Path $prop.ignore_path
+Confirm-IgnorePath -Path $prop.paths.files.ignore
+
+#Validate usage statistics exists
+Confirm-UsageStatisticsPath -Path $prop.paths.files.stats
 
 #Validate ffmpeg.exe path
-ValidateFFMPEGPath -Path $cfg.fmmpeg_bin_dir
+If ([Environment]::GetEnvironmentVariable('FFMPEG_BIN_DIR')) {
+  $cfg.paths.ffmpeg = $([Environment]::GetEnvironmentVariable('FFMPEG_BIN_DIR'))
+}
+Confirm-FFMPEGPath -Path $cfg.paths.ffmpeg
 
 #Validate HandbrakeCLI path
-ValidateHandbrakeCLIPath -Path $cfg.handbrakecli_bin_dir
+If ([Environment]::GetEnvironmentVariable('HANDBRAKECLI_BIN_DIR')) {
+  $cfg.paths.handbrake = $([Environment]::GetEnvironmentVariable('HANDBRAKECLI_BIN_DIR'))
+}
+Confirm-HandbrakeCLIPath -Path $cfg.paths.handbrake
 
-#Validate media_path
-Validatemedia_path -Path $cfg.media_path
+#Validate media
+If ([Environment]::GetEnvironmentVariable('MEDIA_PATH')) {
+  $cfg.paths.media = $([Environment]::GetEnvironmentVariable('MEDIA_PATH'))
+}
+Confirm-MediaPath -Path $cfg.paths.media
 
 #Validate OutPath
-If ($cfg.use_out_path -eq 'true') {
-    ValidateOutPath -Path $cfg.out_path
+If ($cfg.paths.use_out_path -eq 'true') {
+  If ([Environment]::GetEnvironmentVariable('OUTPATH')) {
+    $cfg.paths.out_path = $([Environment]::GetEnvironmentVariable('OUTPATH'))
+  }
+  Confirm-OutPath -Path $cfg.paths.out_path
 }
 
 #Validate config booleans
-ValidateConfigBooleans
+#TODO: REWORK for non-flat path
+#Confirm-ConfigBooleans
 
-#Validate append_log
-ValidateAppendLog
+#Rotate logs
+If ($cfg.logging.rotate -gt 0) {
+  Remove-ExpiredLogs -LogPath $prop.paths.files.logDir  -ExpiredLogInterval $cfg.logging.rotate
+}

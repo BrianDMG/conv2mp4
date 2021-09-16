@@ -1,0 +1,88 @@
+Dockerfile Lint:
+  stage: Lint
+  only:
+    changes:
+      - .docker/app/*
+  image: ${DOCKER_LINT_IMAGE}
+  script: ${DOCKER_LINT_CMD} ${DOCKERFILE_PATH}/Dockerfile
+
+Docker Build:
+  stage: Build
+  only:
+    changes:
+      - conv2mp4\.ps1
+      - files/**/*
+      - .docker/app/*
+  except:
+    - merge_requests
+    - tags
+  image: ${DOCKER_IMAGE}
+  before_script:
+    - echo -n ${CI_JOB_TOKEN} | docker login -u gitlab-ci-token --password-stdin ${CI_REGISTRY}
+  script:
+    - >
+      docker build
+      --pull
+      --cache-from ${LATEST_TAG}
+      --build-arg REVISION=${CI_COMMIT_SHA}
+      --tag ${COMMIT_TAG}
+      --file ${DOCKERFILE_PATH}/Dockerfile ${CI_PROJECT_DIR}
+    - docker push ${COMMIT_TAG}
+
+container_scanning:
+  image: registry.gitlab.com/security-products/container-scanning:4
+  stage: Scan
+  variables:
+    CS_SEVERITY_THRESHOLD: CRITICAL
+    DOCKER_IMAGE: ${COMMIT_TAG}
+    DOCKERFILE_PATH: .docker/app/Dockerfile
+    GIT_STRATEGY: fetch
+  allow_failure: true
+  artifacts:
+    reports:
+      container_scanning: gl-container-scanning-report.json
+    paths: [gl-container-scanning-report.json]
+  dependencies: []
+  script:
+    - gtcs scan
+
+Docker Push:
+  stage: Publish
+  only:
+    changes:
+      - conv2mp4\.ps1
+      - files/**/*
+      - .docker/app/*
+  except:
+    - merge_requests
+    - tags
+  image: ${DOCKER_IMAGE}
+  before_script:
+    - echo -n ${CI_JOB_TOKEN} | docker login -u gitlab-ci-token --password-stdin ${CI_REGISTRY}
+  script:
+    - docker pull ${COMMIT_TAG}
+    - >
+      if [ ${branch} == 'main' ]; then
+        LATEST_TAG=${MAIN_LATEST_TAG}
+      fi
+    - docker tag ${COMMIT_TAG} ${LATEST_TAG}
+    - docker push ${LATEST_TAG}
+
+Release:
+  stage: Release
+  only:
+    - tags
+  image: ${DOCKER_IMAGE}
+  before_script:
+    - echo -n ${CI_JOB_TOKEN} | docker login -u gitlab-ci-token --password-stdin ${CI_REGISTRY}
+    - echo -n ${DOCKERHUB_REGISTRY_PASSWORD} | docker login -u ${DOCKERHUB_REGISTRY_USER} --password-stdin ${DOCKERHUB_REGISTRY}
+  script:
+    #Push release to Gitlab
+    - docker pull ${MAIN_LATEST_TAG}
+    - docker tag ${MAIN_LATEST_TAG} ${RELEASE_TAG}
+    - docker push ${RELEASE_TAG}
+    #Push release to Dockerhub
+    - docker tag ${RELEASE_TAG} ${DOCKERHUB_RELEASE_TAG}
+    - docker push ${DOCKERHUB_RELEASE_TAG}
+    - docker tag ${DOCKERHUB_RELEASE_TAG} ${DOCKERHUB_LATEST_TAG}
+    - docker push ${DOCKERHUB_LATEST_TAG}
