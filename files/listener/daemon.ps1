@@ -14,36 +14,37 @@ $env:LOG_PATH = $prop.paths.files.logDir
 #Start Pode Server
 Start-PodeServer {
 
-    #Define Pode endpoint
-    Add-PodeEndpoint -Address $prop.listener.bind_host -Port $prop.listener.port -Protocol $prop.listener.protocol
+  #Define Pode endpoint
+  Add-PodeEndpoint -Address $prop.listener.bind_host -Port $prop.listener.port -Protocol $prop.listener.protocol
 
-    Set-PodeViewEngine -Type Pode
+  Set-PodeViewEngine -Type Pode
 
-    Add-PodeRoute -Method Get -Path '/' -ScriptBlock {
-        $logs = $(Get-ChildItem -Path $env:LOG_PATH -Recurse -Include *.log | Sort-Object -Descending -Property LastWriteTime -Top 10)
-        $stats = $(Get-Content $env:USAGE_STATISTICS | ConvertFrom-Yaml)
-        Write-PodeViewResponse -Path 'index' -Data @{ prop = $using:prop; cfg = $using:cfg; logs = $logs; stats = $stats; }
-    }
+  Add-PodeRoute -Method Get -Path '/' -ScriptBlock {
+    $logs = $(Get-ChildItem -Path $env:LOG_PATH -Recurse -Include *.log | Sort-Object -Descending -Property LastWriteTime -Top 10)
+    $stats = $(Get-Content $env:USAGE_STATISTICS | ConvertFrom-Yaml)
 
-    #Listener health check
-    Add-PodeRoute -Method Get -Path '/health' -ScriptBlock {
-        Write-PodeJsonResponse -Value @{ 'value' = "It's alive!" }
-    }
+    Write-PodeViewResponse -Path 'index' -Data @{ prop = $using:prop; cfg = $using:cfg; logs = $logs; stats = $stats; }
+  }
 
-    #Manual script execution
-    Add-PodeRoute -Method Get -Path '/run' -ScriptBlock {
-        Use-PodeScript -Path ./wrapper.ps1
-    }
+  #Listener health check
+  Add-PodeRoute -Method Get -Path '/health' -ScriptBlock {
+    Write-PodeJsonResponse -Value @{ 'value' = "It's alive!" }
+  }
 
-    #Scheduled script execution
-    Add-PodeSchedule -Name 'date' -Cron "$($cfg.schedule.run_schedule)" -ScriptBlock {
-        Use-PodeScript -Path ./wrapper.ps1
-    }
+  #Manual script execution
+  Add-PodeRoute -Method Get -Path '/run' -ScriptBlock {
+    Use-PodeScript -Path ./wrapper.ps1
+  }
 
-    #View logs
-    Add-PodeRoute -Method Get -Path '/logs' -ScriptBlock {
-        $logs = $(Get-ChildItem -Path $env:LOG_PATH -Recurse -Include *.log | Sort-Object -Descending -Property LastWriteTime)
-        Write-PodeViewResponse -Path 'logs' -Data @{ prop = $using:prop; logs = $logs; }
-    }
+  #Scheduled script execution
+  Add-PodeSchedule -Name 'date' -Cron "$($cfg.schedule.run_schedule)" -ScriptBlock {
+    Use-PodeScript -Path ./wrapper.ps1
+  }
+
+  #View logs
+  Add-PodeRoute -Method Get -Path '/logs' -ScriptBlock {
+    $logs = $(Get-ChildItem -Path $env:LOG_PATH -Recurse -Include *.log | Sort-Object -Descending -Property LastWriteTime)
+    Write-PodeViewResponse -Path 'logs' -Data @{ prop = $using:prop; logs = $logs; }
+  }
 
 }

@@ -38,3 +38,6 @@ cleanup:
   enable: true
   #File types to delete on each run
   include_file_types: "*.nfo"
+notifications:
+  #Set to false to disable update notifications in the script and webUI
+  check_for_updates: true
