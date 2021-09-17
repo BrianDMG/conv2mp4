@@ -67,6 +67,12 @@ div.unstyledTable {
   color:rgb(255, 255, 255);
 }
 
+.divTableCellUpdate {
+  padding: 3px 20px;
+  font-weight: bold;
+  color:rgb(39, 223, 32);
+}
+
 .divTable.unstyledTable .divTableCell,
 .divTable.unstyledTable .divTableHead {
   padding: 3px 3px;

@@ -40,16 +40,12 @@ If ([Environment]::GetEnvironmentVariable('MEDIA_PATH')) {
 Confirm-MediaPath -Path $cfg.paths.media
 
 #Validate OutPath
-If ($cfg.paths.use_out_path -eq 'true') {
+If ($cfg.paths.use_out_path) {
   If ([Environment]::GetEnvironmentVariable('OUTPATH')) {
     $cfg.paths.out_path = $([Environment]::GetEnvironmentVariable('OUTPATH'))
   }
   Confirm-OutPath -Path $cfg.paths.out_path
 }
-
-#Validate config booleans
-#TODO: REWORK for non-flat path
-#Confirm-ConfigBooleans
 
 #Rotate logs
 If ($cfg.logging.rotate -gt 0) {

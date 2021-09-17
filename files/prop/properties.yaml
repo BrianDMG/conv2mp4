@@ -1,5 +1,5 @@
 #General
-version: 5.0.0
+version: 5.1.0
 revision: ""
 platform: docker
 urls:
@@ -9,6 +9,10 @@ urls:
   gitlab_docs: https://gitlab.com/BrianDMG/conv2mp4/-/wikis/home
   gitlab_issues: https://gitlab.com/BrianDMG/conv2mp4/-/issues/new
   dockerhub: https://hub.docker.com/repository/docker/bridmg/conv2mp4
+  dockerhub_tag_api: https://hub.docker.com/v2/repositories/bridmg/conv2mp4/tags/?page_size=1000
+  dockerhub_tag_url_a: https://hub.docker.com/layers/bridmg/conv2mp4/
+  dockerhub_tag_url_b: /images/
+  dockerhub_tag_url_c: ?context=repo
 paths:
   files:
     #File Paths
