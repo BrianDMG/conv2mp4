@@ -29,19 +29,22 @@ Function Convert-File {
 
   $handbrake = Convert-Path "$($cfg.paths.handbrake)\$($bin)"
 
+  $singleQuoteRegex = @("'","‘","’","´")
+  $containsSingleQuote = $null -ne ( $singleQuoteRegex | ? { $sourceFile -match $_ } )
+
   If ($ConvertType -eq "Handbrake") {
     # Handbrake CLI: https://trac.handbrake.fr/wiki/CLIGuide#presets
     # Handbrake arguments
     $hbArgs = @()
     $hbArgs += "-i " #Flag to designate input file
-    If ( $sourceFile.Contains("'") ) {
+    If ( $containsSingleQuote ) {
       $hbArgs += "`"$($sourceFile)`"" #Input file
     }
     Else {
       $hbArgs += "`'$($sourceFile)`'" #Input file
     }
     $hbArgs += "-o " #Flag to designate output file
-    If ( $targetFile.Contains("'") ) {
+    If ( $containsSingleQuote ) {
       $hbArgs += "`"$($targetFile)`"" #Output file
     }
     Else {
@@ -99,7 +102,7 @@ Function Convert-File {
     $ffArgs += "-fflags " #Allows setting of formal flags
     $ffArgs += "+genpts " #Suppresses pointer warning messages
     $ffArgs += "-i " #Flag to designate input file
-    If ( $sourceFile.Contains("'") ) {
+    If ( $containsSingleQuote ) {
       $ffArgs += "`"$($sourceFile)`""
     }
     Else {
@@ -194,7 +197,7 @@ Function Convert-File {
     }
 
     If ($KeepSubs) {
-      If ( $sourceFile.Contains("'") ) {
+      If ( $containsSingleQuote ) {
         $info = Invoke-Expression "$($ffprobe) -i `"$($sourceFile)`" 2>&1"
       }
       Else {
@@ -215,7 +218,7 @@ Function Convert-File {
       $ffArgs += "-sn " #Option to remove any existing subtitles
     }
     $ffArgs+= "-f mp4 "
-    If ( $targetFile.Contains("'") ) {
+    If ( $containsSingleQuote ) {
       $ffArgs += "`"$($targetFile)`"" #Output file
     }
     Else {

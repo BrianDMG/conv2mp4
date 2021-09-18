@@ -15,6 +15,9 @@ Function Get-Codec {
 
   $ffprobe = Convert-Path $(Join-Path "$($cfg.paths.ffmpeg)" "$($bin)")
 
+  $singleQuoteRegex = @("'","‘","’","´")
+  $containsSingleQuote = $null -ne ( $singleQuoteRegex | ? { $sourceFile -match $_ } )
+
   # Check codec with ffprobe
   $ffprobeArgs += "-v "
   $ffprobeArgs += "error "
@@ -40,7 +43,7 @@ Function Get-Codec {
 
   $ffprobeArgs += "-of "
   $ffprobeArgs += "default=noprint_wrappers=1:nokey=1 "
-  If ( $sourceFile.Contains("'") ) {
+  If ( $containsSingleQuote ) {
     $ffprobeArgs += "`"$($sourceFile)`""
   }
   Else {
