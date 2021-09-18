@@ -1,52 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-	<title>conv2mp4-$($data.prop.platform) Logs</title>
-	<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
-	<link rel="manifest" href="icons/site.webmanifest">
-	<link rel="mask-icon" href="icons/safari-pinned-tab.svg" color="#5bbad5">
-	<meta name="msapplication-TileColor" content="#da532c">
-	<meta name="theme-color" content="#ffffff">
-	<link rel="stylesheet" type="text/css" href="styles/main.css"> </head>
+  <head>
+    <title>conv2mp4-$($data.prop.platform) Logs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8"/>
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+    <link rel="manifest" href="icons/site.webmanifest">
+    <link rel="mask-icon" href="icons/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" type="text/css" href="styles/main.css">
+  </head>
 
-<body>
-	<div class="container">
-		<div class="Header"> <img src="logo.svg" alt="conv2mp4">
-			<div class="divTable unstyledTable">
-				<div class="divTableBody">
-					<div class="divTableRow">
-						<div class="divTableCell">Platform: $($data.prop.platform)</div>
-						<div class="divTableCell">Version: <a href="$($data.prop.urls.gitlab)/-/tags/v$($data.prop.version)" target="_blank" rel="noopener noreferrer">v$($data.prop.version)</a></div>
-						<div class="divTableCell">Revision: <a href="$($data.prop.urls.gitlab)/-/commit/$($env:REVISION)" target="_blank" rel="noopener noreferrer">$($env:REVISION)</a></div>
-					</div>
-				</div>
-			</div>
-			<hr> </div>
-		<div>
-			<h2>Logs</h2>
-      $(foreach ($item in $data.logs) { "
-			  <div><a href='$($item.DirectoryName)/$($item.Name)' target='_blank' rel='noopener noreferrer'>$item</a></div>";
-      })
-			<p><a href="/" class="small">Back home</a></p>
-		</div>
-		<div class="Footer">
-			<hr>
-			<div class="divTable unstyledTable">
-				<div class="divTableBody">
-					<div class="divTableRow">
-						<div class="divTableCell"><a href="$($data.prop.urls.gitlab_docs)" target="_blank" rel="noopener noreferrer">Docs</a></div>
-						<div class="divTableCell"><a href="$($data.prop.urls.gitlab_issues)" target="_blank" rel="noopener noreferrer">Report an issue</a></div>
-						<div class="divTableCell"><a href="$($data.prop.urls.gitlab)" target="_blank" rel="noopener noreferrer">Gitlab</a></div>
-						<div class="divTableCell"><a href="$($data.prop.urls.github)" target="_blank" rel="noopener noreferrer">Github</a></div>
-						<div class="divTableCell"><a href="$($data.prop.urls.dockerhub)" target="_blank" rel="noopener noreferrer">Dockerhub</a></div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</body>
+  <body>
+
+    <div class="page-container">
+
+      <!-- Header -->
+      <div class="pode-container header-green">
+        <img src="logo.svg" alt="conv2mp4">
+      </div>
+
+      <!-- Begin 1st row -->
+      <div class="pode-row-padding">
+
+        <div class="pode-third">
+          <h2>Logs</h2>
+          $(foreach ($item in $data.logs) { "
+          <div><a href='$($item.DirectoryName)/$($item.Name)' target='_blank' rel='noopener noreferrer'>$item</a></div>";
+        })
+        <p><a href="/" class="small">Back home</a></p>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="pode-container header-green">
+        <ul class="pode-ul">
+          <li class="header"><a href="$($data.prop.urls.gitlab_docs)" target="_blank" rel="noopener noreferrer">Docs</a></li>
+          <li class="header"><a href="$($data.prop.urls.gitlab_issues)" target="_blank" rel="noopener noreferrer">Report an issue</a></li>
+          <li class="header"><a href="$($data.prop.urls.gitlab)" target="_blank" rel="noopener noreferrer">Gitlab</a></li>
+          <li class="header"><a href="$($data.prop.urls.github)" target="_blank" rel="noopener noreferrer">Github</a></li>
+          <li class="header"><a href="$($data.prop.urls.dockerhub)" target="_blank" rel="noopener noreferrer">Dockerhub</a></li>
+        </ul>
+        <ul>
+          <li class="header">🧡 Powered by <a href='https://badgerati.github.io/Pode/'>Pode</a></li>
+        </ul>
+      </div>
+    </div>
+  </body>
 
 </html>

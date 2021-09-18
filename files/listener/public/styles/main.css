@@ -1,149 +1,384 @@
 
 
+html {
+  box-sizing:border-box;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing:inherit
+}
+
+
+html,
 body {
-  background-color: rgb(2, 158, 179);
-  font-family: sans-serif;
-  color: rgb(205, 219, 224);
+  font-family: Verdana, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 0
+}
+
+a {
+  background-color: transparent;
+  color: rgb(211,199,162);
+}
+
+a:active,
+a:hover {
+  outline-width: 0;
+  color: rgb(205, 219, 224)
 }
 
 img {
   display: block;
-  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: 50%;
   height: auto;
-  padding-top: 30px;
-  padding-bottom: 30px;
+  padding-top: .5vw;
+  padding-bottom: .5vw;
+  vertical-align: middle;
+}
+
+ul {
+  text-align: center;
 }
 
 h2 {
-  font-family: sans-serif;
-  color: #000000;
+  font-size: 30px;
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-weight: 650;
+  margin: 10px 0;
+  color: rgb(2, 158, 179);
 }
 
-hr {
+b,
+strong {
+  font-weight: bolder
+}
+
+code {
+  font-family: monospace, monospace;
+  font-size: 1em
+}
+
+button {
+  font: inherit;
+  overflow: visible;
+  text-transform: none;
+  margin: 0
+}
+
+button,
+[type=button],
+[type=reset],
+[type=submit] {
+  -webkit-appearance: button
+}
+
+button::-moz-focus-inner,
+[type=button]::-moz-focus-inner,
+[type=reset]::-moz-focus-inner,
+[type=submit]::-moz-focus-inner {
+  border-style: none;
+  padding: 0
+}
+
+button:-moz-focusring,
+[type=button]:-moz-focusring,
+[type=reset]:-moz-focusring,
+[type=submit]:-moz-focusring {
+  outline: 1px dotted ButtonText
+}
+
+.pode-btn,
+.pode-button {
   border: none;
-  background: linear-gradient(to right, rgb(205, 219, 224), rgb(2, 158, 179, 0)75%);
-  height: 5px;
-}
-
-a:link {
-  color: rgb(63, 78, 112);
-}
-
-a:visited {
-  color: rgb(42, 51, 73);
-}
-
-a:hover {
-  color: rgb(105, 129, 184);
-}
-
-a.button {
-  border: none;
-  background-color: rgb(63, 78, 112);
-  color: rgb(205, 219, 224);
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
   display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
+  padding: 15px 32px;
+  vertical-align: middle;
+  overflow: hidden;
+  text-decoration: none;
+  color: rgb(12, 79, 117);
+  background-color: inherit;
+  text-align: center;
   cursor: pointer;
+  white-space: nowrap;
+  background-color: rgb(211,199,162);
+  margin: 4px 2px;
 }
 
-a.small {
-  font-size: 75%;
-  font-weight: bold;
+.pode-btn:hover {
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)
 }
 
-div.unstyledTable {
-  font-family: sans-serif;
-  border: none;
-  border-collapse: collapse;
+.pode-btn,
+.pode-button {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none
 }
 
-.divTableCellBold {
-  padding: 3px 10px;
-  font-weight: bold;
-  color:rgb(255, 255, 255);
+.pode-disabled,
+.pode-btn:disabled,
+.pode-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.3
 }
 
-.divTableCellUpdate {
-  padding: 3px 20px;
-  font-weight: bold;
-  color:rgb(39, 223, 32);
+
+.pode-btn.pode-disabled:hover,
+.pode-btn:disabled:hover {
+  box-shadow: none
 }
 
-.divTable.unstyledTable .divTableCell,
-.divTable.unstyledTable .divTableHead {
-  padding: 3px 3px;
+.header {
+  padding-top: .5vw;
+  padding-bottom: .5vw;
+  display: inline-block;
+  list-style: none;
+  margin: 0 auto;
 }
 
-.divTable.unstyledTable .divTableRow:nth-child(even) {
-  background: rgb(63, 78, 112, 0);
+.page-container {
+  position: relative;
+  min-height: 100vh;
+  height: 100vh
 }
 
-.divTable {
+.pode-ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0
+}
+
+.pode-ul li {
+  padding: 8px 16px;
+}
+
+.pode-container:after,
+.pode-container:before,
+.pode-row-padding:after,
+.pode-row-padding:before {
+  content: "";
+  display:-webkit-flex;
+  clear: both;
+  height: 1.03vh
+}
+
+.pode-col,
+.pode-half,
+.pode-third,
+.pode-twothird,
+.pode-threequarter,
+.pode-quarter {
+  float: left;
   display: table;
 }
 
-.divTableRow {
-  display: table-row;
+.pode-col.s1 {
+  width: 8.33333%
 }
 
-.divTableHeading {
-  display: table-header-group;
+.pode-col.s2 {
+  width: 16.66666%
 }
 
-.divTableCell,
-.divTableHead {
-  display: table-cell;
+.pode-col.s3 {
+  width: 24.99999%
 }
 
-.divTableHeading {
-  display: table-header-group;
+.pode-col.s4 {
+  width: 33.33333%
 }
 
-.divTableFoot {
-  display: table-footer-group;
+.pode-col.s5 {
+  width: 41.66666%
 }
 
-.divTableBody {
-  display: table-row-group;
+.pode-col.s6 {
+  width: 49.99999%
 }
 
-.container {
-  display: grid;
-  grid-template-columns: 25% 25%;
-  grid-template-rows: auto auto auto auto;
-  gap: 10px 10px;
-  grid-auto-flow: row;
-  grid-template-areas: "Header Header" "Box1 Box2" "Box3 Box4" "Footer Footer";
+.pode-col.s7 {
+  width: 58.33333%
 }
 
-.Header {
-  grid-area: Header;
-  font-size: 75%;
+.pode-col.s8 {
+  width: 66.66666%
+}
+
+.pode-col.s9 {
+  width: 74.99999%
+}
+
+.pode-col.s10 {
+  width: 83.33333%
+}
+
+.pode-col.s11 {
+  width: 91.66666%
+}
+
+.pode-col.s12 {
+  width: 99.99999%
+}
+
+@media (min-width:601px) {
+  .pode-col.m1 {
+    width: 8.33333%
+  }
+  .pode-col.m2 {
+    width: 16.66666%
+  }
+  .pode-col.m3,
+  .pode-quarter {
+    width: 24.99999%
+  }
+  .pode-col.m4,
+  .pode-third {
+    width: 33.33333%
+  }
+  .pode-col.m5 {
+    width: 41.66666%
+  }
+  .pode-col.m6,
+  .pode-half {
+    width: 49.99999%
+  }
+  .pode-col.m7 {
+    width: 58.33333%
+  }
+  .pode-col.m8,
+  .pode-twothird {
+    width: 66.66666%
+  }
+  .pode-col.m9,
+  .pode-threequarter {
+    width: 74.99999%
+  }
+  .pode-col.m10 {
+    width: 83.33333%
+  }
+  .pode-col.m11 {
+    width: 91.66666%
+  }
+  .pode-col.m12 {
+    width: 99.99999%
+  }
+}
+
+@media (min-width:993px) {
+  .pode-col.l1 {
+    width: 8.33333%
+  }
+  .pode-col.l2 {
+    width: 16.66666%
+  }
+  .pode-col.l3 {
+    width: 24.99999%
+  }
+  .pode-col.l4 {
+    width: 33.33333%
+  }
+  .pode-col.l5 {
+    width: 41.66666%
+  }
+  .pode-col.l6 {
+    width: 49.99999%
+  }
+  .pode-col.l7 {
+    width: 58.33333%
+  }
+  .pode-col.l8 {
+    width: 66.66666%
+  }
+  .pode-col.l9 {
+    width: 74.99999%
+  }
+  .pode-col.l10 {
+    width: 83.33333%
+  }
+  .pode-col.l11 {
+    width: 91.66666%
+  }
+  .pode-col.l12 {
+    width: 99.99999%
+  }
+}
+
+.pode-row-padding,
+.pode-row-padding>.pode-half,
+.pode-row-padding>.pode-third,
+.pode-row-padding>.pode-twothird,
+.pode-row-padding>.pode-threequarter,
+.pode-row-padding>.pode-quarter,
+.pode-row-padding>.pode-col {
+  padding: 8px 8px;
+  background-color: rgb(12, 79, 117);
+  color: rgb(205, 219, 224);
+}
+
+.pode-container,
+.pode-panel {
+  padding: 1em 16px
+}
+
+.pode-button:hover {
+  color: #000!important;
+  background-color: rgb(204, 204, 204)!important
+}
+
+.pode-transparent,
+.pode-hover-none:hover {
+  background-color: transparent!important
+}
+
+.header-green,
+.pode-hover-green:hover {
+  color: rgb(205, 219, 224);
+  background-color: rgb(2, 158, 179)!important
+}
+
+div.podeTable {
+  width: auto;
+  text-align: left;
+}
+.divTable.podeTable .divTableCell, .divTable.podeTable .divTableHead {
+  padding: 4px 8px;
+}
+
+.divTableCellBold {
+  padding: 4px 8px;
   font-weight: bold;
 }
 
-.Footer {
-  grid-area: Footer;
-  font-size: 75%;
-  font-weight: bold;
+.podeTable .tableFootStyle .links {
+	 text-align: right;
+}
+.podeTable .tableFootStyle .links a{
+  display: inline-block;
+  padding: 8px 8px;
+}
+.podeTable.outerTableFooter {
+  border-top: none;
+}
+.podeTable.outerTableFooter .tableFootStyle {
+  padding: 5px 5px;
 }
 
-.Box1 {
-  grid-area: Box1;
-}
-
-.Box2 {
-  grid-area: Box2;
-}
-
-.Box3 {
-  grid-area: Box3;
-}
-
-.Box4 {
-  grid-area: Box4;
-}
+.divTable{ display: table; }
+.divTableRow { display: table-row; }
+.divTableHeading { display: table-header-group;}
+.divTableCell, .divTableHead { display: table-cell;}
+.divTableHeading { display: table-header-group;}
+.divTableFoot { display: table-footer-group;}
+.divTableBody { display: table-row-group;}
