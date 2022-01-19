@@ -81,10 +81,7 @@ ForEach ($file in $fileList) {
   <#Test if $targetFile (.mp4) already exists, if yes then delete $sourceFile (.mkv)
   This outputs a more specific log message acknowleding the file already existed.#>
   If ((Test-Path "$($targetFileRenamed)") -And $file.Extension -ne ".mp4") {
-    Remove-Item "$($sourceFile)" -Force
-    Add-Log "$($time.Invoke()) Already exists: $($targetFileRenamed)"
-    Add-Log "$($time.Invoke()) Deleted: $($sourceFile)."
-    $duplicatesDeleted += @($sourceFile)
+    Compare-Duplicates -File1 $targetFileRenamed -File2 $sourceFile
   }
   Else {
     #Codec discovery to determine whether video, audio, or both needs to be encoded
