@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/powershell:7.1.5-ubuntu-focal
+FROM mcr.microsoft.com/powershell:7.2.1-ubuntu-focal
 
 ARG REVISION='local'
 
