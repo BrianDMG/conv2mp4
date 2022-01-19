@@ -16,7 +16,7 @@ COPY . ${APP_HOME}
 RUN apt-get update && \
     apt-get install -y \
       --no-install-recommends \
-      software-properties-common=0.98.9.5 && \
+      software-properties-common=0.99.9.8 && \
     add-apt-repository ppa:stebbins/handbrake-releases && \
     apt-get update && \
     apt-get install \
